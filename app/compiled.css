@@ -229,24 +229,6 @@ html, body {
   .flex-col > .flex-splitter.dragged {
     background-color: steelblue; }
 
-.--NAV-entry {
-  color: #b4b4b4;
-  cursor: default;
-  -webkit-user-select: none;
-  user-select: none;
-  display: flex;
-  flex-direction: row; }
-  .--NAV-entry:hover .--NAV-entry-close {
-    display: flex; }
-
-.--NAV-entry-close {
-  display: none;
-  font-size: 16px;
-  width: 18px;
-  justify-content: center; }
-  .--NAV-entry-close:hover {
-    background-color: #505050; }
-
 #content.move-mod .mod-con:hover .mod-head {
   background-color: steelblue; }
 
@@ -334,6 +316,24 @@ html, body {
   left: 0;
   right: 0;
   bottom: 0; }
+
+.--NAV-entry {
+  color: #b4b4b4;
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+  display: flex;
+  flex-direction: row; }
+  .--NAV-entry:hover .--NAV-entry-close {
+    display: flex; }
+
+.--NAV-entry-close {
+  display: none;
+  font-size: 16px;
+  width: 18px;
+  justify-content: center; }
+  .--NAV-entry-close:hover {
+    background-color: #505050; }
 
 .--RESV-entry {
   color: #b4b4b4;
