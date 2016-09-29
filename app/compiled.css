@@ -59,7 +59,7 @@ html, body {
   border-left: 3px solid orange; }
 
 .log-entry.err {
-  border-left: 3px solid #d67d33; }
+  border-left: 3px solid #d77d32; }
 
 #headbar {
   border-bottom: 1px solid #2d2d2d; }
@@ -126,6 +126,8 @@ html, body {
   font-family: "Segoe UI", "Trebuchet MS", sans-serif; }
   .ALE-label:hover {
     background-color: #505050; }
+  .ALE-label:active {
+    background-color: steelblue; }
 
 .ALE-icon-w {
   display: flex;
@@ -222,12 +224,31 @@ html, body {
   background-color: #505050;
   -webkit-user-select: none;
   user-select: none; }
-  .flex-row > .flex-splitter:hover,
-  .flex-col > .flex-splitter:hover {
-    background-color: orange; }
+  .flex-row > .flex-splitter:hover, .flex-row > .flex-splitter.dragged,
+  .flex-col > .flex-splitter:hover,
+  .flex-col > .flex-splitter.dragged {
+    background-color: steelblue; }
+
+.--NAV-entry {
+  color: #b4b4b4;
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+  display: flex;
+  flex-direction: row; }
+  .--NAV-entry:hover .--NAV-entry-close {
+    display: flex; }
+
+.--NAV-entry-close {
+  display: none;
+  font-size: 16px;
+  width: 18px;
+  justify-content: center; }
+  .--NAV-entry-close:hover {
+    background-color: #505050; }
 
 #content.move-mod .mod-con:hover .mod-head {
-  background-color: orange; }
+  background-color: steelblue; }
 
 .mod-head {
   border-bottom: 1px solid 1px solid #2d2d2d;
@@ -239,7 +260,7 @@ html, body {
   text-shadow: 0 1px 0 #141414;
   cursor: pointer;
   margin: 2px 3px; }
-  .mod-button:hover {
+  .mod-button:hover, .mod-button:active {
     background-color: #787878;
     text-shadow: none; }
 
@@ -284,7 +305,8 @@ html, body {
   border-style: solid; }
 
 .mod-body {
-  position: relative; }
+  position: relative;
+  overflow: hidden; }
 
 .mod-sett {
   position: relative; }
@@ -306,23 +328,12 @@ html, body {
   z-index: 11;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3); }
 
-.--NAV-entry {
-  color: #b4b4b4;
-  cursor: default;
-  -webkit-user-select: none;
-  user-select: none;
-  display: flex;
-  flex-direction: row; }
-  .--NAV-entry:hover .--NAV-entry-close {
-    display: flex; }
-
-.--NAV-entry-close {
-  display: none;
-  font-size: 16px;
-  width: 18px;
-  justify-content: center; }
-  .--NAV-entry-close:hover {
-    background-color: #505050; }
+.mod-fill-body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0; }
 
 .--RESV-entry {
   color: #b4b4b4;

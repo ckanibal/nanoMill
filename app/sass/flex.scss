@@ -29,7 +29,8 @@
 	
 	@include noUserSelect()
 	
-	&:hover {
-		background-color: $orange;
+	&:hover,
+	&.dragged {
+		background-color: $frame-action;
 	}
 }

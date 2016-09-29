@@ -186,6 +186,11 @@ class Layout_Flex extends Layout_Element {
 
         if($(prev).hasClass("flex-splitter"))
             $(prev).remove()
+		
+		if(this.dir === DIR_ROW)
+			$(this.root.lastElementChild).addClass("flex-fill")[0].style.width = ""
+		else
+			$(this.root.lastElementChild).addClass("flex-fill")[0].style.height = ""
     }
 }
 
@@ -278,6 +283,7 @@ class Layout_Module extends Layout_Element {
 		p.registerChild(addModule(modAlias), p.getChildIndex(this))
 		
         removeModule(this)
+		execHook("onLayoutChange")
     }
 
     onDeletion() { }
@@ -303,6 +309,8 @@ class Layout_Module extends Layout_Element {
 			flexer.registerChild(addModule("intro"))
 			flexer.registerChild(this)
         }
+		
+		execHook("onLayoutChange")
     }
 
     deleteModule() {

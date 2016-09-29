@@ -1,6 +1,6 @@
 
 #content.move-mod .mod-con:hover .mod-head{
-	background-color: $orange;
+	background-color: $frame-action;
 }
 
 .mod-head {
@@ -15,7 +15,8 @@
 	cursor: pointer;
 	margin: 2px 3px;
 	
-	&:hover {
+	&:hover,
+	&:active {
 		background-color: $tb-bg-hvr;
 		text-shadow: none;
 	}
@@ -79,6 +80,7 @@
 
 .mod-body {
 	position: relative;
+	overflow: hidden;
 }
 
 .mod-sett {
@@ -105,4 +107,12 @@
 	z-index: 11;
 	
 	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.mod-fill-body {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }

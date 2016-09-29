@@ -8,6 +8,10 @@ class TextEditor extends Layout_SubModule {
 		this.root = $("<div id='TE-" + _nextTextEditorId + "' class='ace_qtmill'></div>")[0]
 		
 		this.tid = _nextTextEditorId++
+		
+		hook("onLayoutChange", () => {
+			this.editor.resize()
+		})
 	}
 
     setup(file, txt, mode) {

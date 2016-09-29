@@ -48,3 +48,4 @@ Temporary Items
 app/config.json
 *.log
 app/wininfo.json
+/app/compiled.css

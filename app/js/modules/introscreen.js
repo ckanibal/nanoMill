@@ -4,7 +4,7 @@ class IntroScreen extends Layout_Module{
 		super()
 		
 		$(this.root).find(".mod-body").html(
-"<div class='flex-col' style='height: 100%; width: 100%'>\
+"<div class='flex-col mod-fill-body'>\
 	<div class='flex-fill'></div>\
 		<span style='text-align: center'>Welcome .</span><br>\
 		<span style='text-align: center; color: #1d1d1d; font-size: 32px; text-shadow: 0 -1px 0 #101010, -2px 0 #1f1f1f' class='icon-the-mill'></span>\

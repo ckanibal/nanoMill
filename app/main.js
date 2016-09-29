@@ -41,6 +41,7 @@ function createWindow () {
 	
 	// Create the browser window.
 	win = new BrowserWindow(wininfo.opts)
+	win.setMenu(null)
 	
 	if(wininfo.opts.maximized)
 		win.maximize()

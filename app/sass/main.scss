@@ -12,6 +12,10 @@ reserved z indices
 
 $font-stack: "Segoe UI", "Trebuchet MS", sans-serif;
 
+$bg-main: rgb(40, 40, 40);
+
+$bg-ui-active: steelblue;
+
 $tb-bg: rgb(60, 60, 60);
 $tb-bg-hvr: rgb(120, 120, 120);
 $tb-brdr: 1px solid rgb(45, 45, 45);
@@ -21,8 +25,9 @@ $hvr: rgb(80, 80, 80);
 
 $font-clr: rgb(180, 180, 180);
 
-$red: rgb(214, 125, 51);
+$red: rgb(215, 125, 50);
 $orange: orange;
+$frame-action: steelblue;
 
 @mixin flex-row() {
 	display: flex;
@@ -49,7 +54,7 @@ $orange: orange;
 html, body {
     margin: 0;
     padding: 0;
-    background: rgb(40, 40, 40);
+    background: $bg-main;
     color: rgb(220, 220, 220);
     font-family: $font-stack;
 	height: 100%;
@@ -70,7 +75,7 @@ html, body {
     max-width: 100%;
     font-family: monospace;
     color: rgb(200, 200, 200);
-    background: rgb(40, 40, 40);
+    background: $bg-main;
     display: none;
     z-index: 100;
     padding: 10px;
@@ -157,7 +162,7 @@ html, body {
     max-height: 12px;
     border: none;
     padding: 0px;
-    background-color: rgb(40, 40, 40);
+    background-color: $bg-main;
 }
 
 ::-webkit-scrollbar:vertical {
@@ -221,6 +226,10 @@ html, body {
 	
 	&:hover {
 		background-color: $hvr;
+	}
+	
+	&:active {
+		background-color: $bg-ui-active;
 	}
 	
 	font-family: $font-stack;

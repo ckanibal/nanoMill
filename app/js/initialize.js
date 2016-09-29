@@ -68,6 +68,8 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 
             requestAnimationFrame(fn)
         }
+		
+		$(dragSplitterTarget).addClass("dragged")
 
         mouseOffX = mouseX
         mouseOffY = mouseY
@@ -96,10 +98,11 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
     })
 
     $(document).mouseup(function(e) {
-		if(dragSplitterTarget)
-			for(let i = 0; i < _modules.length; i++)
-				if(_modules[i].editor)
-					_modules[i].editor.resize()
+		if(dragSplitterTarget) {
+			$(dragSplitterTarget).removeClass("dragged")
+			
+			execHook("onLayoutChange")
+		}
 		
         dragSplitterTarget = false
     })
