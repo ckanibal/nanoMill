@@ -1,0 +1,65 @@
+@font-face {
+  font-family: 'icomoon';
+  src:url('sass/icomoon.ttf?-icmbrc') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-add-flex-h:before {
+  content: "\e900";
+}
+.icon-add-flex-v:before {
+  content: "\e901";
+}
+.icon-move-flexer:before {
+  content: "\e902";
+}
+.icon-ctx-submenu-indicator:before {
+  content: "\e93b";
+}
+.icon-hamburger-small:before {
+  content: "\e939";
+}
+.icon-small-settings:before {
+  content: "\e93a";
+}
+.icon-hamburger:before {
+  content: "\e936";
+}
+.icon-x-s:before {
+  content: "\e937";
+}
+.icon-minus:before {
+  content: "\e913";
+}
+.icon-plus:before {
+  content: "\e916";
+}
+.icon-save2:before {
+  content: "\e919";
+}
+.icon-console:before {
+  content: "\e90c";
+}
+.icon-the-mill:before {
+  content: "\e634";
+}
+.icon-checked:before {
+  content: "\e608";
+}
+

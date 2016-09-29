@@ -1,0 +1,108 @@
+
+#content.move-mod .mod-con:hover .mod-head{
+	background-color: $orange;
+}
+
+.mod-head {
+	border-bottom: 1px solid $tb-brdr;
+	background-color: $tb-bg;
+	color: $tb-clr;
+	height: 20px;
+}
+
+.mod-button {
+    text-shadow: 0 1px 0 rgb(20, 20, 20);
+	cursor: pointer;
+	margin: 2px 3px;
+	
+	&:hover {
+		background-color: $tb-bg-hvr;
+		text-shadow: none;
+	}
+}
+
+.mod-sel {
+	cursor: default;
+	position: relative;
+	margin: 0 2px;
+	
+	&:focus {
+		outline: none;
+	}
+	
+	&:focus .mod-sel-item {
+		display: initial;
+		pointer-events: auto;
+		
+		&:hover {
+			background-color: $tb-bg-hvr;
+		}
+	}
+	
+	&:hover:not(:focus) .visible {
+		background-color: $tb-bg-hvr;
+	}
+}
+
+.mod-sel-list {
+	position: absolute;
+	top: 2px;
+	right: 0;
+	left: 0;
+	z-index: 10;
+	padding: 0 2px;
+	
+	transition: height 0.3s;
+}
+
+.mod-sel-item {
+	display: none;
+	padding: 0 3px;
+	font-size: 12px;
+	background-color: $tb-bg;
+	
+	@include noUserSelect();
+	
+	pointer-events: none;
+	
+	&.visible {
+		display: initial;
+	}
+}
+
+.mod-head hr {
+	margin-top: 3px;
+	margin-bottom: 3px;
+	border-color: rgb(45, 45, 45);
+	border-style: solid;
+}
+
+.mod-body {
+	position: relative;
+}
+
+.mod-sett {
+	position: relative;
+	
+	&:focus .mod-sett-menu {
+		display: flex;
+	}
+	
+	&:focus {
+		outline: none;
+	}
+}
+
+.mod-sett-menu {
+	@include flex-col();
+	display: none;
+	top: 0;
+	right: 0;
+	position: absolute;
+	max-width: 180px;
+	width: 180px;
+	background-color: $tb-bg;	
+	z-index: 11;
+	
+	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+}

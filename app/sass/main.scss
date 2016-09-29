@@ -1,0 +1,238 @@
+/*
+
+reserved z indices
+
+[0-6] Ace
+
+[20-30] Module Head
+
+
+*/
+
+
+$font-stack: "Segoe UI", "Trebuchet MS", sans-serif;
+
+$tb-bg: rgb(60, 60, 60);
+$tb-bg-hvr: rgb(120, 120, 120);
+$tb-brdr: 1px solid rgb(45, 45, 45);
+$tb-clr: rgb(180, 180, 180);
+
+$hvr: rgb(80, 80, 80);
+
+$font-clr: rgb(180, 180, 180);
+
+$red: rgb(214, 125, 51);
+$orange: orange;
+
+@mixin flex-row() {
+	display: flex;
+	flex-direction: row;
+}
+
+@mixin flex-col() {
+	display: flex;
+	flex-direction: column;
+}
+
+@mixin dlgtFcs($clr) {
+	outline: none;
+	
+	&:focus > * {
+		outline: 1px solid $clr;
+	}
+}
+
+.draft {
+    display: none !important;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: rgb(40, 40, 40);
+    color: rgb(220, 220, 220);
+    font-family: $font-stack;
+	height: 100%;
+	width: 100%;
+}
+
+#content {
+    position: relative;
+}
+
+#internal-log {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 100%;
+    max-width: 100%;
+    font-family: monospace;
+    color: rgb(200, 200, 200);
+    background: rgb(40, 40, 40);
+    display: none;
+    z-index: 100;
+    padding: 10px;
+}
+
+#internal-log.visible {
+    display: block;
+}
+
+#log-entry-list {
+	overflow-y: auto;
+	flex: 1;
+	height: 85%;
+}
+
+.log-entry {
+    min-height: 14px;
+    border-left: 3px solid grey;
+    padding: 2px 5px;
+	margin: 1px 0;
+}
+
+.log-entry:hover {
+    background-color: rgb(80, 80, 80);
+}
+
+.log-entry.warn {
+    border-left: 3px solid $orange;
+}
+
+.log-entry.err {
+    border-left: 3px solid $red;
+}
+
+#headbar {
+	border-bottom: 1px solid rgb(45, 45, 45);
+}
+
+.hb-btn {
+	color: $tb-clr;
+	cursor: default;
+	font-size: 14px;
+	text-shadow: 0 1px 0 rgb(20, 20, 20);
+	cursor: pointer;
+	padding: 2px 3px;
+	
+	&:hover {
+		background-color: $tb-bg;
+		text-shadow: none;
+	}
+}
+
+.hb-btn.icon {
+	font-size: 16px;
+	width: 16px;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-track-piece,
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-corner,
+::-webkit-resizer {
+
+    
+
+}
+
+::-webkit-scrollbar {
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+::-webkit-scrollbar * {
+    background-color: yellow;
+}
+
+::-webkit-scrollbar:horizontal {
+    height: 12px;
+    max-height: 12px;
+    border: none;
+    padding: 0px;
+    background-color: rgb(40, 40, 40);
+}
+
+::-webkit-scrollbar:vertical {
+    width: 12px;
+    border: none;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: grey;
+    margin: 2px 0;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+    background-color: grey;
+    margin: 0 2px;
+    border: 2px solid transparent;
+}
+
+@mixin noUserSelect() {
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+@mixin abstractList() {	
+	color: $font-clr;
+	cursor: default;
+	
+	@include noUserSelect();
+	@include flex-col();
+	
+	.ALE-label {
+		flex: 1;
+		font-size: 14px;
+		padding: 2px 5px;
+		&:hover {
+			background-color: $hvr;
+		}
+		
+		font-family: $font-stack;
+	}
+}
+
+
+@mixin abstractListEntry() {
+	color: $font-clr;
+	cursor: default;
+	
+	@include noUserSelect();
+	@include flex-row();
+}
+
+.ALE-entry {
+	@include abstractListEntry();
+}
+
+.ALE-label {
+	flex: 1;
+	font-size: 14px;
+	padding: 2px 5px;
+	@include flex-row();
+	
+	&:hover {
+		background-color: $hvr;
+	}
+	
+	font-family: $font-stack;
+}
+
+.ALE-icon-w {
+	@include flex-col();
+	justify-content: center;
+	display: inline-block;
+	font-size: 16px;
+}
+
+.icon {
+	font-size: 16px;
+}

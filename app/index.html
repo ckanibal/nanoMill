@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<meta charset="UTF-8">
+	<title>nanoMill</title>
+	<link href="compiled.css" rel="stylesheet" type="text/css">
+	
+</head>
+<body class="flex-col">
+
+<div id="headbar" class="flex-row">
+    <div class="hb-btn" id="openf">Open</div>
+    <div class="hb-btn" id="savef">Save</div>
+    <div class="flex-fill"></div>
+    <div class="hb-btn icon-console icon" id="log-icon"></div>
+</div>
+
+<div id="content" class="flex-row flex-fill">
+
+<div id="mod-wrapper" class="flex-fill flex-row">
+</div>
+
+<div id="internal-log" class="flex-col">
+    <div class="flex-row"></div>
+
+    <div id="log-entry-list" class="flex-fill"></div>
+</div>
+
+<div class="mod-con flex-col flex-fill draft">
+    <div class="mod-head flex-row">
+        <div class="mod-sel flex-fill" tabindex="3">
+            <div class="mod-sel-list flex-col"></div>
+        </div>
+
+        <hr>
+
+        <div class="mod-move mod-button icon-move-flexer"></div>
+        <div class="mod-sett mod-button icon-hamburger-small" tabindex="3">
+            <div class="mod-sett-menu">
+                <div class="flex-col">
+                </div>
+                <div class="flex-col mod-sett-spec">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mod-body flex-fill">
+    </div>
+</div>
+
+<input id="filepicker" type="file" style="display: none" />
+<div id="mod-buffer" style="display: none"></div>
+
+</div>
+<script>window.$ = window.jQuery = require('./external/jquery-3.1.0.min.js')</script>
+<script>
+const _fs = require('fs')
+const path = require('path')
+</script>
+
+<script type="text/javascript" src="external/ace/ace.js"></script>
+<script type="text/javascript" src="external/ace/ext-language_tools.js"></script>
+<script type="text/javascript" src="js/ace_add_ons/theme-textmate.js"></script>
+<script type="text/javascript" src="js/ace_add_ons/mode-ocscript.js"></script>
+
+<script type="text/javascript" src="js/modules/modules.js"></script>
+<script type="text/javascript" src="js/modules/introscreen.js"></script>
+<script type="text/javascript" src="js/modules/editor.js"></script>
+<script type="text/javascript" src="js/modules/navigator.js"></script>
+<script type="text/javascript" src="js/modules/resview.js"></script>
+<script type="text/javascript" src="js/modules/texteditor.js"></script>
+
+<script type="text/javascript" src="js/filemanager.js"></script>
+<script type="text/javascript" src="js/initialize.js"></script>
+<!--
+<script type="text/javascript" src="js/webchan_serialize.js"></script>
+-->
+<script type="text/javascript" src="external/sass.js"></script>
+<script type="text/javascript" src="external/sass.worker.js"></script>
+<script type="text/javascript" src="js/sass_processor.js"></script>
+
+</body>
+</html>
+

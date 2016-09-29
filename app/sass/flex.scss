@@ -1,0 +1,35 @@
+
+.flex-fill {
+	flex: 1;
+}
+
+.flex-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.flex-col {
+	display: flex;
+	flex-direction: column;
+}
+
+.flex-col > .flex-splitter {
+	height: 4px;
+	cursor: ns-resize;
+}
+
+.flex-row > .flex-splitter {
+	width: 4px;
+	cursor: ew-resize;
+}
+
+.flex-row > .flex-splitter,
+.flex-col > .flex-splitter {
+	background-color: rgb(80, 80, 80);
+	
+	@include noUserSelect()
+	
+	&:hover {
+		background-color: $orange;
+	}
+}
