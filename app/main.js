@@ -34,7 +34,7 @@ function createWindow () {
 	catch(e) {
 		output.write(`Default window setup will be used due to:\n(${e})\n`)
 		wininfo.opts = {width: 800, height: 600, frame: true}
-		wininfo.enableDevMode = true
+		wininfo.enableDevMode = false
 	}
 
 	wininfo.opts.icon = `${__dirname}/the-mill.ico`

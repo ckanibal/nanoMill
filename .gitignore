@@ -50,3 +50,5 @@ app/config.json
 app/wininfo.json
 /app/compiled.css
 app/compiled.css
+/node_modules
+/pre_dist
