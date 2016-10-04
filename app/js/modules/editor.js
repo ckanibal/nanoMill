@@ -3,35 +3,30 @@
 
 class EditorView extends Layout_Deck {
 
-	constructor() {
+	constructor(modId) {
 		super()
 		
 		this.files = []
 		
-		hook("onFileOpen", (file) => {
+		hook("onFileOpen", (res) => {
 
-			_fs.readFile(file.path, 'utf8', (err, text) => {
+			_fs.readFile(res.path, 'utf8', (err, text) => {
 				
 				if(err)
-					throw err
+					throw `Failed to read file in EditorView (${err})`
 				
-				if(this.interpretFile(file, text))
-					execHook("onFileOpened", file)
+				if(this.interpretFile(res, text)) {
+					execHook("onFileOpened", res)
+					execHook("onOpenedFileSelect", res)
+				}
 			})
-				
+			
 			return true
-		})
+		}, modId)
 
 		hook("onOpenedFileSelect", (file) => {
-			let idx = this.getFileIndex(file)
-
-			if(idx === -1)
-				return false
-
-			this.showFile(idx)
-
-			return true
-		})
+			this.showFile(file)
+		}, modId)
 		
 		hook("closeOpenedFile", (file) => {
 			let idx = this.getFileIndex(file)
@@ -44,30 +39,33 @@ class EditorView extends Layout_Deck {
 			this.unregisterChild(child)
 			
 			return true
-		})
+		}, modId)
 	}
 
     interpretFile(file, text) {
-		
-		let leaf = file.name.split(".").pop()
-        var mod
+        var mod, modIdx = -1
 
-        switch(leaf){
-            case "c":
+        switch(file.leaf){
+            case ".c":
                 mod = addModule("texteditor")
                 this.registerChild(mod)
                 mod.setup(file, text, "ocscript")
                 this.showChild(this.getChildIndex(mod))
             break
-            case "txt":
+            case ".txt":
                 mod = addModule("texteditor")
                 this.registerChild(mod)
                 mod.setup(file, text, "text")
                 this.showChild(this.getChildIndex(mod))
             break
         }
-
-        this.files.push(file)
+		
+		file.editor = this
+		file.mod = mod
+		
+        this.files.push({
+			file, modIdx
+		})
 
         return true
     }
@@ -88,14 +86,14 @@ class EditorView extends Layout_Deck {
         return -1
     }
 	
-	showFile(index) {
-		let children = $(this.root).find(".mod-body")[0].children
+	showFile(file) {
+		let idx = this.getChildIndex(file.mod)
+
+		if(idx === -1)
+			return
 		
-		for(let i = 0; i < children.length; i++)
-			if(i === index)
-				children[i].style.display = "initial"
-			else
-				children[i].style.display = "none"
+		this.showChild(idx)
+		this.shownFile = file
 	}
 }
 

@@ -26,68 +26,48 @@ var sass_defs = [
     }
 ]
 
-var sassCounter = 0, sassText = ""
-
-function addToSassList(text) {
-
-    sassCounter++
-
-    sassText += text + "\n\n"
-
-    if(sassCounter === sass_defs.length) {
-        Sass.compile(sassText, function(result) {
-
-            if(result.message)
-                log("Sass error: " + result.message, ERR)
-            else {
-                $(document.head).append("<style type='text/css'>"+result.text+"</style>")
-				
-				_fs.writeFile(path.join(__dirname, 'compiled.css'), result.text, 'utf-8', (err) => {
-					if(err)
-						throw err
-					
-					log("Created compiled.css", INFO)
-				})
-            }
-        })
-    }
-}
-
-var _prf = {
-	keys: {},
+function processSassFiles(defs) {
 	
-	start: function(key) {
-		this.keys[key] = (new Date()).getTime()
-	},
-	stop: function(key, fprint) {
-		var t = (new Date()).getTime() - this.keys[key]
-		
-		if(fprint)
-			log("Profiled [" + key + "] : " + t)
-		
-		return t
-	}
-}
-
-// change to async iterator function with sync file operations
-
-{
-	if(Sass) {
-		for(var i in sass_defs) {
-		   _fs.readFile(path.join(__dirname, sass_defs[i].src), 'utf8', function(err, text) {
-			   if(err)
-				   throw err
-			   
-			   if(sass_defs[i].mod)
-				   text = modSassString(text, sass_defs[i].mod)
-
-			   addToSassList(text)
-		   })
+	if(!Sass)
+		return warn("Cannot pre-process css-file; Sass not given")
+	
+	let readFn = function*(defs) {
+		for(let i = 0; i < defs.length; i++) {
+			let txt = _fs.readFileSync(path.join(__dirname, defs[i].src), 'utf8')
+			
+			if(defs[i].mod)
+				txt = modSassString(txt, defs[i].mod)
+			
+			yield txt
 		}
 	}
-	else
-		log("SassProcessor: Sass required", WARN)
+	
+	_prf.start("sass")
+	
+	let whole = ""
+	
+	for(let single of readFn(defs))
+		whole += single + "\n\n"
+	
+	Sass.compile(whole, (result) => {
+		if(result.message) {
+			error("Sass error: " + result.message)
+			window._failedSassString = whole
+		}
+		else {
+			$(document.head).append("<style type='text/css'>"+result.text+"</style>")
+			
+			_fs.writeFile(path.join(__dirname, 'compiled.css'), result.text, 'utf-8', (err) => {
+				if(err)
+					throw err
+				
+				log("Sass done (" + _prf.stop("sass") + "ms)")
+			})
+		}
+	})
 }
+
+processSassFiles(sass_defs)
 
 function modSassString(str, mod) {
     // specific icomoon-generated-content modifier

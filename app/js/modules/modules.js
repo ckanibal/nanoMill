@@ -24,6 +24,7 @@ class Layout_Element {
 	}
 	
 	getLayoutInfo() {
+		return { w: this.root.style.width, h: this.root.style.height }
 	}
 }
 
@@ -65,6 +66,7 @@ class Layout_Page extends Layout_Element {
 	}
 	
 	getLayoutInfo() {
+		return this.flexer.getLayoutInfo(arguments)
 	}
 }
 
@@ -94,7 +96,7 @@ class Layout_Flex extends Layout_Element {
     registerChild(child, index) {
 
         if(!child)
-            return log("No parameter given for registerChild", ERR)
+            return error("No parameter given for registerChild")
         else if(!child.isLayout_Element)
             return log("Given child is not a Layout_Element")
 
@@ -141,14 +143,23 @@ class Layout_Flex extends Layout_Element {
         }
 		else if(this.children.length === 1) {
 			let child = this.children[0]
+			let p = this.parent
 			
 			$("#mod-buffer").append(child.root)
 			
-			$(this.root).remove()
+			let root = this.root
 			
-			var p = this.parent
+			if(p.getDir() === DIR_ROW)
+				child.root.style.width = root.style.width
+			else
+				child.root.style.height = root.style.height
+			
+			$(child.root).removeClass("flex-fill")
+			$(root).remove()
+			
+			let idx = p.getChildIndex(this)
 			p.unregisterChild(this)
-			p.registerChild(child)
+			p.registerChild(child, idx)
 		}
     }
 
@@ -192,6 +203,21 @@ class Layout_Flex extends Layout_Element {
 		else
 			$(this.root.lastElementChild).addClass("flex-fill")[0].style.height = ""
     }
+	
+	getLayoutInfo() {
+		let o = {
+			dir: this.getDir(),
+			alias: this.constructor.name,
+			chldrn: [],
+			w: this.root.style.width,
+			h: this.root.style.height
+		}
+		
+		for(let i = 0; i < this.children.length; i++)
+			o.chldrn.push(this.children[i].getLayoutInfo())
+		
+		return o
+	}
 }
 
 class Layout_Module extends Layout_Element {
@@ -286,7 +312,9 @@ class Layout_Module extends Layout_Element {
 		execHook("onLayoutChange")
     }
 
-    onDeletion() { }
+    onDeletion() {
+		cleanUpHooksOfMdl(this.id)
+	}
 
     addSibling(fVertical) {
 
@@ -306,8 +334,8 @@ class Layout_Module extends Layout_Element {
 			
 			p.unregisterChild(this)
 			
-			flexer.registerChild(addModule("intro"))
 			flexer.registerChild(this)
+			flexer.registerChild(addModule("intro"))
         }
 		
 		execHook("onLayoutChange")
@@ -355,6 +383,10 @@ class Layout_Module extends Layout_Element {
 	}
 	
 	isSub() { return false }
+	
+	getLayoutInfo() {log(this.constructor.name)
+		return { alias: this.constructor.def.alias, w: this.root.style.width, h: this.root.style.height }
+	}
 }
 
 class Layout_Deck extends Layout_Module {
@@ -368,7 +400,7 @@ class Layout_Deck extends Layout_Module {
     registerChild(child) {
 
         if(!child)
-            return log("No parameter given for registerChild", ERR)
+            return error("No parameter given for registerChild")
         else if(!child.isLayout_Element)
             return log("Given child is not a Layout_Element")
 
@@ -401,8 +433,7 @@ class Layout_Deck extends Layout_Module {
         return -1
     }
 
-    showChild(idx) {
-
+    showChild(idx) {		
         for(var i = this.children.length; i--;)
             if(i === idx)
                 this.children[i].root.style.display = "initial"
@@ -427,21 +458,24 @@ var _modDefs = {}
 function registerModule(def) {
 	
 	if(_modDefs[def.alias])
-		log("mod alias already defined [" + def.alias + "]; registration rejected", ERR)
+		error(`mod alias already defined (${def.alias}); registration rejected`)
 	
     _modDefs[def.alias] = def
 }
 
+var modId = 0
 function addModule(modAlias) {
 
     var def = _modDefs[modAlias]
 	
     if(!def || !def.className)
-        return log("addModule: module alias '" + modAlias + "' not registered.", ERR)
+        return error(`addModule: module alias '${modAlias}' not registered.`)
 
-    var mod = new def.className()
+    var mod = new def.className(modId)
 
     _modules.push(mod)
+	
+	mod.id = modId++
 
     return mod
 }
@@ -488,8 +522,10 @@ function addFlexer(dir) {
 
 function getLayoutData() {
 	
-	var o = {}
+	let pages = []
 	
 	for(let i = 0; i < _pages.length; i++)
-		_pages[i].getLayoutInfo(o)
+		pages[i] = _pages[i].getLayoutInfo()
+	
+	return pages
 }

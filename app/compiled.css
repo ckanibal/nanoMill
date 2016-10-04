@@ -18,48 +18,13 @@ html, body {
   color: gainsboro;
   font-family: "Segoe UI", "Trebuchet MS", sans-serif;
   height: 100%;
-  width: 100%; }
+  width: 100%;
+  animation: fade-in 0.5s;
+  -webkit-user-select: none;
+  -webkit-app-region: drag; }
 
 #content {
   position: relative; }
-
-#internal-log {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  max-height: 100%;
-  max-width: 100%;
-  font-family: monospace;
-  color: #c8c8c8;
-  background: #282828;
-  display: none;
-  z-index: 100;
-  padding: 10px; }
-
-#internal-log.visible {
-  display: block; }
-
-#log-entry-list {
-  overflow-y: auto;
-  flex: 1;
-  height: 85%; }
-
-.log-entry {
-  min-height: 14px;
-  border-left: 3px solid grey;
-  padding: 2px 5px;
-  margin: 1px 0; }
-
-.log-entry:hover {
-  background-color: #505050; }
-
-.log-entry.warn {
-  border-left: 3px solid orange; }
-
-.log-entry.err {
-  border-left: 3px solid #d77d32; }
 
 #headbar {
   border-bottom: 1px solid #2d2d2d; }
@@ -127,7 +92,8 @@ html, body {
   .ALE-label:hover {
     background-color: #505050; }
   .ALE-label:active {
-    background-color: steelblue; }
+    background-color: steelblue;
+    color: whitesmoke; }
 
 .ALE-icon-w {
   display: flex;
@@ -138,6 +104,20 @@ html, body {
 
 .icon {
   font-size: 16px; }
+
+@keyframes list-item-in {
+  0% {
+    opacity: 0;
+    transform: translate(-10px, 0); }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0); } }
+
+@keyframes fade-in {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
 
 @font-face {
   font-family: 'icomoon';
@@ -317,15 +297,28 @@ html, body {
   right: 0;
   bottom: 0; }
 
+.flexer:last-child {
+  flex: 1; }
+
 .--NAV-entry {
   color: #b4b4b4;
   cursor: default;
   -webkit-user-select: none;
   user-select: none;
   display: flex;
-  flex-direction: row; }
+  flex-direction: row;
+  animation-fill-mode: both;
+  animation: list-item-in 0.3s ease-out; }
   .--NAV-entry:hover .--NAV-entry-close {
     display: flex; }
+  .--NAV-entry.selected-file {
+    font-style: oblique; }
+  .--NAV-entry .unsaved-mark {
+    display: none; }
+  .--NAV-entry.unsaved .unsaved-mark {
+    display: initial; }
+  .--NAV-entry .ALE-label {
+    padding: 5px 7px; }
 
 .--NAV-entry-close {
   display: none;
@@ -341,7 +334,14 @@ html, body {
   -webkit-user-select: none;
   user-select: none;
   display: flex;
-  flex-direction: row; }
+  flex-direction: row;
+  font-size: 14px;
+  padding: 5px 7px; }
+  .--RESV-entry:hover {
+    background-color: #505050; }
+
+.--RESV-fext {
+  color: grey; }
 
 .ace_qtmill {
   color: #DEDEDE;

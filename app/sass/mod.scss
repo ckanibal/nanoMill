@@ -116,3 +116,7 @@
 	right: 0;
 	bottom: 0;
 }
+
+.flexer:last-child {
+	flex: 1;
+}

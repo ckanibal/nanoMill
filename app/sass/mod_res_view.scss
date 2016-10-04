@@ -2,4 +2,18 @@
 
 .--RESV-entry {
 	@include abstractListEntry();
+	font-size: 14px;
+	padding: 5px $mod-x-padding;
+	
+	&:hover {
+		background-color: $hvr;
+	}
+}
+
+.--RESV-fname {
+	
+}
+
+.--RESV-fext {
+	color: grey;
 }

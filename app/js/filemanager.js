@@ -2,24 +2,37 @@
 var filemanager = new (function() {
 
 	this.resources = []
+	this.resByPaths = {}
 	
-	this.addResource = function(file) {
-		if(this.hasResource(file))
+	this.addResource = function(p, stats) {
+		
+		if(!stats)
+			stats = _fs.statSync(p)
+		
+		if(this.hasResourceOfPath(p))
 			return false
 		
-		this.resources.push(file)
+		let res = {
+			"path": p,
+			stats,
+			"name": path.basename(p),
+			"leaf": path.extname(p)
+		}
 		
-		execHook("onResourceAdded", file)
+		this.resources.push(res)
+		this.resByPaths[path] = res
 		
-		return true
+		execHook("onResourceAdded", res)
+		
+		return res
 	}
 
-	this.hasResource = function(file) {
+	this.hasResourceOfPath = function(p) {
 		let r = this.resources,
 			l = r.length
 			
 		for(var i = 0; i < l; i++)
-			if(r[i] === file)
+			if(r[i].path === p)
 				return true
 		
 		return false

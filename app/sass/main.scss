@@ -6,9 +6,8 @@ reserved z indices
 
 [20-30] Module Head
 
-
+[50] Settings overlay
 */
-
 
 $font-stack: "Segoe UI", "Trebuchet MS", sans-serif;
 
@@ -28,6 +27,9 @@ $font-clr: rgb(180, 180, 180);
 $red: rgb(215, 125, 50);
 $orange: orange;
 $frame-action: steelblue;
+
+// sum of paddings and margin to the first character in .mod-head
+$mod-x-padding: 7px;
 
 @mixin flex-row() {
 	display: flex;
@@ -59,55 +61,13 @@ html, body {
     font-family: $font-stack;
 	height: 100%;
 	width: 100%;
+	animation: fade-in 0.5s;
+	-webkit-user-select: none;
+	-webkit-app-region: drag;
 }
 
 #content {
     position: relative;
-}
-
-#internal-log {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    max-height: 100%;
-    max-width: 100%;
-    font-family: monospace;
-    color: rgb(200, 200, 200);
-    background: $bg-main;
-    display: none;
-    z-index: 100;
-    padding: 10px;
-}
-
-#internal-log.visible {
-    display: block;
-}
-
-#log-entry-list {
-	overflow-y: auto;
-	flex: 1;
-	height: 85%;
-}
-
-.log-entry {
-    min-height: 14px;
-    border-left: 3px solid grey;
-    padding: 2px 5px;
-	margin: 1px 0;
-}
-
-.log-entry:hover {
-    background-color: rgb(80, 80, 80);
-}
-
-.log-entry.warn {
-    border-left: 3px solid $orange;
-}
-
-.log-entry.err {
-    border-left: 3px solid $red;
 }
 
 #headbar {
@@ -230,6 +190,7 @@ html, body {
 	
 	&:active {
 		background-color: $bg-ui-active;
+		color: whitesmoke;
 	}
 	
 	font-family: $font-stack;
@@ -244,4 +205,26 @@ html, body {
 
 .icon {
 	font-size: 16px;
+}
+
+$list-in-dur: 0.3s;
+
+@keyframes list-item-in {
+	0% {
+		opacity: 0;
+		transform: translate(-10px, 0)
+	}
+	100% {
+		opacity: 1;
+		transform: translate(0, 0)
+	}
+}
+
+@keyframes fade-in {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
 }

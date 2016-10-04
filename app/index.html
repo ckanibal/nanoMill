@@ -13,18 +13,11 @@
     <div class="hb-btn" id="openf">Open</div>
     <div class="hb-btn" id="savef">Save</div>
     <div class="flex-fill"></div>
-    <div class="hb-btn icon-console icon" id="log-icon"></div>
 </div>
 
 <div id="content" class="flex-row flex-fill">
 
 <div id="mod-wrapper" class="flex-fill flex-row">
-</div>
-
-<div id="internal-log" class="flex-col">
-    <div class="flex-row"></div>
-
-    <div id="log-entry-list" class="flex-fill"></div>
 </div>
 
 <div class="mod-con flex-col flex-fill draft">
@@ -58,6 +51,9 @@
 <script>
 const _fs = require('fs')
 const path = require('path')
+const {remote} = require('electron')
+var {__appDir, config, printLog, inDevMode, setConfig } = remote.getGlobal("communicator")
+
 </script>
 
 <script type="text/javascript" src="external/ace/ace.js"></script>
@@ -74,9 +70,7 @@ const path = require('path')
 
 <script type="text/javascript" src="js/filemanager.js"></script>
 <script type="text/javascript" src="js/initialize.js"></script>
-<!--
-<script type="text/javascript" src="js/webchan_serialize.js"></script>
--->
+
 <script type="text/javascript" src="external/sass.js"></script>
 <script type="text/javascript" src="external/sass.worker.js"></script>
 <script type="text/javascript" src="js/sass_processor.js"></script>

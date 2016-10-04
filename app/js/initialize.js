@@ -1,38 +1,68 @@
 
 
-var _hookList = []
+var _hookList = {}
 
-function hook(name, fn) {
+function hook(name, fn, modId) {
+	
+	if(!modId && modId !== 0)
+		modId = -1
+	
     if(!_hookList[name])
         _hookList[name] = []
 
-    _hookList[name].push(fn)
+    _hookList[name].push({ fn, modId })
 }
 
 function execHook(name, ...args) {
     for(var fnName in _hookList[name])
-        if(_hookList[name][fnName](...args))
+        if(_hookList[name][fnName].fn(...args))
             return
 }
 
-var
-    INFO = 0,
-    ERR = 1,
-    WARN = 2
+function cleanUpHooksOfMdl(modId) {
+	for(let hookName in _hookList) {
+		let a = []
+		let fnList = _hookList[hookName]
+		for(let i = 0; i < fnList.length; i++)
+			if(fnList[i].modId !== modId)
+				a.push(fnList[i])
+		
+		_hookList[hookName] = a
+	}
+}
 
-function log(msg, type) {
-    var el = $("<div class='log-entry'></div>")[0]
+var log, warn, error
 
-    if(type === 2)
-        $(el).addClass("warn")
-    else if(type === 1)
-        $(el).addClass("err")
-    else
-        $(el).addClass("info")
+function _delegateLog() {
+	log = printLog
+	warn = s => printLog(s)
+	error = s => printLog(s)
+	window.onerror = (msg, file, line) => error(msg + "\n" + file + " in line: " + line)
+}
 
-    $(el).html(msg)
+if(inDevMode) {
+	log = console.log.bind(console)
+	warn = console.warn.bind(console)
+	error = console.error.bind(console)
+}
+else 
+	_delegateLog()
+	_delegateLog()
 
-    $("#log-entry-list").append(el)
+var _prf = {
+	keys: {},
+	
+	start: function(key) {
+		this.keys[key] = (new Date()).getTime()
+	},
+	stop: function(key, fprint) {
+		var t = (new Date()).getTime() - this.keys[key]
+		
+		if(fprint)
+			log("Profiled [" + key + "] : " + t + "ms")
+		
+		return t
+	}
 }
 
 var currentEditorMod
@@ -45,12 +75,11 @@ var mouseX = 0, mouseY = 0
 var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 
 {
-	
-	log("initialize...", INFO)
-	
-	log("Node version: " + process.versions.node, INFO)
-	log("Chromium version: " + process.versions.chrome, INFO)
-	log("Electron version: " + process.versions.electron, INFO)
+	log("initialize...")	
+	log("Node version: " + process.versions.node)
+	log("Chromium version: " + process.versions.chrome)
+	log("Electron version: " + process.versions.electron)
+	log("Arch: " + process.arch)
 
     $(document).on('mousedown', '.flex-splitter', function(e) {
         dragSplitterTarget = this
@@ -107,70 +136,86 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
         dragSplitterTarget = false
     })
 
-    $("#log-icon").click(function() {
-        $("#internal-log").toggleClass("visible")
-    })
-
     $("#openf").click(function() {
 
 		pickFile(function(e) {
 			let files = this.files
 			
-			for(var i = 0; i < files.length; i++)
-				if(filemanager.addResource(files[i]))
-					openFile(files[i])
+			for(let i = 0; i < files.length; i++)
+				receiveLocalResource(files[i].path)
 		})
     })
+	
+	document.ondragover = document.ondrop = (e) => {
+		e.preventDefault()
+	}
 
+	document.body.ondrop = (e) => {
+		let files = e.dataTransfer.files
+		
+		for(let i = 0; i < files.length; i++)
+			receiveLocalResource(files[i].path)
+		
+		e.preventDefault()
+	}
+	
     $("#savef").click(function() {
 		
         if(!currentEditorMod)
             return
 
     })
-
-
-    // default setup
-    var page = addPage(),
-        subFlex = addFlexer(DIR_COL)
-
-    $("#mod-wrapper").append(page.root)
-
-    page.registerChild(subFlex)
-    subFlex.registerChild(addModule("resview"))
-    subFlex.registerChild(addModule("navigator"))
-
-    page.registerChild(addModule("editor"))
 	
-	window.addEventListener("beforeunload", saveConfig)
-
-    log("end of initialize", INFO)
-}
-
-var _config = {}
-
-function saveConfig() {
-
-	_config.session = getSessionData()
-
-	_fs.writeFile(path.join(__dirname, 'config.json'), JSON.stringify(_config), 'utf-8', (err) => {
-		if(err)
-			throw err
+	try {
+		if(!config)
+			throw "No config given"
 		
-		log("Configurations saved.", INFO)
-	})
-}
-
-function getRawConfig() {
-
-}
-
-function getSessionData() {
-
-    return {
-		resources: getResourcesData(),
-		layout: getLayoutData(),
+		let a = []
+		let r = config.resources
+		
+		for(let i = 0; i < r.length; i++)
+			if(r[i]) {
+				let p = r[i]
+				_fs.stat(r[i], (err, stat) => {
+					if(err)
+						error(`Failed to reload resource (${err})\n${p}`)
+					else
+						filemanager.addResource(p, stat)
+				})
+			}
+			
+		config.resources = []
+		
+		let handleLayoutInput = function(data, par) {
+		}
+		/*/
+		for(let i = 0; i < config.pages.length; i++)
+			handleLayoutInput(config.pages)
+		*/
 	}
+	catch(e) {
+		error(`Failed to load config (${e})`)
+		
+		var page = addPage(),
+			subFlex = addFlexer(DIR_COL)
+
+		$("#mod-wrapper").append(page.root)
+
+		page.registerChild(subFlex)
+		subFlex.registerChild(addModule("resview"))
+		subFlex.registerChild(addModule("navigator"))
+
+		page.registerChild(addModule("editor"))
+		
+		page.root.style.animation = "fade-in 0.3s"
+	}
+	
+	window.addEventListener("beforeunload", _ => {
+		config.resources = getResourcesData()
+		config.layout = getLayoutData()
+	})
+
+    log("end of initialize")
 }
 
 function pickFile(callback) {
@@ -180,6 +225,28 @@ function pickFile(callback) {
 	el.click()
 }
 
-function openFile(file) {
-	execHook("onFileOpen", file)
+function receiveLocalResource(p) {
+	
+	let name = path.basename(p),
+		leaf = path.extname(p)
+	
+	if(name.match(/^c4group/gi))
+		setConfig("c4group", p)
+
+	
+	let res = filemanager.addResource(p)
+	if(res)
+		execHook("onFileOpen", res)
+}
+
+function openFile(res) {
+	execHook("onFileOpen", res)
+}
+
+function openFiles(paths) {
+	for(var i = 0; i < files.length; i++) {
+		let res = filemanager.addResource(paths)
+		if(res)
+			execHook("onFileOpen", res)
+	}
 }

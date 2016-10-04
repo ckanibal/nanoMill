@@ -6,7 +6,27 @@
 	&:hover .--NAV-entry-close {
 		display: flex;
 	}
+	
+	animation-fill-mode: both;
+	animation: list-item-in $list-in-dur ease-out;
+	
+	&.selected-file {
+		font-style: oblique;
+	}
+	
+	.unsaved-mark {
+		display: none;
+	}
+	
+	&.unsaved .unsaved-mark {
+		display: initial;
+	}
+	
+	.ALE-label {
+		padding: 5px $mod-x-padding;
+	}
 }
+
 
 .--NAV-entry-close {
 	display: none;

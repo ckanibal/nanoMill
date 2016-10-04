@@ -1,7 +1,7 @@
 const {app, BrowserWindow} = require('electron')
 const _fs = require('fs')
 
-var output = _fs.createWriteStream(`${__dirname}/error.log`, {flags: "w", })
+var output = _fs.createWriteStream(`${app.getPath('userData')}/error.log`, {flags: "w", })
 
 output.write(`Detected platform: ${process.platform}\n`)
 
@@ -9,61 +9,99 @@ process.on('uncaughtException', function (err) {
     output.write(`ERR: ${err}\n`)
 })
 
+var defaultConfigVal = {
+	
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
-var wininfo = {}
+var config = {}
 function createWindow () {
-
+	
+	communicator = {
+		__appDir: app.getPath('userData'),
+		printLog: (str) => {
+			output.write(`${str}\n`)
+		},
+		setConfig: (key, value) => {
+			config.config[key] = value
+		}
+		getConfig: (key) => {
+			config.config[key] || defaultConfigVal(key)
+		}
+	}
+	
 	// Make sure to have valid values
 	try {
-	  
-		let str = _fs.readFileSync(`${__dirname}/wininfo.json`)
+		
+		let str = _fs.readFileSync(`${app.getPath('userData')}/config.json`)
 
-		wininfo = JSON.parse(str)
-		let opts = wininfo.opts
+		if(!str)
+			"Cannot read config file"
+		
+		config = JSON.parse(str)
 
-		if((typeof opts.x === "number" && typeof opts.y !== "number") ||
-			(typeof opts.x !== "number" && typeof opts.y === "number"))
-		  throw `Invalid window position (${JSON.stringify(opts)})`
+		if(!config)
+			throw "Failed to JSON.parse config"
+		
+		if((typeof config.window.x === "number" && typeof config.window.y !== "number") ||
+			(typeof config.window.x !== "number" && typeof config.window.y === "number")) {
+			config.window.x = undefined
+			config.window.y = undefined
+		}
 
-		wininfo.opts.width = parseInt(opts.width) || 800
-		wininfo.opts.height = parseInt(opts.height) || 600
+		config.window.width = parseInt(config.window.width) || 800
+		config.window.height = parseInt(config.window.height) || 600
 	}
 	catch(e) {
-		output.write(`Default window setup will be used due to:\n(${e})\n`)
-		wininfo.opts = {width: 800, height: 600, frame: true}
-		wininfo.enableDevMode = false
+		output.write(`Failed to load config:\n(${e})\n`)
+		config.window = {width: 800, height: 600, frame: true}
+		config.inDevMode = false
+		config.config = {
+			resources: [],
+			layout: []
+		}
 	}
 
-	wininfo.opts.icon = `${__dirname}/the-mill.ico`
+	config.window.icon = `${__dirname}/the-mill.ico`
+	config.window.show = false
+	config.window.backgroundColor = "#282828"
+	
+	communicator.config = config.config
+	communicator.inDevMode = config.inDevMode
+	
+	global.communicator = communicator
 	
 	// Create the browser window.
-	win = new BrowserWindow(wininfo.opts)
+	win = new BrowserWindow(config.window)
 	
-	if(!wininfo.enableDevMode)
+	win.webContents.on('did-finish-load', _ => {
+		win.show();
+	})
+	
+	if(!config.inDevMode)
 		win.setMenu(null)
 	
-	if(wininfo.opts.maximized)
+	if(config.window.maximized)
 		win.maximize()
 
 	// and load the index.html of the app.
 	win.loadURL(`file://${__dirname}/index.html`)
 
 	// Open the DevTools.
-	if(wininfo.enableDevMode)
+	if(config.inDevMode)
 		win.webContents.openDevTools()
 
 	// Emitted when the window is closed.
   
 	win.on("close", () => {
 		let bounds = win.getBounds()
-		wininfo.opts.width = bounds.width
-		wininfo.opts.height = bounds.height
-		wininfo.opts.x = bounds.x
-		wininfo.opts.y = bounds.y
-		wininfo.opts.maximized = win.isMaximized()
+		config.window.width = bounds.width
+		config.window.height = bounds.height
+		config.window.x = bounds.x
+		config.window.y = bounds.y
+		config.window.maximized = win.isMaximized()
 	})
   
 	win.on('closed', () => {
@@ -95,6 +133,6 @@ app.on('activate', () => {
 })
 
 app.on('before-quit', () => {
-	_fs.writeFileSync(`${__dirname}/wininfo.json`, JSON.stringify(wininfo))
+	_fs.writeFileSync(`${app.getPath('userData')}/config.json`, JSON.stringify(config))
 	output.end()
 })
