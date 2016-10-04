@@ -26,9 +26,9 @@ function createWindow () {
 		},
 		setConfig: (key, value) => {
 			config.config[key] = value
-		}
+		},
 		getConfig: (key) => {
-			config.config[key] || defaultConfigVal(key)
+			return config.config[key] || defaultConfigVal[key]
 		}
 	}
 	

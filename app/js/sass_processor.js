@@ -55,7 +55,10 @@ function processSassFiles(defs) {
 			window._failedSassString = whole
 		}
 		else {
-			$(document.head).append("<style type='text/css'>"+result.text+"</style>")
+			if(document.getElementById("compiled_style"))
+				document.getElementById("compiled_style").innerHTML = result.text
+			else
+				$(document.head).append("<style id='compiled_style' type='text/css'>"+result.text+"</style>")
 			
 			_fs.writeFile(path.join(__dirname, 'compiled.css'), result.text, 'utf-8', (err) => {
 				if(err)
@@ -68,6 +71,9 @@ function processSassFiles(defs) {
 }
 
 processSassFiles(sass_defs)
+var reloadCss = _ => {
+	processSassFiles(sass_defs)
+}
 
 function modSassString(str, mod) {
     // specific icomoon-generated-content modifier

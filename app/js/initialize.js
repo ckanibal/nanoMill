@@ -35,8 +35,8 @@ var log, warn, error
 
 function _delegateLog() {
 	log = printLog
-	warn = s => printLog(s)
-	error = s => printLog(s)
+	warn = s => printLog("WARN: " + s)
+	error = s => printLog("ERR: " + s)
 	window.onerror = (msg, file, line) => error(msg + "\n" + file + " in line: " + line)
 }
 
@@ -46,7 +46,6 @@ if(inDevMode) {
 	error = console.error.bind(console)
 }
 else 
-	_delegateLog()
 	_delegateLog()
 
 var _prf = {
@@ -63,6 +62,31 @@ var _prf = {
 		
 		return t
 	}
+}
+
+function createDefaultLayout(byUser) {
+	var page = addPage(),
+		subFlex = addFlexer(DIR_COL)
+
+	$("#mod-wrapper").append(page.root)
+
+	page.registerChild(subFlex)
+	subFlex.registerChild(addModule("resview"))
+	subFlex.registerChild(addModule("navigator"))
+
+	page.registerChild(addModule("editor"))
+	page.root.style.animation = "fade-in 0.3s"
+	
+	warn("Default layout used (Forced by user: " + (byUser || "false") + ")")
+}
+
+function resetLayout() {
+	_pages = []
+	_modules = []
+	_flexers = []
+	$("#mod-wrapper").html("")
+	
+	createDefaultLayout(...arguments)
 }
 
 var currentEditorMod
@@ -163,8 +187,24 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		
         if(!currentEditorMod)
             return
-
     })
+	
+	$("#c4GroupPath").html(getConfig("c4group") || "not set")
+	
+	document.getElementById("c4GroupPicker").onchange = function(e) {
+		let p = this.files[0].path
+		
+		if(path.basename(p).match(/^c4group/gi)) {
+			setConfig("c4group", p)
+			document.getElementById("c4GroupPath").innerHTML = p
+		}
+	}
+	
+	document.getElementById("sett-page-toggle").onclick = function() {
+		let $el = $('#settings')
+		$el[0].style.display = ""
+		$el.toggleClass('visible')
+	}
 	
 	try {
 		if(!config)
@@ -186,33 +226,58 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 			
 		config.resources = []
 		
-		let handleLayoutInput = function(data, par) {
+		let pages = getConfig("pages")
+		
+		if(pages && pages.length) {
+			let handleLayoutInput = function(data, par) {
+				switch(data.alias) {
+					case "Page":
+					case "page":
+						let page = addPage()
+						$("#mod-wrapper").append(page.root)
+						
+						for(let i = 0; i < data.chldrn.length; i++)		
+							handleLayoutInput(data.chldrn[i], page)
+					break;
+					case "Flexer":
+					case "flexer":
+						let flexer = addFlexer(data.dir)
+						
+						par.registerChild(flexer)
+						flexer.root.style.width = data.w
+						flexer.root.style.height = data.h
+						
+						for(let i = 0; i < data.chldrn.length; i++)
+							handleLayoutInput(data.chldrn[i], flexer)
+					break;
+					case "resview":
+					case "editor":
+					case "intro":
+					case "navigator":
+						let mod = addModule(data.alias)
+						par.registerChild(mod)
+						mod.root.style.width = data.w
+						mod.root.style.height = data.h
+					break;
+				}
+			}
+			
+			for(let i = 0; i < config.pages.length; i++)		
+				handleLayoutInput(config.pages[i])
 		}
-		/*/
-		for(let i = 0; i < config.pages.length; i++)
-			handleLayoutInput(config.pages)
-		*/
+		else
+			createDefaultLayout()
+			
 	}
 	catch(e) {
 		error(`Failed to load config (${e})`)
 		
-		var page = addPage(),
-			subFlex = addFlexer(DIR_COL)
-
-		$("#mod-wrapper").append(page.root)
-
-		page.registerChild(subFlex)
-		subFlex.registerChild(addModule("resview"))
-		subFlex.registerChild(addModule("navigator"))
-
-		page.registerChild(addModule("editor"))
-		
-		page.root.style.animation = "fade-in 0.3s"
+		resetLayout()
 	}
 	
 	window.addEventListener("beforeunload", _ => {
-		config.resources = getResourcesData()
-		config.layout = getLayoutData()
+		setConfig("pages", getLayoutData())
+		setConfig("resources", getResourcesData())
 	})
 
     log("end of initialize")

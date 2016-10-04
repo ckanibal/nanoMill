@@ -13,9 +13,23 @@
     <div class="hb-btn" id="openf">Open</div>
     <div class="hb-btn" id="savef">Save</div>
     <div class="flex-fill"></div>
+	<div class="hb-btn icon-hamburger-small" id="sett-page-toggle"></div>
 </div>
 
 <div id="content" class="flex-row flex-fill">
+<div id="settings" class="flex-fill flex-col" style="display: none">
+	<p>
+		<label for="c4GroupPicker">Pick c4group</label>
+		<span> or drop the program onto the window.</span>
+	</p>
+	<p class='sett-desc'>Current path:</p>
+	<p class='sett-url' id='c4GroupPath'></p>
+	<input id="c4GroupPicker" type="file" style="display: none" />
+	<hr>
+	<p>
+		If the layout is messed up due bad programming, you can <label onclick='resetLayout(true)'>reset</label> it.
+	</p>
+</div>
 
 <div id="mod-wrapper" class="flex-fill flex-row">
 </div>
@@ -52,7 +66,7 @@
 const _fs = require('fs')
 const path = require('path')
 const {remote} = require('electron')
-var {__appDir, config, printLog, inDevMode, setConfig } = remote.getGlobal("communicator")
+var {__appDir, config, printLog, inDevMode, setConfig, getConfig } = remote.getGlobal("communicator")
 
 </script>
 

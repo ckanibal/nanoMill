@@ -66,7 +66,9 @@ class Layout_Page extends Layout_Element {
 	}
 	
 	getLayoutInfo() {
-		return this.flexer.getLayoutInfo(arguments)
+		let info = this.flexer.getLayoutInfo(...arguments)
+		info.alias = "Page"
+		return info
 	}
 }
 
@@ -198,10 +200,12 @@ class Layout_Flex extends Layout_Element {
         if($(prev).hasClass("flex-splitter"))
             $(prev).remove()
 		
-		if(this.dir === DIR_ROW)
-			$(this.root.lastElementChild).addClass("flex-fill")[0].style.width = ""
-		else
-			$(this.root.lastElementChild).addClass("flex-fill")[0].style.height = ""
+		if(this.root.lastElementChild) {
+			if(this.dir === DIR_ROW)
+				$(this.root.lastElementChild).addClass("flex-fill")[0].style.width = ""
+			else
+				$(this.root.lastElementChild).addClass("flex-fill")[0].style.height = ""
+		}
     }
 	
 	getLayoutInfo() {
@@ -384,7 +388,7 @@ class Layout_Module extends Layout_Element {
 	
 	isSub() { return false }
 	
-	getLayoutInfo() {log(this.constructor.name)
+	getLayoutInfo() {
 		return { alias: this.constructor.def.alias, w: this.root.style.width, h: this.root.style.height }
 	}
 }

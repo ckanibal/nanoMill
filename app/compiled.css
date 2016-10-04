@@ -6,7 +6,7 @@ reserved z indices
 
 [20-30] Module Head
 
-
+[50] Settings overlay
 */
 .draft {
   display: none !important; }
@@ -24,7 +24,8 @@ html, body {
   -webkit-app-region: drag; }
 
 #content {
-  position: relative; }
+  position: relative;
+  overflow: hidden; }
 
 #headbar {
   border-bottom: 1px solid #2d2d2d; }
@@ -45,6 +46,46 @@ html, body {
   width: 16px;
   margin-left: 0;
   margin-right: 0; }
+
+#settings {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  max-height: 100%;
+  padding: 20px 50px;
+  backface-visibility: hidden;
+  background: #282828;
+  z-index: 50;
+  animation: roll-out-top 0.3s linear 0s 1 alternate both; }
+  #settings.visible {
+    display: flex;
+    animation: roll-in-right 0.3s; }
+  #settings label {
+    color: steelblue;
+    cursor: pointer; }
+    #settings label:hover {
+      color: deepskyblue; }
+  #settings hr {
+    margin: 65px 250px;
+    border: none;
+    border-top: 1px solid #616161; }
+
+.preload #settings {
+  display: none; }
+
+.sett-desc {
+  margin: 5px 0;
+  font-size: 12px;
+  color: grey; }
+
+.sett-url {
+  padding: 10px 15px;
+  margin: 10px 0;
+  background-color: #234861;
+  color: #7dc5de;
+  -webkit-user-select: text; }
 
 ::-webkit-scrollbar {
   background-color: transparent;
@@ -104,6 +145,26 @@ html, body {
 
 .icon {
   font-size: 16px; }
+
+@keyframes roll-in-right {
+  0% {
+    opacity: 0;
+    transform: translate(10px, 0); }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0); } }
+
+@keyframes roll-out-top {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+    display: flex; }
+  99.9% {
+    display: flex; }
+  100% {
+    opacity: 0;
+    transform: translate(0, -10px);
+    display: none; } }
 
 @keyframes list-item-in {
   0% {
