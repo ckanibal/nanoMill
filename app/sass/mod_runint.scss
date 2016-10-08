@@ -1,0 +1,53 @@
+
+.--RNINT-wrap {
+	@include absoluteFill();
+}
+
+.--RNINT-list {
+	overflow: auto;
+}
+
+.--RNINT-cmdline {
+	&::before {
+		content: ">";
+		color: deepskyblue;
+		margin-right: 5px;
+		margin-left: 5px;
+		margin-top: 3px;
+		font-family: monospace;
+		text-shadow: 0 1px 0 black;
+	}
+	
+	@include flex-row;
+	border-top: rgb(120, 120, 120);
+	margin-bottom: 10px;
+}
+
+.--RNINT-cmdinput {
+	-webkit-appearance: none;
+	border: none;
+	background: none;
+	outline: none;
+	color: $font-clr;
+	text-shadow: 1px 0px 0px steelblue;
+	font-size: 14px;
+	
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+	
+	font-family: $monospace;
+	flex: 1;
+}
+
+.--RNINT-entry {
+	font-size: 12px;
+    padding: 5px 0px;
+    border-bottom: 1px solid rgb(80, 80, 80);
+    margin: 0 10px;
+    font-family: $monospace;
+    line-height: 1.2em;
+    -webkit-user-select: text;
+    cursor: text;
+	color: rgb(160, 160, 160);
+}

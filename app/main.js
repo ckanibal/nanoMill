@@ -10,7 +10,8 @@ process.on('uncaughtException', function (err) {
 })
 
 var defaultConfigVal = {
-	
+	author: "Twonky",
+	ocversion: "7,0",
 }
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -34,7 +35,6 @@ function createWindow () {
 	
 	// Make sure to have valid values
 	try {
-		
 		let str = _fs.readFileSync(`${app.getPath('userData')}/config.json`)
 
 		if(!str)
@@ -77,7 +77,7 @@ function createWindow () {
 	win = new BrowserWindow(config.window)
 	
 	win.webContents.on('did-finish-load', _ => {
-		win.show();
+		win.show()
 	})
 	
 	if(!config.inDevMode)

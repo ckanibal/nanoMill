@@ -7,9 +7,14 @@ reserved z indices
 [20-30] Module Head
 
 [50] Settings overlay
+
+[200] Modal
 */
 
-$font-stack: "Segoe UI", "Trebuchet MS", sans-serif;
+
+
+
+$font-stack: $main-font, sans-serif;
 
 $bg-main: rgb(40, 40, 40);
 
@@ -72,6 +77,7 @@ html, body {
 	animation: fade-in 0.5s;
 	-webkit-user-select: none;
 	-webkit-app-region: drag;
+	cursor: default;
 }
 
 #content {
@@ -80,7 +86,6 @@ html, body {
 }
 
 #headbar {
-	border-bottom: 1px solid rgb(45, 45, 45);
 }
 
 .hb-btn {
@@ -104,20 +109,8 @@ html, body {
 	margin-right: 0;
 }
 
-#settings {
-	@include absoluteFill();
-	max-height: 100%;
-	padding: 20px 50px;
-	
-	backface-visibility: hidden;
+.modal-style {
 	background: $bg-main;
-	z-index: 50;
-	animation: roll-out-top 0.3s linear 0s 1 alternate both;
-	
-	&.visible {
-		display: flex;
-		animation: roll-in-right 0.3s;
-	}
 	
 	label {
 		color: steelblue;
@@ -133,24 +126,83 @@ html, body {
 		border: none;
 		border-top: 1px solid #616161;	
 	}
+	
+	.desc {
+		margin: 5px 0;
+		font-size: 12px;
+		color: grey;
+	}
+
+	.url {
+		padding: 10px 15px;
+		margin: 10px 0;
+		background-color: #234861;
+		color: #7dc5de;
+		-webkit-user-select: text;
+		white-space: nowrap;                   
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	
+	input[type=text] {
+		-webkit-appearance: none;
+		border: none;
+		background: none;
+		outline: none;
+		color: $font-clr;
+		text-shadow: 1px 0px 0px steelblue;
+		font-size: 1em;
+		padding: 0;
+		box-sizing: border-box;
+		margin-bottom: -1px;
+		margin-top: 0;
+		
+		&:focus,
+		&:hover {
+			border-bottom: 1px solid grey;
+		}
+		
+		&.small {
+			max-width: 100px;
+		}
+	}
 }
 
-.preload #settings {
+input,
+textarea {
+    color: $bg-ui-active;
+    text-shadow: 1px 0px 0px black;
+    -webkit-text-fill-color: transparent;
+	cursor: text;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+    color: #ccc;
+    text-shadow: none;
+    -webkit-text-fill-color: initial;
+	cursor: text;
+}
+
+::selection {
+	background-color: steelblue;
+	color: whitesmoke !important;
+}
+
+#settings {
+	@include absoluteFill();
+	max-height: 100%;
+	padding: 20px 50px;
+	
+	backface-visibility: hidden;
+	z-index: 50;
 	display: none;
-}
-
-.sett-desc {
-	margin: 5px 0;
-	font-size: 12px;
-	color: grey;
-}
-
-.sett-url {
-	padding: 10px 15px;
-	margin: 10px 0;
-	background-color: #234861;
-	color: #7dc5de;
-	-webkit-user-select: text;
+	animation: roll-out-top 0.3s linear 0s 1 alternate both;
+	
+	&.visible {
+		display: flex;
+		animation: roll-in-right 0.3s;
+	}
 }
 
 ::-webkit-scrollbar,
@@ -282,13 +334,31 @@ html, body {
 		transform: translate(0, 0);
 		display: flex;
 	}
-	99.9% {
+	99% {
 		display: flex;
+		opacity: 0;
+		transform: translate(0, -10px);
 	}
 	100% {
 		opacity: 0;
 		transform: translate(0, -10px);
 		display: none;
+	}
+}
+
+@keyframes roll-in-bottom {
+	0% {
+		opacity: 0;
+		transform: translate(0, 10px);
+		display: none;
+	}
+	1% {
+		display: flex;
+	}
+	100% {
+		opacity: 1;
+		transform: translate(0, 0);
+		display: flex;
 	}
 }
 
@@ -312,5 +382,35 @@ $list-in-dur: 0.3s;
 	}
 	100% {
 		opacity: 1;
+	}
+}
+
+#modal {
+	z-index: 200;
+	padding: 25px 50px;
+	@include absoluteFill();
+}
+
+.modal-title {
+	font-size: 32px;
+	text-shadow: 0 1px 0 black;
+	text-align: center;
+	cursor: default;
+	font-weight: 100;
+	margin-bottom: 50px;
+}
+
+.modal-close {
+	position: absolute;
+	line-height: 48px;
+	font-size: 48px;
+	align-self: flex-end;
+	
+	&:hover {
+		background-color: rgb(80, 80, 80);
+	}
+	
+	&:active {
+		background-color: $bg-ui-active;
 	}
 }

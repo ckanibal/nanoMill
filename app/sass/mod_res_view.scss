@@ -8,6 +8,20 @@
 	&:hover {
 		background-color: $hvr;
 	}
+	
+	&:focus {
+		outline: none;
+	}
+	
+	&:focus,
+	&.focussed {
+		background-color: $bg-ui-active;
+		color: whitesmoke;
+		
+		.--RESV-fext {
+			color: whitesmoke;
+		}
+	}
 }
 
 .--RESV-fname {
@@ -16,4 +30,15 @@
 
 .--RESV-fext {
 	color: grey;
+}
+
+.--RESV-temp-entry {
+	font-size: 18px;
+	padding: 5px 8px;
+	margin: 5px 0;
+	cursor: pointer;
+	
+	&:hover {
+		background-color: $hvr;
+	}
 }

@@ -58,6 +58,21 @@ class EditorView extends Layout_Deck {
                 mod.setup(file, text, "text")
                 this.showChild(this.getChildIndex(mod))
             break
+			case ".glsl":
+                mod = addModule("texteditor")
+                this.registerChild(mod)
+                mod.setup(file, text, "glsl")
+                this.showChild(this.getChildIndex(mod))
+            break
+			case ".material":
+                mod = addModule("texteditor")
+                this.registerChild(mod)
+                mod.setup(file, text, "text")
+                this.showChild(this.getChildIndex(mod))
+            break
+			
+			default:
+			return
         }
 		
 		file.editor = this
@@ -95,6 +110,10 @@ class EditorView extends Layout_Deck {
 		this.showChild(idx)
 		this.shownFile = file
 	}
+	
+	onChildShow(idx) {
+		setFocussedEditor(this.children[idx])
+	}
 }
 
 EditorView.def = {
@@ -104,3 +123,13 @@ EditorView.def = {
 }
 
 registerModule(EditorView.def)
+
+var _focussedEditor
+
+function setFocussedEditor() {
+	
+}
+
+function getFocussedEditor() {
+	
+}

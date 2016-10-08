@@ -29,7 +29,9 @@ class TextEditor extends Layout_SubModule {
             enableBasicAutocompletion: true,
             enableSnippets: true,
             enableLiveAutocompletion: true,
-            wrapBehavioursEnabled: true
+            wrapBehavioursEnabled: true,
+			fontFamily: "SpaceMono",
+			fontSize: "11px"
         })
 
         editor.getSession().setUseWrapMode(true)

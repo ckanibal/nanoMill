@@ -1,0 +1,50 @@
+
+$main-font: "Roboto";
+$monospace: "SpaceMono";
+
+@font-face {
+    font-family: $main-font;
+    src: url("sass/fonts/Roboto-Regular.ttf");
+}
+@font-face {
+    font-family: $main-font;
+    src: url("sass/fonts/Roboto-Thin.ttf");
+    font-weight: 100;
+}
+@font-face {
+    font-family: $main-font;
+    src: url("sass/fonts/Roboto-Bold.ttf");
+    font-weight: bold;
+}
+@font-face {
+    font-family: $main-font;
+    src: url("sass/fonts/Roboto-Italic.ttf");
+    font-style: italic;
+}
+@font-face {
+    font-family: $main-font;
+    src: url("sass/fonts/Roboto-BoldItalic.ttf");
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: $monospace;
+    src: url("sass/fonts/SpaceMono-Regular.ttf");
+}
+@font-face {
+    font-family: $monospace;
+    src: url("sass/fonts/SpaceMono-Bold.ttf");
+    font-weight: bold;
+}
+@font-face {
+    font-family: $monospace;
+    src: url("sass/fonts/SpaceMono-Italic.ttf");
+    font-style: italic;
+}
+@font-face {
+    font-family: $monospace;
+    src: url("sass/fonts/SpaceMono-BoldItalic.ttf");
+    font-weight: bold;
+    font-style: italic;
+}

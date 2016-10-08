@@ -1,0 +1,6 @@
+{
+	"name": "Particle.ocd",
+	"input": "title",
+	"required": "Particles.txt",
+	"optional": "Graphics.png"
+}

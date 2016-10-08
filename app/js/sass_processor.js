@@ -1,5 +1,8 @@
 var sass_defs = [
     {
+        src: "sass/fonts.scss"
+    },
+	{
         src: "sass/main.scss"
     },
     {
@@ -23,6 +26,9 @@ var sass_defs = [
     },
     {
         src: "sass/mod_ace_theme.scss"
+    },
+    {
+        src: "sass/mod_runint.scss"
     }
 ]
 
@@ -51,7 +57,8 @@ function processSassFiles(defs) {
 	
 	Sass.compile(whole, (result) => {
 		if(result.message) {
-			error("Sass error: " + result.message)
+			
+			error(`Sass compilation error: ${result.message}\n${result.formatted}\n`)
 			window._failedSassString = whole
 		}
 		else {

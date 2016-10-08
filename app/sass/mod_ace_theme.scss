@@ -1,13 +1,21 @@
+@keyframes bracket {
+	0% {
+		transform: scale(0.8);
+	}
+	50% {
+		transform: scale(1.2);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
 .ace_qtmill {
 
 	color: #DEDEDE;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	left: 0;
+	@include absoluteFill();
 	max-width: 100%;
-	
+	font-variant-ligatures: none;
 	
 	.ace_gutter {
 		background: rgb(45, 45, 45);
@@ -131,6 +139,7 @@
 	.ace_marker-layer .ace_bracket {
 		margin: -1px 0 0 -1px;
 		border: 1px solid rgb(192, 192, 192);
+		animation: bracket 0.2s;
 	}
 	
 	.ace_marker-layer .ace_active-line {
@@ -149,9 +158,9 @@
 	}
 	
 	.ace_marker-layer .ace_selected-word {
-		background: rgb(250, 250, 255);
-		border: 1px solid rgb(200, 200, 250);
-		color: rgb(40, 40, 40);
+		background: #141414;
+		border: none;
+		animation: bracket 0.2s;
 	}
 	
 	.ace_storage,

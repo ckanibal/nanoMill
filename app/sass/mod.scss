@@ -3,6 +3,11 @@
 	background-color: $frame-action;
 }
 
+.mod-con {
+	min-height: 20px;
+	min-width: 50px;
+}
+
 .mod-head {
 	border-bottom: 1px solid $tb-brdr;
 	background-color: $tb-bg;
@@ -117,6 +122,15 @@
 	bottom: 0;
 }
 
+.mod-con:last-child,
 .flexer:last-child {
 	flex: 1;
+}
+
+.flex-col .mod-con:last-child {
+	height: auto !important;
+}
+
+.flex-row .mod-con:last-child {
+	width: auto !important;
 }

@@ -8,7 +8,11 @@
 	
 </head>
 <body class="flex-col">
-
+<div id="modal" class="flex-col modal-style" style="display: none">
+	<div class="modal-title">you should'nt see this</div>
+	<div class="modal-close icon-x-s" onclick="hideModal()"></div>
+	<div class="modal-content flex-fill"></div>
+</div>
 <div id="headbar" class="flex-row">
     <div class="hb-btn" id="openf">Open</div>
     <div class="hb-btn" id="savef">Save</div>
@@ -17,24 +21,33 @@
 </div>
 
 <div id="content" class="flex-row flex-fill">
-<div id="settings" class="flex-fill flex-col" style="display: none">
+<div id="settings" class="flex-fill flex-col modal-style" style="display: none">
+	<p class='desc'>Autofill info</p>
+	<p>Author: <span><input id="author-input" class="small" type="text"/></span><br>
+	OC-Version: <span><input id="version-input" class="small" type="text"/></span></p>
 	<p>
 		<label for="c4GroupPicker">Pick c4group</label>
 		<span> or drop the program onto the window.</span>
 	</p>
-	<p class='sett-desc'>Current path:</p>
-	<p class='sett-url' id='c4GroupPath'></p>
+	<p class='desc'>Current path</p>
+	<p class='url' id='c4GroupPath'></p>
 	<input id="c4GroupPicker" type="file" style="display: none" />
+	<p>
+		<label for="ocExePicker">Same with openclonk(.exe)</label>
+	</p>
+	<p class='desc'>Current path</p>
+	<p class='url' id='ocExePath'></p>
+	<input id="ocExePicker" type="file" style="display: none" />
 	<hr>
 	<p>
-		If the layout is messed up due bad programming, you can <label onclick='resetLayout(true)'>reset</label> it.
+		If the layout is messed up due to bad programming, you can <label onclick='resetLayout(true)'>reset</label> it.
 	</p>
 </div>
 
 <div id="mod-wrapper" class="flex-fill flex-row">
 </div>
 
-<div class="mod-con flex-col flex-fill draft">
+<div class="mod-con flex-col draft">
     <div class="mod-head flex-row">
         <div class="mod-sel flex-fill" tabindex="3">
             <div class="mod-sel-list flex-col"></div>
@@ -81,6 +94,7 @@ var {__appDir, config, printLog, inDevMode, setConfig, getConfig } = remote.getG
 <script type="text/javascript" src="js/modules/navigator.js"></script>
 <script type="text/javascript" src="js/modules/resview.js"></script>
 <script type="text/javascript" src="js/modules/texteditor.js"></script>
+<script type="text/javascript" src="js/modules/runout.js"></script>
 
 <script type="text/javascript" src="js/filemanager.js"></script>
 <script type="text/javascript" src="js/initialize.js"></script>

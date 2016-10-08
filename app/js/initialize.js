@@ -70,8 +70,14 @@ function createDefaultLayout(byUser) {
 
 	$("#mod-wrapper").append(page.root)
 
+	subFlex.root.style.width = `${$("#mod-wrapper").width()/5*2 || 500}px`
+	
 	page.registerChild(subFlex)
-	subFlex.registerChild(addModule("resview"))
+	
+	let mod = addModule("resview")
+	
+	subFlex.registerChild(mod)
+	mod.root.style.height = `${$("#mod-wrapper").height()/2 || 200}px`
 	subFlex.registerChild(addModule("navigator"))
 
 	page.registerChild(addModule("editor"))
@@ -200,11 +206,34 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		}
 	}
 	
+	$("#ocExePath").html(getConfig("ocexe") || "not set")
+	
+	document.getElementById("ocExePicker").onchange = function(e) {
+		let p = this.files[0].path
+		
+		if(path.basename(p).match(/^openclonk/gi)) {
+			setConfig("ocexe", p)
+			document.getElementById("ocExePath").innerHTML = p
+		}
+	}
+	
 	document.getElementById("sett-page-toggle").onclick = function() {
 		let $el = $('#settings')
 		$el[0].style.display = ""
 		$el.toggleClass('visible')
 	}
+	
+	document.getElementById("author-input").onchange = function(e) {
+		setConfig("author", this.value)
+	}
+	
+	document.getElementById("author-input").value = getConfig("author")
+	
+	document.getElementById("version-input").onchange = function(e) {
+		setConfig("ocversion", this.value)
+	}
+	
+	document.getElementById("version-input").value = getConfig("ocversion")
 	
 	try {
 		if(!config)
@@ -254,6 +283,7 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 					case "editor":
 					case "intro":
 					case "navigator":
+					case "runout":
 						let mod = addModule(data.alias)
 						par.registerChild(mod)
 						mod.root.style.width = data.w
@@ -296,7 +326,9 @@ function receiveLocalResource(p) {
 		leaf = path.extname(p)
 	
 	if(name.match(/^c4group/gi))
-		setConfig("c4group", p)
+		return setConfig("c4group", p)
+	else if(name.match(/^openclonk/gi))
+		return setConfig("ocexe", p)
 
 	
 	let res = filemanager.addResource(p)
@@ -305,7 +337,21 @@ function receiveLocalResource(p) {
 }
 
 function openFile(res) {
+	if(!resIsEditable(res))
+		return
+	
 	execHook("onFileOpen", res)
+}
+
+function resIsEditable(res) {
+	if(
+		res.leaf === ".c" ||
+		res.leaf === ".txt" ||
+		res.leaf === ".glsl" ||
+		res.leaf === ".material")
+		return true
+	
+	return false
 }
 
 function openFiles(paths) {
@@ -314,4 +360,27 @@ function openFiles(paths) {
 		if(res)
 			execHook("onFileOpen", res)
 	}
+}
+
+function showModal(title, contentEl) {
+	$modal = $("#modal")
+	$modal.find(".modal-title").html(title)
+	$modal.find(".modal-content").append(contentEl)
+	$modal.show()
+}
+
+function hideModal() {
+	$("#modal").hide()
+	$("#modal").find(".modal-content").html("")
+}
+
+function insertTemplateSpecials(s) {
+	let author = getConfig("author")
+	
+	return s.replace(/<<\$(.*?)>>/gi, function(m, p1) {
+		if(p1 === "author")
+			return author
+		
+		return m
+	})
 }

@@ -1,0 +1,6 @@
+{
+	"name": "Scenario.ocs",
+	"input": "title|author|version|desc",
+	"required": "Scenario.txt|Script.c",
+	"optional": "Map.bmp|DescDE.txt|DescUS.txt|StringTblDE.txt|StringTblUS.txt|Title.png|Title.txt|Teams.txt"
+}

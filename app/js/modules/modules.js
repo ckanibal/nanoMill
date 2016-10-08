@@ -45,6 +45,7 @@ class Layout_Page extends Layout_Element {
 		
 		this.flexer = new Flexer()
 		this.flexer.setDir(DIR_ROW)
+		$(this.flexer.root).addClass("flex-fill")
 		
 		this.flexer.adjustAppearance = function() { }
 	}
@@ -100,20 +101,24 @@ class Layout_Flex extends Layout_Element {
         if(!child)
             return error("No parameter given for registerChild")
         else if(!child.isLayout_Element)
-            return log("Given child is not a Layout_Element")
+            return error("Given child is not a Layout_Element")
 
 
-        if(index === undefined) {
+        if(index === undefined || !this.children.length) {
             $(this.root).append(child.root)
 
             this.children.push(child)
         }
         else {
-            if(!this.children[index])
+            if(this.children[index]) {
                 index = this.children.length - 1
-
-            $(this.children[index].root).before(child.root)
-
+				$(this.children[index].root).before(child.root)
+			}
+			else {
+				index = this.children.length
+				$(this.children[index - 1].root).after(child.root)
+			}
+			
             this.children.splice(index, 0, child)
         }
 
@@ -151,12 +156,15 @@ class Layout_Flex extends Layout_Element {
 			
 			let root = this.root
 			
-			if(p.getDir() === DIR_ROW)
+			if(p.getDir() === DIR_ROW) {
 				child.root.style.width = root.style.width
-			else
+				child.root.style.height = ""
+			}
+			else {
 				child.root.style.height = root.style.height
+				child.root.style.width = ""
+			}
 			
-			$(child.root).removeClass("flex-fill")
 			$(root).remove()
 			
 			let idx = p.getChildIndex(this)
@@ -166,7 +174,6 @@ class Layout_Flex extends Layout_Element {
     }
 
     getChildIndex(mod) {
-
         for(var i = 0; i < this.children.length; i++)
             if(this.children[i] === mod)
                 return i
@@ -199,13 +206,6 @@ class Layout_Flex extends Layout_Element {
 
         if($(prev).hasClass("flex-splitter"))
             $(prev).remove()
-		
-		if(this.root.lastElementChild) {
-			if(this.dir === DIR_ROW)
-				$(this.root.lastElementChild).addClass("flex-fill")[0].style.width = ""
-			else
-				$(this.root.lastElementChild).addClass("flex-fill")[0].style.height = ""
-		}
     }
 	
 	getLayoutInfo() {
@@ -257,23 +257,59 @@ class Layout_Module extends Layout_Element {
 
                 this.redefine(def.alias)
             })
-
-            $el.find(".mod-move").click(function() {
-                $("#content").addClass("move-mod")
-
-                var fn = (e) => {
-                    e.stopPropagation()
-                    $("#content").removeClass("move-mod")
-                    this.removeEventListener("click", fn)
-                    log("move happened")
-                }
-
-                $(".mod-body").each(function() {
-                    this.addEventListener("click", fn, true)
-                })
-
-            })
         }
+		
+		$el.find(".mod-move").click(_ => {
+			$("#content").addClass("move-mod")
+
+			var _self = this
+			
+			var fn = function(e) {
+				
+				let p1 = _self.parent
+
+				let idx1 = p1.getChildIndex(_self),
+					w = _self.root.style.width,
+					h = _self.root.style.height
+				
+				let mod2 = getModuleOfBody(this),
+					p2 = mod2.parent,
+					idx2 = p2.getChildIndex(mod2)
+				
+				if(idx2 < idx1) {
+					_self.parent.unregisterChild(_self)
+					p2.registerChild(_self, idx2)
+					mod2.parent.unregisterChild(mod2)
+					p1.registerChild(mod2, idx1)
+				}
+				else {
+					mod2.parent.unregisterChild(mod2)
+					p1.registerChild(mod2, idx1)
+					_self.parent.unregisterChild(_self)
+					p2.registerChild(_self, idx2)
+				}
+				
+				_self.root.style.width = mod2.root.style.width
+				_self.root.style.height = mod2.root.style.height
+				
+				mod2.root.style.width = w
+				mod2.root.style.height = h
+				
+				execHook("onLayoutChange")
+				
+				e.stopPropagation()
+				$("#content").removeClass("move-mod")
+				
+				$(".mod-body").each(function() {
+					this.removeEventListener("click", fn, true)
+				})
+			}
+
+			$(".mod-body").each(function() {
+				this.addEventListener("click", fn, true)
+			})
+
+		})
 
         $el.find(".mod-sett").click(() => {
 
@@ -302,8 +338,17 @@ class Layout_Module extends Layout_Element {
                 }
             }
 
-            fn.call(this, this.getBasicMenuProps())
-            fn.call(this, this.getSpecialMenuProps())
+			let props1 = this.getBasicMenuProps()
+			let props2 = this.getSpecialMenuProps()
+			if(props1) {
+				fn.call(this, props1)
+				if(props2) {
+					$menu.append("<hr style='margin: 3px 5px; border-bottom-width: 0'>")
+					fn.call(this, props2)
+				}
+			}
+			else if(props2)
+				fn.call(this, props2)
         })
     }
 
@@ -322,24 +367,42 @@ class Layout_Module extends Layout_Element {
 
     addSibling(fVertical) {
 
-        let dir = fVertical?DIR_COL:DIR_ROW
-
+        let dir, property
+		
+		if(fVertical) {
+			dir = DIR_COL
+			property = "height"
+		}
+		else {
+			dir = DIR_ROW
+			property = "width"
+		}
+		
         let p = this.parent
 
         if(p.getDir() === dir) {
             var mod = addModule("intro")
             p.registerChild(mod, p.getChildIndex(this) + 1)
+			let half = $(this.root)[property]()/2
+			mod.root.style[property] = half + "px"
+			this.root.style[property] = half + "px"
         }
         else {
             var idx = p.getChildIndex(this)
             var flexer = addFlexer(dir)
 			
+			let half = $(this.root)[property]()/2
+			log(this.root.style[property])
             p.registerChild(flexer, idx)
 			
 			p.unregisterChild(this)
 			
+			let mod = addModule("intro")
 			flexer.registerChild(this)
-			flexer.registerChild(addModule("intro"))
+			flexer.registerChild(mod)
+			log(half)
+			mod.root.style[property] = half + "px"
+			this.root.style[property] = half + "px"
         }
 		
 		execHook("onLayoutChange")
@@ -383,7 +446,7 @@ class Layout_Module extends Layout_Element {
 	}
 	
 	getSpecialMenuProps() {
-		return []
+		return false
 	}
 	
 	isSub() { return false }
@@ -429,7 +492,6 @@ class Layout_Deck extends Layout_Module {
     }
 
     getChildIndex(mod) {
-
         for(var i = 0; i < this.children.length; i++)
             if(this.children[i] === mod)
                 return i
@@ -437,16 +499,20 @@ class Layout_Deck extends Layout_Module {
         return -1
     }
 
-    showChild(idx) {		
+    showChild(idx) {
         for(var i = this.children.length; i--;)
             if(i === idx)
                 this.children[i].root.style.display = "initial"
             else
                 this.children[i].root.style.display = "none"
+		
+		this.onChildShow(idx)
     }
+	
+	onChildShow() {}
 }
 
-class Layout_SubModule extends Layout_Element{
+class Layout_SubModule extends Layout_Element {
 	constructor() {
 		super()
 	}
@@ -509,7 +575,7 @@ class Flexer extends Layout_Flex {
 	constructor(dir) {
 		super()
 		
-		this.root = $("<div class='flexer flex-fill'></div>")[0]
+		this.root = $("<div class='flexer'></div>")[0]
 		
 		this.setDir(dir)
 	}
@@ -532,4 +598,10 @@ function getLayoutData() {
 		pages[i] = _pages[i].getLayoutInfo()
 	
 	return pages
+}
+
+function getModuleOfBody(el) {
+	for(let i = 0; i < _modules.length; i++)
+		if($(_modules[i].root).find(".mod-body")[0] === el)
+			return _modules[i]
 }
