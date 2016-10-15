@@ -10,6 +10,11 @@
 	animation-fill-mode: both;
 	animation: list-item-in $list-in-dur ease-out;
 	
+	&.current-file {
+		border-left: 2px solid steelblue;
+		box-sizing: border-box;
+	}
+	
 	&.selected-file {
 		font-style: oblique;
 	}

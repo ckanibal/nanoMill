@@ -1,6 +1,6 @@
 /**
-	Rock
-	Basic construction material and weapon.
+	<<$title>>
+	<<$desc>>
 	
 	@author <<$author>>
 */

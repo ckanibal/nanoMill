@@ -26,6 +26,38 @@ class Navigator extends Layout_Module {
 		
 		for(let i = 0; i < this.entries.length; i++)
 			this.entries[i].$el[0].style.animation = `list-item-in 0.3s ease-out 0.${i}s 1 normal both`
+		
+		hook("onCurrEditorSet", (mod, res) => {
+			$(this.root).find(".current-file").removeClass("current-file")
+			
+			for(let i = 0; i < this.entries.length; i++)
+				if(this.entries[i].file === res) {
+					this.entries[i].$el.addClass("current-file")
+					break;
+				}
+		}, modId)
+		
+		hook("onFileClosed", (res) => {
+			let a  = []
+			for(let i = 0; i < this.entries.length; i++)
+				if(this.entries[i].file === res)
+					this.entries[i].$el.remove()
+				else
+					a.push(this.entries[i])
+			
+			this.entries = a
+		}, modId)
+		
+		hook("onFileChangeStateChange", (res, clean) => {
+			for(let i = 0; i < this.entries.length; i++)
+				if(this.entries[i].file === res) {
+					if(clean)
+						this.entries[i].$el.removeClass('unsaved')
+					else
+						this.entries[i].$el.addClass('unsaved')
+					break;
+				}
+		}, modId)
 	}
 	
 	insertFileEntry(file) {
@@ -42,12 +74,28 @@ class Navigator extends Layout_Module {
 		})
 
 		$el.find(".--NAV-entry-close").click(function(e) {
+			if(file.mod) {
+				if(file.mod.requestClose()) {
+					file.mod.performClose()
+					execHook("onFileClosed", file)
+				}
+			}
+			else
+				execHook("onFileClosed", file)
+			
 			e.stopPropagation()
 			e.preventDefault()
-			execHook("closeOpenedFile", file)
 		})
 		
 		this.entries.push({ $el, file })
+	}
+	
+	getEntryByFile(file) {
+		for(let i = 0; i < this.entries.length; i++)
+			if(this.entries[i].file === file)
+				return this.entries[i]
+		
+		return -1
 	}
 }
 

@@ -53,9 +53,22 @@ class EditorView extends Layout_Deck {
                 this.showChild(this.getChildIndex(mod))
             break
             case ".txt":
+				let mode = "text"
+				
+				if(
+					file.name === "DefCore.txt" ||
+					file.name === "Scenario.txt" ||
+					file.name === "ParameterDefs.txt" ||
+					file.name === "Teams.txt" ||
+					file.name === "Particle.txt" ||
+					file.name === "Objects.txt" ||
+					file.name === "PlayerControls.txt"
+					)
+					mode = "ini"
+				
                 mod = addModule("texteditor")
                 this.registerChild(mod)
-                mod.setup(file, text, "text")
+                mod.setup(file, text, mode)
                 this.showChild(this.getChildIndex(mod))
             break
 			case ".glsl":
@@ -70,6 +83,12 @@ class EditorView extends Layout_Deck {
                 mod.setup(file, text, "text")
                 this.showChild(this.getChildIndex(mod))
             break
+			case ".ocm":
+                mod = addModule("texteditor")
+                this.registerChild(mod)
+                mod.setup(file, text, "ini")
+                this.showChild(this.getChildIndex(mod))
+            break
 			
 			default:
 			return
@@ -77,6 +96,11 @@ class EditorView extends Layout_Deck {
 		
 		file.editor = this
 		file.mod = mod
+		
+		hook("onFileClosed", (file) => {
+			file.editor = null
+			file.editor = null
+		})
 		
         this.files.push({
 			file, modIdx
@@ -112,7 +136,7 @@ class EditorView extends Layout_Deck {
 	}
 	
 	onChildShow(idx) {
-		setFocussedEditor(this.children[idx])
+		this.children[idx].focus()
 	}
 }
 
@@ -123,13 +147,3 @@ EditorView.def = {
 }
 
 registerModule(EditorView.def)
-
-var _focussedEditor
-
-function setFocussedEditor() {
-	
-}
-
-function getFocussedEditor() {
-	
-}

@@ -132,6 +132,21 @@ html, body {
       border-bottom: 1px solid grey; }
     .modal-style input[type=text].small {
       max-width: 100px; }
+  .modal-style textarea {
+    -webkit-appearance: none;
+    border: none;
+    background: none;
+    color: #b4b4b4;
+    text-shadow: 1px 0px 0px steelblue;
+    font-size: 1em;
+    outline: 1px solid grey;
+    outline-offset: -1px;
+    resize: none;
+    padding: 3px;
+    margin: 10px 0;
+    font-family: "Roboto"; }
+    .modal-style textarea:focus, .modal-style textarea:hover {
+      outline: 1px solid steelblue; }
 
 input,
 textarea {
@@ -167,8 +182,12 @@ textarea::-webkit-input-placeholder {
     display: flex;
     animation: roll-in-right 0.3s; }
 
+::-webkit-scrollbar,
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-track-piece {
+  background-color: #282828; }
+
 ::-webkit-scrollbar {
-  background-color: transparent;
   padding: 0;
   margin: 0; }
 
@@ -194,6 +213,10 @@ textarea::-webkit-input-placeholder {
   background-color: grey;
   margin: 0 2px;
   border: 2px solid transparent; }
+
+::-webkit-scrollbar-corner,
+::-webkit-resizer {
+  background-color: grey; }
 
 .ALE-entry {
   color: #b4b4b4;
@@ -300,6 +323,13 @@ textarea::-webkit-input-placeholder {
     background-color: #505050; }
   .modal-close:active {
     background-color: steelblue; }
+  .modal-close::before {
+    content: "X";
+    min-width: 48px;
+    font-weight: 100;
+    display: block;
+    text-align: center;
+    text-shadow: 0 1px 0 grey; }
 
 @font-face {
   font-family: 'icomoon';
@@ -418,6 +448,8 @@ textarea::-webkit-input-placeholder {
   margin: 0 2px; }
   .mod-sel:focus {
     outline: none; }
+  .mod-sel:focus .mod-sel-list {
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3); }
   .mod-sel:focus .mod-sel-item {
     display: initial;
     pointer-events: auto; }
@@ -504,6 +536,9 @@ textarea::-webkit-input-placeholder {
   animation: list-item-in 0.3s ease-out; }
   .--NAV-entry:hover .--NAV-entry-close {
     display: flex; }
+  .--NAV-entry.current-file {
+    border-left: 2px solid steelblue;
+    box-sizing: border-box; }
   .--NAV-entry.selected-file {
     font-style: oblique; }
   .--NAV-entry .unsaved-mark {
@@ -551,6 +586,14 @@ textarea::-webkit-input-placeholder {
   .--RESV-temp-entry:hover {
     background-color: #505050; }
 
+.--RESV-confirm {
+  align-self: flex-end;
+  margin-top: 10px; }
+  .--RESV-confirm label {
+    padding: 10px 15px;
+    display: inline-block;
+    background-color: #234861; }
+
 @keyframes bracket {
   0% {
     transform: scale(0.8); }
@@ -559,6 +602,15 @@ textarea::-webkit-input-placeholder {
   100% {
     transform: scale(1); } }
 
+.ace_tooltip.ace_doc-tooltip {
+  font-family: "SpaceMono";
+  font-size: 12px;
+  border: none;
+  outline: 1px solid darkgrey; }
+
+.ace_editor.ace_autocomplete {
+  font-family: "SpaceMono"; }
+
 .ace_qtmill {
   color: #DEDEDE;
   position: absolute;
@@ -566,8 +618,9 @@ textarea::-webkit-input-placeholder {
   right: 0;
   bottom: 0;
   left: 0;
+  position: absolute !important;
   max-width: 100%;
-  font-variant-ligatures: none; }
+  font-variant-ligatures: none !important; }
   .ace_qtmill .ace_gutter {
     background: #2d2d2d;
     border-right: 1px solid #1e1e1e;
@@ -593,7 +646,7 @@ textarea::-webkit-input-placeholder {
     background-color: #990000;
     color: white; }
   .ace_qtmill .ace_fold {
-    background-color: silver; }
+    background-color: #252525; }
   .ace_qtmill .ace_support.ace_function {
     color: #5d90b3;
     color: #41a5d4; }
@@ -615,7 +668,8 @@ textarea::-webkit-input-placeholder {
   .ace_qtmill .ace_comment {
     color: #359e6b; }
   .ace_qtmill .ace_comment.ace_ocdoc {
-    color: #0066ff; }
+    color: #0066ff;
+    color: #316dc7; }
   .ace_qtmill .ace_comment.ace_ocdoc.ace_tag {
     color: #4CBEF7; }
   .ace_qtmill .ace_constant.ace_numeric,
@@ -707,11 +761,25 @@ textarea::-webkit-input-placeholder {
 
 .--RNINT-entry {
   font-size: 12px;
-  padding: 5px 0px;
-  border-bottom: 1px solid #505050;
+  padding: 3px 0px;
   margin: 0 10px;
   font-family: "SpaceMono";
   line-height: 1.2em;
   -webkit-user-select: text;
   cursor: text;
   color: #a0a0a0; }
+
+.--RUNINT-time-stamp {
+  color: #627288; }
+
+.--RUNINT-error {
+  color: #D04B4B; }
+
+.--RUNINT-stack-trace {
+  color: #D04B4B; }
+
+.--RUNINT-link {
+  text-decoration: underline; }
+  .--RUNINT-link:hover {
+    color: orange;
+    cursor: pointer; }

@@ -166,6 +166,26 @@ html, body {
 			max-width: 100px;
 		}
 	}
+	
+	textarea {
+		-webkit-appearance: none;
+		border: none;
+		background: none;
+		color: $font-clr;
+		text-shadow: 1px 0px 0px steelblue;
+		font-size: 1em;
+		outline: 1px solid grey;
+		outline-offset: -1px;
+		resize: none;
+		padding: 3px;
+		margin: 10px 0;
+		font-family: $main-font;
+		
+		&:focus,
+		&:hover {
+			outline: 1px solid steelblue;
+		}
+	}
 }
 
 input,
@@ -212,19 +232,22 @@ textarea::-webkit-input-placeholder {
 ::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-corner,
 ::-webkit-resizer {
+}
 
-    
-
+::-webkit-scrollbar,
+::-webkit-scrollbar > *,
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-track-piece {
+    background-color: $bg-main;
 }
 
 ::-webkit-scrollbar {
-    background-color: transparent;
     padding: 0;
     margin: 0;
 }
 
 ::-webkit-scrollbar * {
-    background-color: yellow;
+    background-color: transparent;
 }
 
 ::-webkit-scrollbar:horizontal {
@@ -249,6 +272,11 @@ textarea::-webkit-input-placeholder {
     background-color: grey;
     margin: 0 2px;
     border: 2px solid transparent;
+}
+
+::-webkit-scrollbar-corner,
+::-webkit-resizer {
+	background-color: grey;
 }
 
 @mixin noUserSelect() {
@@ -412,5 +440,14 @@ $list-in-dur: 0.3s;
 	
 	&:active {
 		background-color: $bg-ui-active;
+	}
+	
+	&::before {
+		content: "X";
+		min-width: 48px;
+		font-weight: 100;
+		display: block;
+		text-align: center;
+		text-shadow: 0 1px 0 grey;
 	}
 }

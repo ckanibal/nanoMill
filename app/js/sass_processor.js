@@ -1,38 +1,45 @@
 var sass_defs = [
     {
-        src: "sass/fonts.scss"
+        src: "../sass/fonts.scss"
     },
 	{
-        src: "sass/main.scss"
+        src: "../sass/main.scss"
     },
     {
-        src: "sass/icomoon.css",
+        src: "../sass/icomoon.css",
         mod: "iconsToMixins"
     },
     {
-        src: "sass/flex.scss"
+        src: "../sass/flex.scss"
     },
     {
-        src: "sass/mod.scss"
+        src: "../sass/mod.scss"
     },
     {
-        src: "sass/mod_nav.scss"
+        src: "../sass/mod_nav.scss"
     },
     {
-        src: "sass/mod_res_view.scss"
+        src: "../sass/mod_res_view.scss"
     },
     {
-        src: "sass/mod_ace.scss"
+        src: "../sass/mod_ace.scss"
     },
     {
-        src: "sass/mod_ace_theme.scss"
+        src: "../sass/mod_ace_theme.scss"
     },
     {
-        src: "sass/mod_runint.scss"
+        src: "../sass/mod_runint.scss"
     }
 ]
 
-function processSassFiles(defs) {
+module.exports.parseScss = function() {
+	
+	let defs = sass_defs
+	
+	let path = require("path")
+	let worker = require(path.join(__rootdir, "external", "sass.worker.js"))
+	let _sass = require(path.join(__rootdir, "external", "sass.js"))
+	let Sass = new _sass(path.join(__rootdir, "external", "sass.worker.js"))
 	
 	if(!Sass)
 		return warn("Cannot pre-process css-file; Sass not given")
@@ -67,7 +74,7 @@ function processSassFiles(defs) {
 			else
 				$(document.head).append("<style id='compiled_style' type='text/css'>"+result.text+"</style>")
 			
-			_fs.writeFile(path.join(__dirname, 'compiled.css'), result.text, 'utf-8', (err) => {
+			_fs.writeFile(path.join(__rootdir, 'compiled.css'), result.text, 'utf8', (err) => {
 				if(err)
 					throw err
 				
@@ -75,11 +82,6 @@ function processSassFiles(defs) {
 			})
 		}
 	})
-}
-
-processSassFiles(sass_defs)
-var reloadCss = _ => {
-	processSassFiles(sass_defs)
 }
 
 function modSassString(str, mod) {
@@ -94,21 +96,4 @@ function modSassString(str, mod) {
     }
 
     return str
-}
-
-function listAllZIndices() {
-    window._idc = {}
-
-    var items = document.getElementsByTagName("*"),
-        z
-
-    for (var i = items.length; i--;) {
-        z = getComputedStyle(items[i]).zIndex
-
-        if(z) {
-            if(!_idc[z])
-                _idc[z] = []
-            _idc[z].push(items[i])
-        }
-    }
 }

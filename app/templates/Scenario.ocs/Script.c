@@ -1,6 +1,6 @@
 /**
-	New scenario
-	A yet unseen scenario.
+	<<$title>>
+	<<$desc>>
 	
 	@author <<$author>>
 */

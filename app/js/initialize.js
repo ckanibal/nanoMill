@@ -65,24 +65,46 @@ var _prf = {
 }
 
 function createDefaultLayout(byUser) {
+	/*
+	var page = addPage(DIR_COL),
+		subFlex = addFlexer(DIR_ROW)
+
+	$("#mod-wrapper").append(page.root)
+
+	subFlex.root.style.height = `${$("#mod-wrapper").height()/5*4 || 500}px`
+	
+	page.registerChild(subFlex)
+	
+	let mod = addModule("navigator")
+	subFlex.registerChild(mod)
+	mod.root.style.width = `${$("#mod-wrapper").width()/3 || 200}px`
+	
+	subFlex.registerChild(addModule("editor"))
+	page.registerChild(addModule("runint"))
+	*/
 	var page = addPage(),
-		subFlex = addFlexer(DIR_COL)
+		subFlex = addFlexer(DIR_COL),
+		subFlex2 = addFlexer(DIR_COL)
 
 	$("#mod-wrapper").append(page.root)
 
 	subFlex.root.style.width = `${$("#mod-wrapper").width()/5*2 || 500}px`
 	
 	page.registerChild(subFlex)
+	page.registerChild(subFlex2)
 	
 	let mod = addModule("resview")
-	
 	subFlex.registerChild(mod)
 	mod.root.style.height = `${$("#mod-wrapper").height()/2 || 200}px`
 	subFlex.registerChild(addModule("navigator"))
 
-	page.registerChild(addModule("editor"))
-	page.root.style.animation = "fade-in 0.3s"
+	mod = addModule("editor")	
+	subFlex2.registerChild(mod)
+	mod.root.style.height = `${$("#mod-wrapper").height()/4*3 || 600}px`
 	
+	subFlex2.registerChild(addModule("runint"))
+	
+	page.root.style.animation = "fade-in 0.3s"
 	warn("Default layout used (Forced by user: " + (byUser || "false") + ")")
 }
 
@@ -95,11 +117,7 @@ function resetLayout() {
 	createDefaultLayout(...arguments)
 }
 
-var currentEditorMod
-
-function setCurrentEditorModule() {
-
-}
+var currentEditorMod, _focussedRes
 
 var mouseX = 0, mouseY = 0
 var mouseOffX, mouseOffY, dragSplitterTarget, origDim
@@ -110,6 +128,15 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 	log("Chromium version: " + process.versions.chrome)
 	log("Electron version: " + process.versions.electron)
 	log("Arch: " + process.arch)
+	
+	hook("onCurrEditorSet", (mod, res) => {
+		currentEditorMod = mod
+	})
+	
+	hook("onResFocus", (res) => {
+		_focussedRes = res
+		setConfig("focussedRes", res.path)
+	})
 
     $(document).on('mousedown', '.flex-splitter', function(e) {
         dragSplitterTarget = this
@@ -166,15 +193,7 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
         dragSplitterTarget = false
     })
 
-    $("#openf").click(function() {
-
-		pickFile(function(e) {
-			let files = this.files
-			
-			for(let i = 0; i < files.length; i++)
-				receiveLocalResource(files[i].path)
-		})
-    })
+    $("#openf").click(openFilePicker)
 	
 	document.ondragover = document.ondrop = (e) => {
 		e.preventDefault()
@@ -189,11 +208,7 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		e.preventDefault()
 	}
 	
-    $("#savef").click(function() {
-		
-        if(!currentEditorMod)
-            return
-    })
+    $("#savef").click(save)
 	
 	$("#c4GroupPath").html(getConfig("c4group") || "not set")
 	
@@ -214,6 +229,21 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		if(path.basename(p).match(/^openclonk/gi)) {
 			setConfig("ocexe", p)
 			document.getElementById("ocExePath").innerHTML = p
+			
+			var cp = cprocess.spawn(p, [`--editor`])
+			
+			var _inittime = (new Date()).getTime()
+			
+			cp.stdout.on('data', function (data) {
+				let m = data.toString().match(/Version:\s*(.*?)\s/)
+				if(m && m[1]) {
+					setConfig("ocver", m[1])
+					document.getElementById("version-input").value = m[1]
+					cp.kill()
+				}
+				else if((new Date()).getTime() - _inittime > 100)
+					cp.kill()
+			})
 		}
 	}
 	
@@ -224,16 +254,22 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 	}
 	
 	document.getElementById("author-input").onchange = function(e) {
-		setConfig("author", this.value)
+		if(!this.value || !this.value.length)
+			this.value = getConfig("author")
+		else
+			setConfig("author", this.value)
 	}
 	
 	document.getElementById("author-input").value = getConfig("author")
 	
 	document.getElementById("version-input").onchange = function(e) {
-		setConfig("ocversion", this.value)
+		if(!this.value || !this.value.length)
+			this.value = getConfig("ocver")
+		else
+			setConfig("ocver", this.value)
 	}
 	
-	document.getElementById("version-input").value = getConfig("ocversion")
+	document.getElementById("version-input").value = getConfig("ocver")
 	
 	try {
 		if(!config)
@@ -241,6 +277,7 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		
 		let a = []
 		let r = config.resources
+		var cf = getConfig("focussedRes")
 		
 		for(let i = 0; i < r.length; i++)
 			if(r[i]) {
@@ -248,8 +285,11 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 				_fs.stat(r[i], (err, stat) => {
 					if(err)
 						error(`Failed to reload resource (${err})\n${p}`)
-					else
-						filemanager.addResource(p, stat)
+					else {
+						let res = filemanager.addResource(p, stat)
+						if(p === cf)
+							execHook("onResFocus", res)
+					}
 				})
 			}
 			
@@ -260,15 +300,14 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		if(pages && pages.length) {
 			let handleLayoutInput = function(data, par) {
 				switch(data.alias) {
-					case "Page":
 					case "page":
-						let page = addPage()
+						let page = addPage(data.dir)
 						$("#mod-wrapper").append(page.root)
+						page.setDir(data.dir)
 						
 						for(let i = 0; i < data.chldrn.length; i++)		
 							handleLayoutInput(data.chldrn[i], page)
 					break;
-					case "Flexer":
 					case "flexer":
 						let flexer = addFlexer(data.dir)
 						
@@ -283,8 +322,11 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 					case "editor":
 					case "intro":
 					case "navigator":
-					case "runout":
+					case "runint":
 						let mod = addModule(data.alias)
+						if(!mod)
+							break;
+						
 						par.registerChild(mod)
 						mod.root.style.width = data.w
 						mod.root.style.height = data.h
@@ -292,7 +334,7 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 				}
 			}
 			
-			for(let i = 0; i < config.pages.length; i++)		
+			for(let i = 0; i < config.pages.length; i++)	
 				handleLayoutInput(config.pages[i])
 		}
 		else
@@ -301,7 +343,6 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 	}
 	catch(e) {
 		error(`Failed to load config (${e})`)
-		
 		resetLayout()
 	}
 	
@@ -309,7 +350,13 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		setConfig("pages", getLayoutData())
 		setConfig("resources", getResourcesData())
 	})
-
+	
+	$("#newstuff").click(_ => {
+		require("./js/template_modal.js").show()
+	})
+	
+	require("./js/keybinding.js")
+	
     log("end of initialize")
 }
 
@@ -330,7 +377,6 @@ function receiveLocalResource(p) {
 	else if(name.match(/^openclonk/gi))
 		return setConfig("ocexe", p)
 
-	
 	let res = filemanager.addResource(p)
 	if(res)
 		execHook("onFileOpen", res)
@@ -347,6 +393,7 @@ function resIsEditable(res) {
 	if(
 		res.leaf === ".c" ||
 		res.leaf === ".txt" ||
+		res.leaf === ".ocm" ||
 		res.leaf === ".glsl" ||
 		res.leaf === ".material")
 		return true
@@ -382,5 +429,27 @@ function insertTemplateSpecials(s) {
 			return author
 		
 		return m
+	})
+}
+
+function reloadCss() {
+	require('./js/sass_processor.js').parseScss()
+}
+
+function save(e) {
+	e.preventDefault()
+	if(!currentEditorMod)
+		return
+	
+	currentEditorMod.save()
+		
+}
+
+function openFilePicker() {
+	pickFile(function(e) {
+		let files = this.files
+		
+		for(let i = 0; i < files.length; i++)
+			receiveLocalResource(files[i].path)
 	})
 }

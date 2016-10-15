@@ -42,3 +42,16 @@
 		background-color: $hvr;
 	}
 }
+
+.--RESV-confirm {
+
+	align-self: flex-end;
+	margin-top: 10px;
+
+	label {
+		padding: 10px 15px;
+		display: inline-block;
+		
+		background-color: #234861;
+	}
+}

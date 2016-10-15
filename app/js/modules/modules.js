@@ -30,9 +30,10 @@ class Layout_Element {
 
 var _pages = []
 
-function addPage() {
+function addPage(dir) {
 	let page = new Layout_Page()
 	_pages.push(page)
+	page.setDir(dir)
 	
 	return page
 }
@@ -44,7 +45,7 @@ class Layout_Page extends Layout_Element {
 		this.children = []
 		
 		this.flexer = new Flexer()
-		this.flexer.setDir(DIR_ROW)
+		
 		$(this.flexer.root).addClass("flex-fill")
 		
 		this.flexer.adjustAppearance = function() { }
@@ -68,9 +69,13 @@ class Layout_Page extends Layout_Element {
 	
 	getLayoutInfo() {
 		let info = this.flexer.getLayoutInfo(...arguments)
-		info.alias = "Page"
+		info.alias = "page"
 		return info
 	}
+	
+	setDir(v) { this.flexer.setDir(v) }
+	
+	getDir(v) { return this.flexer.getDir() }
 }
 
 class Layout_Flex extends Layout_Element {
@@ -211,7 +216,7 @@ class Layout_Flex extends Layout_Element {
 	getLayoutInfo() {
 		let o = {
 			dir: this.getDir(),
-			alias: this.constructor.name,
+			alias: this.constructor.name.toLowerCase(),
 			chldrn: [],
 			w: this.root.style.width,
 			h: this.root.style.height
@@ -400,7 +405,7 @@ class Layout_Module extends Layout_Element {
 			let mod = addModule("intro")
 			flexer.registerChild(this)
 			flexer.registerChild(mod)
-			log(half)
+
 			mod.root.style[property] = half + "px"
 			this.root.style[property] = half + "px"
         }
@@ -509,7 +514,7 @@ class Layout_Deck extends Layout_Module {
 		this.onChildShow(idx)
     }
 	
-	onChildShow() {}
+	onChildShow(idx) {}
 }
 
 class Layout_SubModule extends Layout_Element {
@@ -519,7 +524,15 @@ class Layout_SubModule extends Layout_Element {
 	
 	setup() { }
 	
+	save() { }
+	
+	onfocus() { }
+	
 	isSub() { return true }
+	
+	requestClose() { return true }
+	
+	performClose() {}
 }
 
 var _modules = []

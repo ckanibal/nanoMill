@@ -38,6 +38,20 @@ var filemanager = new (function() {
 		return false
 	}
 	
+	this.getResourceOfPath = function(p) {
+		let r = this.resources,
+			l = r.length
+		
+		for(var i = 0; i < l; i++) {
+			log(p)
+			log(r[i].path)
+			if(r[i].path === p)
+				return r[i]
+		}
+		
+		return false
+	}
+	
 	this.getResourcesCopy = function() {
         return this.resources.slice()
     }

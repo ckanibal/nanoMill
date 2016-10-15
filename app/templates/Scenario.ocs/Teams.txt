@@ -3,5 +3,5 @@ Active=true
 
 	[Team]
 	id=1
-	Name=Boomshire
+	Name=ATeam
 	MaxPlayer=2

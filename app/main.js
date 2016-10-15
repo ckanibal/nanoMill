@@ -1,4 +1,4 @@
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, dialog} = require('electron')
 const _fs = require('fs')
 
 var output = _fs.createWriteStream(`${app.getPath('userData')}/error.log`, {flags: "w", })
@@ -7,11 +7,14 @@ output.write(`Detected platform: ${process.platform}\n`)
 
 process.on('uncaughtException', function (err) {
     output.write(`ERR: ${err}\n`)
+	dialog.showErrorBox("Failed to launch app", `Error: ${err}`)
 })
 
 var defaultConfigVal = {
 	author: "Twonky",
-	ocversion: "7,0",
+	ocver: "7,0",
+	dftTempDir: "...",
+	focussedRes: "",
 }
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -30,7 +33,11 @@ function createWindow () {
 		},
 		getConfig: (key) => {
 			return config.config[key] || defaultConfigVal[key]
-		}
+		},
+		hideMenu: _ => {
+			win.setMenu(null)
+		},
+		dialog: dialog
 	}
 	
 	// Make sure to have valid values

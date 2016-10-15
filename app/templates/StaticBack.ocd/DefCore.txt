@@ -1,0 +1,14 @@
+[DefCore]
+id=<<$title>>
+Version=<<$version>>
+Category=C4D_StaticBack
+Width=40
+Height=30
+Offset=-20,-15
+Vertices=4
+VertexX=-20, 20, 20, -20
+VertexY=-20, -20, 20, 20
+VertexFriction=40,40,40,40
+Mass=200
+Components=Rock=5
+Rotate=1

@@ -10,12 +10,13 @@
 <body class="flex-col">
 <div id="modal" class="flex-col modal-style" style="display: none">
 	<div class="modal-title">you should'nt see this</div>
-	<div class="modal-close icon-x-s" onclick="hideModal()"></div>
+	<div class="modal-close" onclick="hideModal()"></div>
 	<div class="modal-content flex-fill"></div>
 </div>
 <div id="headbar" class="flex-row">
     <div class="hb-btn" id="openf">Open</div>
     <div class="hb-btn" id="savef">Save</div>
+    <div class="hb-btn" id="newstuff" style="display: none">New...</div>
     <div class="flex-fill"></div>
 	<div class="hb-btn icon-hamburger-small" id="sett-page-toggle"></div>
 </div>
@@ -76,11 +77,22 @@
 </div>
 <script>window.$ = window.jQuery = require('./external/jquery-3.1.0.min.js')</script>
 <script>
+const cprocess = require("child_process")
+const __rootdir = __dirname
 const _fs = require('fs')
 const path = require('path')
 const {remote} = require('electron')
-var {__appDir, config, printLog, inDevMode, setConfig, getConfig } = remote.getGlobal("communicator")
+var {__appDir, config, printLog, inDevMode, setConfig, getConfig, hideMenu, dialog } = remote.getGlobal("communicator")
 
+{
+	setTimeout(_ => {
+		require('ncp')
+		require('./js/templates')
+	}, 6000)
+	
+	if(inDevMode && false)
+		setTimeout(_ => reloadCss(), 1000)
+}
 </script>
 
 <script type="text/javascript" src="external/ace/ace.js"></script>
@@ -94,14 +106,10 @@ var {__appDir, config, printLog, inDevMode, setConfig, getConfig } = remote.getG
 <script type="text/javascript" src="js/modules/navigator.js"></script>
 <script type="text/javascript" src="js/modules/resview.js"></script>
 <script type="text/javascript" src="js/modules/texteditor.js"></script>
-<script type="text/javascript" src="js/modules/runout.js"></script>
+<script type="text/javascript" src="js/modules/runint.js"></script>
 
 <script type="text/javascript" src="js/filemanager.js"></script>
 <script type="text/javascript" src="js/initialize.js"></script>
-
-<script type="text/javascript" src="external/sass.js"></script>
-<script type="text/javascript" src="external/sass.worker.js"></script>
-<script type="text/javascript" src="js/sass_processor.js"></script>
 
 </body>
 </html>

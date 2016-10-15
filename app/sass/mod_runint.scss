@@ -42,12 +42,32 @@
 
 .--RNINT-entry {
 	font-size: 12px;
-    padding: 5px 0px;
-    border-bottom: 1px solid rgb(80, 80, 80);
+    padding: 3px 0px;
     margin: 0 10px;
     font-family: $monospace;
     line-height: 1.2em;
     -webkit-user-select: text;
     cursor: text;
 	color: rgb(160, 160, 160);
+}
+
+.--RUNINT-time-stamp {
+	color: #627288;
+}
+
+.--RUNINT-error {
+	color: #D04B4B;
+}
+
+.--RUNINT-stack-trace {
+	color: #D04B4B;
+}
+
+.--RUNINT-link {
+	text-decoration: underline; 
+	
+	&:hover {
+		color: orange;
+		cursor: pointer;
+	}
 }

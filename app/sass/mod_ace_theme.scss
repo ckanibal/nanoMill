@@ -10,12 +10,25 @@
 	}
 }
 
+.ace_tooltip.ace_doc-tooltip {
+	font-family: $monospace;
+    font-size: 12px;
+    border: none;
+    outline: 1px solid darkgrey;
+}
+
+.ace_editor.ace_autocomplete {
+	font-family: $monospace;
+}
+
 .ace_qtmill {
 
 	color: #DEDEDE;
 	@include absoluteFill();
+	position: absolute !important;
+	
 	max-width: 100%;
-	font-variant-ligatures: none;
+	font-variant-ligatures: none !important;
 	
 	.ace_gutter {
 		background: rgb(45, 45, 45);
@@ -60,7 +73,7 @@
 	}
 	
 	.ace_fold {
-		background-color: silver;
+		background-color: #252525;
 	}
 	
 	.ace_support.ace_function {
@@ -96,6 +109,7 @@
 	
 	.ace_comment.ace_ocdoc {
 		color: rgb(0, 102, 255);
+		color: #316dc7;
 	}
 	
 	.ace_comment.ace_ocdoc.ace_tag {
