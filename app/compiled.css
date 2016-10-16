@@ -183,6 +183,7 @@ textarea::-webkit-input-placeholder {
     animation: roll-in-right 0.3s; }
 
 ::-webkit-scrollbar,
+::-webkit-scrollbar > *,
 ::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track-piece {
   background-color: #282828; }
@@ -192,7 +193,7 @@ textarea::-webkit-input-placeholder {
   margin: 0; }
 
 ::-webkit-scrollbar * {
-  background-color: yellow; }
+  background-color: transparent; }
 
 ::-webkit-scrollbar:horizontal {
   height: 12px;
@@ -460,7 +461,7 @@ textarea::-webkit-input-placeholder {
 
 .mod-sel-list {
   position: absolute;
-  top: 2px;
+  top: 3px;
   right: 0;
   left: 0;
   z-index: 10;
@@ -535,7 +536,7 @@ textarea::-webkit-input-placeholder {
   animation-fill-mode: both;
   animation: list-item-in 0.3s ease-out; }
   .--NAV-entry:hover .--NAV-entry-close {
-    display: flex; }
+    opacity: 1; }
   .--NAV-entry.current-file {
     border-left: 2px solid steelblue;
     box-sizing: border-box; }
@@ -549,7 +550,7 @@ textarea::-webkit-input-placeholder {
     padding: 5px 7px; }
 
 .--NAV-entry-close {
-  display: none;
+  opacity: 0;
   font-size: 16px;
   width: 18px;
   justify-content: center; }
@@ -563,18 +564,23 @@ textarea::-webkit-input-placeholder {
   user-select: none;
   display: flex;
   flex-direction: row;
-  font-size: 14px;
-  padding: 5px 7px; }
-  .--RESV-entry:hover {
-    background-color: #505050; }
+  font-size: 14px; }
   .--RESV-entry:focus {
     outline: none; }
   .--RESV-entry:focus, .--RESV-entry.focussed {
     background-color: steelblue;
     color: whitesmoke; }
-    .--RESV-entry:focus .--RESV-fext, .--RESV-entry.focussed .--RESV-fext {
+    .--RESV-entry:focus .--RESV-fdir,
+    .--RESV-entry:focus .--RESV-fext, .--RESV-entry.focussed .--RESV-fdir,
+    .--RESV-entry.focussed .--RESV-fext {
       color: whitesmoke; }
+  .--RESV-entry:hover .--RESV-entry-close {
+    opacity: 1; }
 
+.--RESV-label {
+  padding: 5px 7px; }
+
+.--RESV-fdir,
 .--RESV-fext {
   color: grey; }
 
@@ -593,6 +599,16 @@ textarea::-webkit-input-placeholder {
     padding: 10px 15px;
     display: inline-block;
     background-color: #234861; }
+
+.--RESV-label:hover {
+  background-color: #505050; }
+
+.--RESV-entry-close {
+  justify-content: center;
+  padding: 5px 7px;
+  opacity: 0; }
+  .--RESV-entry-close:hover {
+    background-color: #505050; }
 
 @keyframes bracket {
   0% {
@@ -685,7 +701,7 @@ textarea::-webkit-input-placeholder {
   .ace_qtmill .ace_list {
     color: #b90690; }
   .ace_qtmill .ace_marker-layer .ace_selection {
-    background: #5a6450; }
+    background: #415356; }
   .ace_qtmill .ace_marker-layer .ace_step {
     background: #fcff00; }
   .ace_qtmill .ace_marker-layer .ace_stack {

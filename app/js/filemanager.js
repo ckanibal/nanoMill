@@ -12,11 +12,13 @@ var filemanager = new (function() {
 		if(this.hasResourceOfPath(p))
 			return false
 		
-		let res = {
+		let base = path.basename(p),
+			res = {
 			"path": p,
 			stats,
-			"name": path.basename(p),
-			"leaf": path.extname(p)
+			"name": base,
+			"leaf": path.extname(p),
+			"dirName": p.substring(0, p.length - base.length - 1)
 		}
 		
 		this.resources.push(res)
@@ -42,12 +44,9 @@ var filemanager = new (function() {
 		let r = this.resources,
 			l = r.length
 		
-		for(var i = 0; i < l; i++) {
-			log(p)
-			log(r[i].path)
+		for(var i = 0; i < l; i++)
 			if(r[i].path === p)
 				return r[i]
-		}
 		
 		return false
 	}
@@ -55,6 +54,18 @@ var filemanager = new (function() {
 	this.getResourcesCopy = function() {
         return this.resources.slice()
     }
+	
+	this.dropResource = function(res) {
+		let a = [],
+			r = this.resources,
+			l = r.length
+		
+		for(var i = 0; i < l; i++)
+			if(r[i] !== res)
+				a.push(r[i])
+		
+		this.resources = a
+	}
 
     // TODO: init Watcher, detecting loss of linked files
 })()

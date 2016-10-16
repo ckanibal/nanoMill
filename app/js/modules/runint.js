@@ -19,9 +19,9 @@ class RuntimeInterface extends Layout_Module{
 		
 		hook("onStdOut", (s) => {
 			this.print(s)
-		}, this.modId)
+		}, modId)
 		
-		hook("clearAllRunInts", _ => this.clear(), this.modId)
+		hook("clearAllRunInts", _ => this.clear(), modId)
 	}
 	
 	print(s) {
@@ -56,11 +56,12 @@ class RuntimeInterface extends Layout_Module{
 	}
 	
 	static validateStdout(s) {
+		s = s.replace(/\\/g, "/")
 		s = s.replace(/\[(.+?)\]/, function(m, v1) {
 			return `<span class="--RUNINT-time-stamp">${v1}</span>`
 		})
 		
-		s = s.replace(/ERROR\:\s*.+/, function(m) {
+		s = s.replace(/ERROR\:\s*.+/, function(m) {			
 			m = m.replace(/\(([^)']+?)\)/, function(m2, v1) {
 				return `<span class="--RUNINT-link" onclick="RuntimeInterface.openTextAt('${v1}')">${m2}</span>`
 			})
@@ -79,7 +80,7 @@ class RuntimeInterface extends Layout_Module{
 		let [p, l, c] = s.split(":")
 		p = p.match(/[^\s]+$/)[0]
 		
-		log(p, l, c)
+		
 	}
 	
 	static interpretCommand(cmds, mod) {

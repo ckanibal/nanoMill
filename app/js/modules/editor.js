@@ -9,6 +9,9 @@ class EditorView extends Layout_Deck {
 		this.files = []
 		
 		hook("onFileOpen", (res) => {
+			
+			if(res.stats.isDirectory())
+				return
 
 			_fs.readFile(res.path, 'utf8', (err, text) => {
 				

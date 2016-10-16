@@ -36,8 +36,13 @@ class ResView extends Layout_Module {
 		
 		var $el = $(`
 			<div class='--RESV-entry' tabindex='5'>
-				<div class='--RESV-fname'>${res.name.substr(0, res.name.length - res.leaf.length)}</div>
-				<div class='--RESV-fext'>${res.leaf}</div>
+				<div class='--RESV-label flex-row flex-fill'>
+					<div class='--RESV-fdir'>${path.basename(res.dirName)}/</div>
+					<div class='--RESV-fname'>${res.name.substr(0, res.name.length - res.leaf.length)}</div>
+					<div class='--RESV-fext'>${res.leaf}</div>
+					<div class='flex-fill'></div>
+				</div>
+				<div class='--RESV-entry-close flex-col'><div class='icon-x-s'></div></div>
 			</div>`)
 		$(this.itemWrapper).append($el[0])
 		
@@ -55,6 +60,23 @@ class ResView extends Layout_Module {
 				execHook("onOpenedFileSelect", res)
 		})
 		
+		$el.find(".--RESV-entry-close").click((e) => {
+			if(res.mod) {
+				if(res.mod.requestClose()) {
+					res.mod.performClose()
+					execHook("onFileClosed", res)
+					this.dropResource(res)
+				}
+			}
+			else {
+				execHook("onFileClosed", res)
+				this.dropResource(res)
+			}
+			
+			e.stopPropagation()
+			e.preventDefault()
+		})
+		
 		$el.focus((e) => {
 			if($(this.root).find(".focussed")[0] === e.target)
 				return
@@ -65,6 +87,22 @@ class ResView extends Layout_Module {
 		$el[0].style.animation = `list-item-in 0.3s ease-out 0.${styleDelay || 0}s 1 normal both`
 		
 		this.entries.push({$el, res})
+	}
+	
+	dropResource(res) {
+		let a = []
+		
+		for(let i = 0; i < this.entries.length; i++)
+			if(this.entries[i].res === res) {
+				this.entries[i].$el.remove()
+				this.entries[i].res = null
+			}
+			else
+				a.push(this.entries[i])
+		
+		this.entries = a
+		
+		filemanager.dropResource(res)
 	}
 	
 	static getCurrent() {

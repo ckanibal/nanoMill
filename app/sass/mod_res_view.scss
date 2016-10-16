@@ -3,11 +3,6 @@
 .--RESV-entry {
 	@include abstractListEntry();
 	font-size: 14px;
-	padding: 5px $mod-x-padding;
-	
-	&:hover {
-		background-color: $hvr;
-	}
 	
 	&:focus {
 		outline: none;
@@ -18,16 +13,28 @@
 		background-color: $bg-ui-active;
 		color: whitesmoke;
 		
+		.--RESV-fdir,
 		.--RESV-fext {
 			color: whitesmoke;
 		}
 	}
+	
+	&:hover {
+		.--RESV-entry-close {
+			opacity: 1;
+		}
+	}
+}
+
+.--RESV-label {
+	padding: 5px $mod-x-padding;
 }
 
 .--RESV-fname {
 	
 }
 
+.--RESV-fdir,
 .--RESV-fext {
 	color: grey;
 }
@@ -53,5 +60,21 @@
 		display: inline-block;
 		
 		background-color: #234861;
+	}
+}
+
+.--RESV-label {
+	&:hover {
+		background-color: $hvr;
+	}
+}
+
+.--RESV-entry-close {
+	justify-content: center;
+	padding: 5px $mod-x-padding;
+	opacity: 0;
+	
+	&:hover {
+		background-color: $hvr;
 	}
 }
