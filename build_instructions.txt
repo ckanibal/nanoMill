@@ -1,0 +1,8 @@
+
+run in commandline as admin( if not admin, OSx might not build )
+you can change --out=<dir> wherever you want the bundles to get placed
+keep --version=-<electron_version> up to date
+
+npm
+npm install C:\nanoMill\nanoMill\app --save
+electron-packager C:\nanoMill\nanoMill\app nanomill --all --asar --version=1.4.3 --overwrite --out=C:\nanoMill\nanoMill\pre_dist --icon=C:\nanoMill\nanoMill\app\the-mill.ico
