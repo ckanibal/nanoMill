@@ -255,6 +255,11 @@ class Layout_Module extends Layout_Element {
             $el.find(".mod-sel-list").append($entry)
 			
             $entry.click(() => {
+				if(this.constructor.def.alias === def.alias) {
+					$(":focus").blur()
+					return
+				}
+				
                 $el.find(".mod-sel-list").find(".visible").removeClass("visible")
                 $(this).addClass("visible")
 
@@ -358,6 +363,9 @@ class Layout_Module extends Layout_Element {
     }
 
     redefine(modAlias) {
+		if(modAlias === this.constructor.def.alias)
+			return
+		
         var p = this.parent
 
 		p.registerChild(addModule(modAlias), p.getChildIndex(this))
