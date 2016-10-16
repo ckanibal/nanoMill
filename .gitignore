@@ -52,5 +52,3 @@ app/wininfo.json
 app/compiled.css
 /node_modules
 /pre_dist
-deploy.bat
-deploy.bat
