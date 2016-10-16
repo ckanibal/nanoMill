@@ -271,6 +271,7 @@ pseudo-switches:\n\
 \n\
 hotkeys:\n\
 ctrl+r				executes 'run --sel' in pseudo-console\n\
+ctrl+q				executes 'kill' in pseudo-console\n\
 ".replace(/\n/gi, "<br>")
 }
 
