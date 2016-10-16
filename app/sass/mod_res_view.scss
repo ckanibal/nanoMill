@@ -10,12 +10,16 @@
 	
 	&:focus,
 	&.focussed {
-		background-color: $bg-ui-active;
-		color: whitesmoke;
-		
-		.--RESV-fdir,
-		.--RESV-fext {
-			color: whitesmoke;
+		&::before {
+			width: 5px;
+			height: 5px;
+			border-radius: 5px;
+			display: block;
+			position: absolute;
+			content: " ";
+			background-color: steelblue;
+			align-self: center;
+			margin-left: 1px;
 		}
 	}
 	

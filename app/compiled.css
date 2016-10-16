@@ -537,9 +537,16 @@ textarea::-webkit-input-placeholder {
   animation: list-item-in 0.3s ease-out; }
   .--NAV-entry:hover .--NAV-entry-close {
     opacity: 1; }
-  .--NAV-entry.current-file {
-    border-left: 2px solid steelblue;
-    box-sizing: border-box; }
+  .--NAV-entry.current-file::before {
+    width: 5px;
+    height: 5px;
+    border-radius: 5px;
+    display: block;
+    position: absolute;
+    content: " ";
+    background-color: orange;
+    align-self: center;
+    margin-left: 1px; }
   .--NAV-entry.selected-file {
     font-style: oblique; }
   .--NAV-entry .unsaved-mark {
@@ -567,13 +574,16 @@ textarea::-webkit-input-placeholder {
   font-size: 14px; }
   .--RESV-entry:focus {
     outline: none; }
-  .--RESV-entry:focus, .--RESV-entry.focussed {
+  .--RESV-entry:focus::before, .--RESV-entry.focussed::before {
+    width: 5px;
+    height: 5px;
+    border-radius: 5px;
+    display: block;
+    position: absolute;
+    content: " ";
     background-color: steelblue;
-    color: whitesmoke; }
-    .--RESV-entry:focus .--RESV-fdir,
-    .--RESV-entry:focus .--RESV-fext, .--RESV-entry.focussed .--RESV-fdir,
-    .--RESV-entry.focussed .--RESV-fext {
-      color: whitesmoke; }
+    align-self: center;
+    margin-left: 1px; }
   .--RESV-entry:hover .--RESV-entry-close {
     opacity: 1; }
 

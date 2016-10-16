@@ -11,8 +11,17 @@
 	animation: list-item-in $list-in-dur ease-out;
 	
 	&.current-file {
-		border-left: 2px solid steelblue;
-		box-sizing: border-box;
+		&::before {
+			width: 5px;
+			height: 5px;
+			border-radius: 5px;
+			display: block;
+			position: absolute;
+			content: " ";
+			background-color: orange;
+			align-self: center;
+			margin-left: 1px;
+		}
 	}
 	
 	&.selected-file {
