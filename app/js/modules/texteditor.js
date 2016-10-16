@@ -109,6 +109,7 @@ class TextEditor extends Layout_SubModule {
 		this.editor.destroy()
 		this.editor = false
 		$("#TE-"+this.tid).remove()
+		cleanUpHooksOfMdl(this.id)
 	}
 }
 

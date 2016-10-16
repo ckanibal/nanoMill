@@ -540,7 +540,9 @@ class Layout_SubModule extends Layout_Element {
 	
 	requestClose() { return true }
 	
-	performClose() {}
+	performClose() {
+		cleanUpHooksOfMdl(this.id)
+	}
 }
 
 var _modules = []
