@@ -30,7 +30,7 @@ class ResView extends Layout_Module {
 	
 	addResLink(res, styleDelay) {
 		
-		if(resIsEditable(res)) {
+		if(resIsEditable(res) && false) {
 			return
 		}
 		
