@@ -75,11 +75,11 @@ class RuntimeInterface extends Layout_Module{
 		return s
 	}
 	
-	static openTextAt(s) {
+	static openTextAt(s) {log(s)
 		let [p, l, c] = s.split(":")
-		log(p, l, c)
-		
 		p = p.match(/[^\s]+$/)[0]
+		
+		log(p, l, c)
 	}
 	
 	static interpretCommand(cmds, mod) {
@@ -142,14 +142,18 @@ class RuntimeInterface extends Layout_Module{
 				mod.clearInput()
 		}
 		else if(main === "kill") {
-			if(editor_proc) {
-				mod.print("killing child process")
-				editor_proc.kill()
+			if(mod) {
+				if(editor_proc) {
+					mod.print("killing child openclonk process")
+					editor_proc.kill()
+				}
+				else
+					mod.print("there is no child process of openclonk to kill")
+				
+				mod.clearInput()
 			}
-			else
-				mod.print("there is no child instance of openclonk to kill")
-			
-			mod.clearInput()
+			else if(editor_proc)
+				editor_proc.kill()				
 		}
 		else if(main === "pack") {
 			if(!getConfig("c4group"))
