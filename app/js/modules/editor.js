@@ -40,6 +40,14 @@ class EditorView extends Layout_Deck {
 			
 			return true
 		}, modId)
+		
+		for(let i = 0; i < _dumped_editors.length; i++) {
+			this.registerFile(_dumped_editors[i].file, _dumped_editors[i])
+			this.registerChild(_dumped_editors[i])
+		}
+		
+		execHook("onLayoutChange")
+		_dumped_editors = []
 	}
 
     interpretFile(file, text) {
@@ -63,7 +71,7 @@ class EditorView extends Layout_Deck {
 					file.name === "Particle.txt" ||
 					file.name === "Objects.txt" ||
 					file.name === "PlayerControls.txt"
-					)
+				)
 					mode = "ini"
 				
                 mod = addModule("texteditor")
@@ -94,20 +102,22 @@ class EditorView extends Layout_Deck {
 			return
         }
 		
-		file.editor = this
-		file.mod = mod
-		
 		hook("onFileClosed", (file) => {
 			file.editor = null
-			file.editor = null
+			file.mod = null
 		})
 		
-        this.files.push({
-			file, modIdx
-		})
+		this.registerFile(file, mod)
 
         return true
     }
+	
+	registerFile(file, mod) {
+		file.editor = this
+		file.mod = mod
+		
+		this.files.push(file)
+	}
 
     hasFile(file) {
         for(var i = 0; i < this.files.length; i++)
@@ -138,6 +148,18 @@ class EditorView extends Layout_Deck {
 	onChildShow(idx) {
 		this.children[idx].focus()
 	}
+	
+	onDeletion() {
+		cleanUpHooksOfMdl(this.id)
+		
+		for(let i = 0; i < this.files.length; i++)
+			this.files[i].editor = null
+		
+		for(let i = 0; i < this.children.length; i++) {
+			$("#submod-buffer").append(this.children[i].root)
+			_dumped_editors.push(this.children[i])
+		}
+	}
 }
 
 EditorView.def = {
@@ -147,3 +169,5 @@ EditorView.def = {
 }
 
 registerModule(EditorView.def)
+
+var _dumped_editors = []
