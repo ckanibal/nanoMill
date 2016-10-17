@@ -436,13 +436,11 @@ function reloadCss() {
 	require('./js/sass_processor.js').parseScss()
 }
 
-function save(e) {
-	e.preventDefault()
+function save() {
 	if(!currentEditorMod)
 		return
 	
 	currentEditorMod.save()
-		
 }
 
 function openFilePicker() {
