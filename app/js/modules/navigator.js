@@ -63,8 +63,14 @@ class Navigator extends Layout_Module {
 	insertFileEntry(file) {
 		var $root = $(this.root)
 
-		var $el = $(`<div class='--NAV-entry'><div class='ALE-label'>${file.name}<span class='unsaved-mark'>*</span></div>
-					<div class='--NAV-entry-close flex-col'><div class='icon-x-s'></div></div></div>`)
+		var $el = $(`
+			<div class='--NAV-entry'>
+				<div class='ALE-label'>
+					<div class='--NAV-fdir'>${path.basename(file.dirName)}/</div>
+					${file.name}<span class='unsaved-mark'>*</span>
+				</div>
+				<div class='--NAV-entry-close flex-col'><div class='icon-x-s'></div></div>
+			</div>`)
 
 		$root.find(".mod-body").append($el[0])
 

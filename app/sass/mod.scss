@@ -52,6 +52,8 @@
 	&:hover:not(:focus) .visible {
 		background-color: $tb-bg-hvr;
 	}
+	
+	white-space: nowrwap;
 }
 
 .mod-sel-list {
