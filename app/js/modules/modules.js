@@ -366,11 +366,18 @@ class Layout_Module extends Layout_Element {
 		if(modAlias === this.constructor.def.alias)
 			return
 		
-        var p = this.parent
+        var p = this.parent,
+			w = this.root.style.width,
+			h = this.root.style.height,
+			mod = addModule(modAlias)
 
-		p.registerChild(addModule(modAlias), p.getChildIndex(this))
+		p.registerChild(mod, p.getChildIndex(this))
 		
         removeModule(this)
+		
+		mod.root.style.width = w
+		mod.root.style.height = h
+		
 		execHook("onLayoutChange")
     }
 
