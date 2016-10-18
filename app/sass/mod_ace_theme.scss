@@ -162,11 +162,11 @@
 	
 	.ace_gutter-active-line {
 		background-color : rgb(80, 80, 80);
-		background: linear-gradient(135deg,
+		background: repeating-linear-gradient(135deg,
 				rgb(45, 45, 45) 0px,
-				rgb(45, 45, 45) 5px,
-				rgb(60, 60, 60) 5px,
-				rgb(60, 60, 60) 6px
+				rgb(45, 45, 45) 3px,
+				rgb(60, 60, 60) 3px,
+				rgb(60, 60, 60) 4px
 			);
 		background: rgb(60, 60, 60);
 	}

@@ -303,7 +303,6 @@ textarea::-webkit-input-placeholder {
 	}
 }
 
-
 @mixin abstractListEntry() {
 	color: $font-clr;
 	cursor: default;
@@ -332,6 +331,7 @@ textarea::-webkit-input-placeholder {
 	}
 	
 	font-family: $font-stack;
+	overflow: hidden;
 }
 
 .ALE-icon-w {

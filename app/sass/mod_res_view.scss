@@ -34,6 +34,8 @@
 
 .--RESV-label {
 	padding: 5px $mod-x-padding;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 .--RESV-fname {

@@ -233,7 +233,8 @@ textarea::-webkit-input-placeholder {
   padding: 2px 5px;
   display: flex;
   flex-direction: row;
-  font-family: "Roboto", sans-serif; }
+  font-family: "Roboto", sans-serif;
+  overflow: hidden; }
   .ALE-label:hover {
     background-color: #505050; }
   .ALE-label:active {
@@ -446,7 +447,8 @@ textarea::-webkit-input-placeholder {
 .mod-sel {
   cursor: default;
   position: relative;
-  margin: 0 2px; }
+  margin: 0 2px;
+  white-space: nowrwap; }
   .mod-sel:focus {
     outline: none; }
   .mod-sel:focus .mod-sel-list {
@@ -475,7 +477,9 @@ textarea::-webkit-input-placeholder {
   background-color: #3c3c3c;
   -webkit-user-select: none;
   user-select: none;
-  pointer-events: none; }
+  pointer-events: none;
+  overflow: hidden;
+  white-space: nowrap; }
   .mod-sel-item.visible {
     display: initial; }
 
@@ -593,7 +597,9 @@ textarea::-webkit-input-placeholder {
     opacity: 1; }
 
 .--RESV-label {
-  padding: 5px 7px; }
+  padding: 5px 7px;
+  overflow: hidden;
+  white-space: nowrap; }
 
 .--RESV-fdir,
 .--RESV-fext {
@@ -729,7 +735,7 @@ textarea::-webkit-input-placeholder {
     background: rgba(0, 0, 0, 0.07); }
   .ace_qtmill .ace_gutter-active-line {
     background-color: #505050;
-    background: linear-gradient(135deg, #2d2d2d 0px, #2d2d2d 5px, #3c3c3c 5px, #3c3c3c 6px);
+    background: repeating-linear-gradient(135deg, #2d2d2d 0px, #2d2d2d 3px, #3c3c3c 3px, #3c3c3c 4px);
     background: #3c3c3c; }
   .ace_qtmill .ace_marker-layer .ace_selected-word {
     background: #141414;
