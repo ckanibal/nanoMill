@@ -13,6 +13,10 @@ class Meshviewer extends Layout_SubModule {
 		$(this.root).append(this.cnv)
 		
 		hook("onLayoutChange", () => {
+			let w = $(this.root).width(),
+				h = $(this.root).height()
+			
+			this.scene.setSize(w, h)
 		}, modId)
 	}
 	
@@ -21,8 +25,13 @@ class Meshviewer extends Layout_SubModule {
 		this.scene = mv.create(this.cnv)
 		this.scene.load(obj)
 		
-		if(!this.scene)
-			return
+		let w = $(this.root).width(),
+			h = $(this.root).height()
+		
+		this.scene.setSize(w, h)
+		this.scene.enableViewControls(this.root)
+		
+		log(obj)
     }
 	
 	performClose() {

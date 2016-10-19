@@ -233,7 +233,6 @@ function setMaxAssignmentsOfFlag(flags, maxAssignments) {
 
 class Scene {
 	constructor(gl, cnv) {
-		
 		this.mats = require(path.join(__rootdir, "js/mv_matmanager.js"))
 		
 		this._callStack = new Array(10)
@@ -260,7 +259,7 @@ class Scene {
 		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight)
 		
 		this.mouseControl = false
-		this._ctrl = {};
+		this._ctrl = {}
 		
 		this.flags = SHADER_OPTION_WIREFRAME
 		this._sprograms = []
@@ -274,7 +273,7 @@ class Scene {
 		
 		this.overlayColor = [1, 0, 0]
 		
-		this._meshes = []
+		this.mesh = []
 		this.s_Cond = {}
 		
 		this.renderCause = 0
@@ -305,68 +304,62 @@ class Scene {
 		
 		this.viewportCorrectionX = 1
 		this.viewportCorrectionY = 1
+		
+		this.useShaderByFlags(this.flags)
 	}
 			
 	initRenderLoop(iCause) {
-		// if is already affected a cause for a render loop
-		// add this cause
 		if(this.renderCause && iCause)
-			this.renderCause = this.renderCause | iCause;
-		// init with this cause
+			this.renderCause = this.renderCause | iCause
 		else if(iCause) {
-			this.renderCause = iCause;
-			var fn = function() {
-				if(!_scene.renderCause)
-					return;
+			this.renderCause = iCause
+			var fn = () => {
+				if(!this.renderCause)
+					return
 				
-				_scene.renderStep();
-				window.requestAnimationFrame(fn);
-			};
+				this.renderStep()
+				window.requestAnimationFrame(fn)
+			}
 			
-			window.requestAnimationFrame(fn);
+			window.requestAnimationFrame(fn)
 		}
-		// render once (giving no render cause is equivalent to RENDER_CAUSE_RENDER_ONCE
 		else
-			this.renderStep();
+			this.renderStep()
 	}
 				
 	renderStep() {
-		var currentShaderFlags = this.currentShader.flags
+		let currentShaderFlags = this.shader.flags,
+			gl = this.gl
+		
 		
 		// clear color and depth buffer
-		//gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-		gl.enable(gl.DEPTH_TEST);
+		//gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		gl.enable(gl.DEPTH_TEST)
 		
-		gl.depthFunc(gl.LEQUAL);
-		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		gl.enable(gl.BLEND);
-		gl.disable(gl.DEPTH_TEST);
-		gl.enable(gl.DEPTH_TEST);
+		gl.depthFunc(gl.LEQUAL)
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+		gl.enable(gl.BLEND)
+		gl.disable(gl.DEPTH_TEST)
+		gl.enable(gl.DEPTH_TEST)
 		
-		this.prepareBoneData();
+		this.prepareBoneData()
 		
-		var combinationMask = SHADER_OPTION_SKELETON | SHADER_OPTION_TEXTURE_LOD;
+		var combinationMask = SHADER_OPTION_SKELETON | SHADER_OPTION_TEXTURE_LOD
 		
-		// draw each mesh
-		for(var i in this._meshes) {
+		for(let i = 0; i < this.mesh.submeshes.length; i++) {
+			let m = this.mesh.submeshes[i]
+			let combinedMask = ((m.flags | this.flags) & ~combinationMask) | (m.flags & this.flags);
 			
-			for(var submeshIndex = 0; submeshIndex < this._meshes[i].submeshes.length; submeshIndex++) {
+			if(combinedMask !== currentShaderFlags) {
+				this.useShaderByFlags(combinedMask)
+				currentShaderFlags = m.flags
 				
-				var m = this._meshes[i].submeshes[submeshIndex];
-				let combinedMask = ((m.flags | this.flags) & ~combinationMask) | (m.flags & this.flags);
-				
-				if(combinedMask !== currentShaderFlags) {this.currentRenderFlags = combinedMask;
-					this.useShaderByFlags(combinedMask);
-					currentShaderFlags = m.flags
-					
-					// only for debugging, gets obsolete in stable
-					this.currentRenderFlags = currentShaderFlags;
-				}
-				
-				this.setMatrixUniforms()
-				m.setUpForRenderProcess(combinedMask, this.currentShader)
-				gl.drawArrays(gl.TRIANGLES, 0, m.faceCount*3)
+				this.currentRenderFlags = currentShaderFlags
 			}
+			
+			this.setMatrixUniforms()
+			m.setUpForRenderProcess(gl, combinedMask, this.shader)
+			gl.drawArrays(gl.TRIANGLES, 0, m.faceCount*3)
 		}
 	}
 			
@@ -390,7 +383,7 @@ class Scene {
 	}
 			
 	getShader() {
-		return this.getCurrentShader()
+		return this.shader
 	}
 			
 	enableWireframe() {
@@ -432,7 +425,7 @@ class Scene {
 			gl = this.gl
 		
 		let loc = gl.getUniformLocation(prog, "mWorld");
-		gl.uniformMatrix4fv(loc, false, new Float32Array(_scene.getWorldMatrix()));
+		gl.uniformMatrix4fv(loc, false, new Float32Array(this.getWorldMatrix()));
 		
 		loc = gl.getUniformLocation(prog, "mBones");
 		// this should never return null (product of wrong program assignments). fix this one day
@@ -553,8 +546,8 @@ class Scene {
 	onViewTranslation(x, y) {
 		
 		let m = 2/this.zoomFactor
-		var transX = -x/canvas.width*m/this.viewportCorrectionX,
-			transY = -y/canvas.height*m/this.viewportCorrectionY
+		var transX = -x/this.canvas.width*m/this.viewportCorrectionX,
+			transY = -y/this.canvas.height*m/this.viewportCorrectionY
 		
 		vec3.add(this.vTrans, this.vTrans, vec3.fromValues(transX, transY, 0))
 	}
@@ -717,8 +710,14 @@ class Scene {
 		return s + "-callstack end-\n"
 	}
 			
-	load() {
-		// this.session.createMesh(_scene, targetFilePath, origDirPath).then(resolve, reject)
+	load(obj) {
+		let mesh = new Mesh(this, obj["bounding-box"], obj["bounding-radius"])
+		this.mesh = mesh
+		
+		for(let i = 0; i < obj.submeshes.length; i++)
+			mesh.createSubmesh(this.gl).setData(obj.submeshes[i], this.gl)
+		
+		this.initRenderLoop(RENDER_CAUSE_RENDER_ONCE)
 	}
 		
 	setOption(name, value) {
@@ -742,8 +741,8 @@ class Scene {
 	}
 		
 	setSize(x, y) {
-		canvas.width = x
-		canvas.height = y
+		this.canvas.width = x
+		this.canvas.height = y
 		this.gl.viewport(0, 0, x, y)
 		
 		this.width = x
@@ -753,7 +752,7 @@ class Scene {
 	}
 		
 	setViewportCorrection(w = 1, h = 1) {
-		let d = w/h;
+		let d = w/h
 		
 		if(d > 1) { // if screen is wider than high
 			this.viewportCorrectionX = 1/d
@@ -800,7 +799,7 @@ class Scene {
 		
 		let id = this._sprograms.length
 		
-		this._sprograms[id] = new Shader(vs, fs, id, flags)
+		this._sprograms[id] = new Shader(vs, fs, flags, this, this.gl)
 		
 		return this._sprograms[id]
 	}
@@ -815,8 +814,8 @@ class Scene {
 		
 	createShaderByFlags(flags) {
 		return this.addShader(
-			this.parseShader(composeShaderString(flags | SHADER_OPTION_TYPE), _ref.VSHADER),
-			this.parseShader(composeShaderString(flags), _ref.FSHADER),
+			this.parseShader(composeShaderString(flags | SHADER_OPTION_TYPE), VSHADER),
+			this.parseShader(composeShaderString(flags), FSHADER),
 			flags
 		)
 	}
@@ -831,7 +830,7 @@ class Scene {
 		if(!shader)
 			return false
 		
-		gl.useProgram(shader.program)
+		this.gl.useProgram(shader.program)
 		this.shader = shader
 		
 		shader.setAttrLocs(this.gl)
@@ -895,12 +894,8 @@ class Scene {
 	
 	enableViewControls(target) {
 		$(target).mousedown((e) => {
-			
-			var activeScene = this.getCurrentScene()
-			if(!activeScene)
-				return
 			// if already operating with the mouse
-			else if(this._ctrl.mouseControl != e.which && this._ctrl.mouseControl)
+			if(this._ctrl.mouseControl != e.which && this._ctrl.mouseControl)
 				return
 			
 			this._ctrl.mouseControl = e.which
@@ -908,20 +903,20 @@ class Scene {
 			this._ctrl.mousemoveOriginX = e.clientX
 			this._ctrl.mousemoveOriginY = e.clientY
 			
-			this.getCurrentScene().initRenderLoop(RENDER_CAUSE_MOUSE)
+			this.initRenderLoop(RENDER_CAUSE_MOUSE)
 		})
 		
-		$(target).mousemove(function(e) {
+		$(target).mousemove((e) => {
 			if(!this._ctrl.mouseControl)
 				return
 			
 			if(this._ctrl.mouseControl == 1)
-				scene.onViewRotation(
+				this.onViewRotation(
 					e.clientX - this._ctrl.mousemoveOriginX, 
 					e.clientY - this._ctrl.mousemoveOriginY
 				)
 			else { // == 2
-				scene.onViewTranslation(
+				this.onViewTranslation(
 					e.clientX - this._ctrl.mousemoveOriginX, 
 					e.clientY - this._ctrl.mousemoveOriginY
 				)
@@ -931,7 +926,7 @@ class Scene {
 			}
 		})
 		
-		$(target).mouseup(function (e) {
+		$(target).mouseup((e) => {
 			
 			if(!this._ctrl.mouseControl)
 				return
@@ -942,31 +937,32 @@ class Scene {
 				e.clientY - this._ctrl.mousemoveOriginY
 			)
 			
-			this.getCurrentScene().stopRenderLoop(RENDER_CAUSE_MOUSE)
-			this.getCurrentScene().initRenderLoop(RENDER_CAUSE_RENDER_ONCE)
+			this.stopRenderLoop(RENDER_CAUSE_MOUSE)
+			this.initRenderLoop(RENDER_CAUSE_RENDER_ONCE)
 		})
 		
-		target.addEventListener("DOMMouseScroll", (event) => {
-			this.zoom(event.detail > 0? -ZOOM_FACTOR : ZOOM_FACTOR)
+		target.addEventListener("mousewheel", (e) => {
+			this.zoom(e.wheelDelta < 0? -ZOOM_FACTOR : ZOOM_FACTOR)
 			this.initRenderLoop(RENDER_CAUSE_RENDER_ONCE)
 		}, false)
 	}
 }
 
 class Mesh {
-	constructor(scene) {
-		this._scene = scene;
-		this.vertexAmount = 0;
+	constructor(scene, box, radius) {
+		this._scene = scene
+		this.box = box
+		this.boxRadius = radius
 		
 		this.submeshes = []
 	}
 	
-	createSubmesh() {
+	createSubmesh(gl) {
 		var id = this.submeshes.length
-		this.submeshes[id] = new Submesh(id, this)
+		this.submeshes[id] = new Submesh(id, this, gl)
 		return this.submeshes[id]
 	}
-		
+	
 	queueMaterialFile(pathDir, mName, subMesh) {
 		/*
 		return Materials.get(mName, pathDir).then(function(mat) {
@@ -991,15 +987,76 @@ class Mesh {
 }
 
 class Submesh {
-	constructor(id, parent) {
+	constructor(id, parent, gl) {
 		this.positionBuffer = gl.createBuffer()
 		this.barycentricBuffer = gl.createBuffer()
 		this.flags = 0
 		this.id = id
-		this.parentMesh = parent;
+		this.parentMesh = parent
 	}
-	// sdfg
-	setPositionBufferData(gl, array, faceCount, box) {
+	
+	setData(data, gl) {
+		let apos = [],
+			abary = [],
+			auv = [],
+			fcs = data.faces,
+			fcount = fcs.length,
+			vtcs = data.vertices,
+			v1, v2, v3
+		
+		/**
+			bone-indices: Array[n]
+			bone-weights: Array[n]
+			normal:	Array[3]
+			pos: Array[3]
+			texcoord: Array[2]
+		*/
+		
+		for(let i = 0; i < fcount; i++) {
+			v1 = vtcs[fcs[i][0]]
+			v2 = vtcs[fcs[i][1]]
+			v3 = vtcs[fcs[i][2]]
+			
+			apos.push(v1.pos[0])
+			apos.push(v1.pos[1])
+			apos.push(v1.pos[2])
+			
+			apos.push(v2.pos[0])
+			apos.push(v2.pos[1])
+			apos.push(v2.pos[2])
+			
+			apos.push(v3.pos[0])
+			apos.push(v3.pos[1])
+			apos.push(v3.pos[2])
+			
+			abary.push(0)
+			abary.push(1)
+			abary.push(2)
+			
+			abary.push(0)
+			abary.push(1)
+			abary.push(2)
+			
+			abary.push(0)
+			abary.push(1)
+			abary.push(2)
+			
+			auv.push(v1.texcoord[0])
+			auv.push(v1.texcoord[1])
+			
+			auv.push(v2.texcoord[0])
+			auv.push(v2.texcoord[1])
+			
+			auv.push(v3.texcoord[0])
+			auv.push(v3.texcoord[1])
+		}
+		
+		this.setPositionBufferData(gl, apos, fcount)
+		this.setBarycentricBufferData(gl, abary)
+		this.setUVBufferData(gl, auv)
+	}
+	
+	setPositionBufferData(gl, array, faceCount) {
 		this.faceCount = faceCount
 		
 		if(!(array instanceof Float32Array))
@@ -1007,16 +1064,14 @@ class Submesh {
 		
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer)
 		gl.bufferData(gl.ARRAY_BUFFER, array, gl.STATIC_DRAW)
-		
-		this.box = box
 	}
 		
 	setBarycentricBufferData(gl, array) {
 		if(!(array instanceof Float32Array))
-			array = new Float32Array(array);
+			array = new Float32Array(array)
 		
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.barycentricBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, array, gl.STATIC_DRAW);
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.barycentricBuffer)
+		gl.bufferData(gl.ARRAY_BUFFER, array, gl.STATIC_DRAW)
 	}
 		
 	setUVBufferData(gl, array) {
@@ -1025,7 +1080,7 @@ class Submesh {
 		
 		if(!(array instanceof Float32Array))
 			array = new Float32Array(array)
-	
+		
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.uvBuffer)
 		gl.bufferData(gl.ARRAY_BUFFER, array, gl.STATIC_DRAW)
 	}
@@ -1171,10 +1226,8 @@ class Submesh {
 }
 
 class Shader {	
-	constructor(vs, fs, id, flags, scene, gl) {
+	constructor(vs, fs, flags, scene, gl) {
 		this.flags = flags
-		
-		this.id = id
 		
 		// insert into program
 		this.program = scene.createShaderProgram(vs, fs)
@@ -1266,10 +1319,10 @@ class Skeleton {
 		var tracks = this._a.getTracks(),
 			result = [],
 			mTransformation,
-			parentBindNTrans = {};
+			parentBindNTrans = {}
 		
 		if(time > this._a.length)
-			time = this._a.length;
+			time = this._a.length
 				
 		// iterate through all bones
 		for(var iList = 0; iList < this.boneAmount; iList++) {
