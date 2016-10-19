@@ -1,10 +1,10 @@
 
 class Material {
 	constructor (obj = {}) {
-		this.data = obj;
+		this.data = obj
 	}
 	
-	find (idName) {
+	find(idName) {
 		var result = new Array();
 		
 		let fn = function(o) {
@@ -22,18 +22,18 @@ class Material {
 				if(typeof o[i] === "object" || Object.prototype.toString.call( o[i] ) === '[object Array]')
 					fn(o[i]);
 			}
-		};
+		}
 		
-		fn(this.data);
+		fn(this.data)
 		
-		return result;
+		return result
 	}
 }
 
 
 module.exports = (function() {
 	
-	this._MATERIALS = [];
+	this._MATERIALS = []
 	
 	this.get = function(name, dpath) {
 		
