@@ -395,6 +395,8 @@ function resIsEditable(res) {
 		res.leaf === ".txt" ||
 		res.leaf === ".ocm" ||
 		res.leaf === ".glsl" ||
+		res.leaf === ".mesh" ||
+		res.leaf === ".json" ||
 		res.leaf === ".material")
 		return true
 	

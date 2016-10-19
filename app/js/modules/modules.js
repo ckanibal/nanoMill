@@ -541,6 +541,8 @@ class Layout_SubModule extends Layout_Element {
 	
 	save() { }
 	
+	focus() { }
+	
 	onfocus() { }
 	
 	isSub() { return true }

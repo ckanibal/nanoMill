@@ -100,6 +100,15 @@ class EditorView extends Layout_Deck {
                 mod.setup(file, text, "ini")
                 this.showChild(this.getChildIndex(mod))
             break
+			case ".json":
+				if(file.name !== "mesh.json")
+					break
+			case ".mesh":
+				mod = addModule("meshviewer")
+                this.registerChild(mod)
+                mod.setup(file, JSON.parse(text))
+                this.showChild(this.getChildIndex(mod))
+			break;
 			
 			default:
 			return
