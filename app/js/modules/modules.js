@@ -522,7 +522,7 @@ class Layout_Deck extends Layout_Module {
     showChild(idx) {
         for(var i = this.children.length; i--;)
             if(i === idx)
-                this.children[i].root.style.display = "initial"
+                this.children[i].root.style.display = ""
             else
                 this.children[i].root.style.display = "none"
 		

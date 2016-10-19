@@ -4,8 +4,10 @@ class Meshviewer extends Layout_SubModule {
 		super()
 		
 		this.root = document.createElement("div")
+		this.root.className = "--MV-con flex-col"
 		
 		this.cnv = document.createElement("canvas")
+		this.cnv.className = "--MV-cnv"
 		this.cnv.width = 1
 		this.cnv.height = 1
 		$(this.root).append(this.cnv)
