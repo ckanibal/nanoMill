@@ -5,14 +5,14 @@ class Material {
 	}
 	
 	find(idName) {
-		var result = new Array();
+		var result = new Array()
 		
 		let fn = function(o) {
 			for(let i in o) {
 				if (!o.hasOwnProperty(i))
 					continue;
 				
-				if(i == idName) {
+				if(i === idName) {
 					if(typeof o[i] === "object" || Object.prototype.toString.call( o[i] ) === '[object Array]')
 						result.push.apply(result, o[i])
 					else

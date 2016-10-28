@@ -33,36 +33,36 @@ function composeShaderString(flags) {
 	
 	if(flags & SHADER_OPTION_TYPE) {
 		
-		var str = "";
+		var str = ""
 		
-		str += "attribute vec3 aVertexPosition;\n";
+		str += "attribute vec3 aVertexPosition;\n"
 		
 		if(flags & SHADER_OPTION_WIREFRAME)
 			str += "attribute float barycentric;\n"+
-				"varying vec3 vBC;\n";
+				"varying vec3 vBC;\n"
 		
 		if(flags & (SHADER_OPTION_OVERLAY | SHADER_OPTION_TEXTURE))
 			str += "varying vec2 uv;\n"+
-					"attribute vec2 vUV;\n";
+					"attribute vec2 vUV;\n"
 		
 		if(flags & SHADER_OPTION_DIFFUSE_COLOR)
 			str += "varying vec4 diffuse_color;\n"+
-					"attribute vec4 vDiffuseColor;\n";
+					"attribute vec4 vDiffuseColor;\n"
 		
 		if(flags & SHADER_OPTION_SKELETON) {
-			var assignmentCounts = getMaxAssignmentsOfFlag(flags);
+			var assignmentCounts = getMaxAssignmentsOfFlag(flags)
 			for(let i = 0; i < assignmentCounts/4; i++) {
-				str += "attribute vec4 boneWeights"+i+";\n";
-				str += "attribute vec4 boneIndices"+i+";\n";
+				str += "attribute vec4 boneWeights"+i+";\n"
+				str += "attribute vec4 boneIndices"+i+";\n"
 			}
 			
-			str += "uniform vec4 mBones[248];\n";
+			str += "uniform vec4 mBones[248];\n"
 		}
 		
-		str += "uniform mat4 mWorld;\n";
+		str += "uniform mat4 mWorld;\n"
 		
 		// <MAIN>
-		str += "void main(void) {\n";
+		str += "void main(void) {\n"
 		
 		if(flags & SHADER_OPTION_WIREFRAME) {
 		str +=  "	if(barycentric == 0.0) {\n"+
@@ -70,66 +70,66 @@ function composeShaderString(flags) {
 				"else if(barycentric == 1.0) {\n"+
 				"		vBC = vec3(0, 1, 0); }\n"+
 				"else {\n"+
-				"		vBC = vec3(0, 0, 1); }\n";
+				"		vBC = vec3(0, 0, 1); }\n"
 		}
 		
 		if(flags & SHADER_OPTION_DIFFUSE_COLOR)
-			str += "diffuse_color = vDiffuseColor;\n";
+			str += "diffuse_color = vDiffuseColor;\n"
 		
 		if(flags & (SHADER_OPTION_OVERLAY | SHADER_OPTION_TEXTURE))
-			str += "uv = vUV;\n";
+			str += "uv = vUV;\n"
 				
 		if(flags & SHADER_OPTION_SKELETON) {
-			str += "vec4 pos = vec4(0.0);\n";
+			str += "vec4 pos = vec4(0.0);\n"
 			
-			str +=  "if(int(boneIndices0[0]) != -1) {\n";
+			str +=  "if(int(boneIndices0[0]) != -1) {\n"
 			
 			for(let assignmentGroupId = 0; assignmentGroupId < assignmentCounts/4; assignmentGroupId++) {
 				let strIndices = "boneIndices"+assignmentGroupId,
-					strWeights = "boneWeights"+assignmentGroupId;
+					strWeights = "boneWeights"+assignmentGroupId
 				
-				let assignmentsInGroup = assignmentCounts - 4*assignmentGroupId;
+				let assignmentsInGroup = assignmentCounts - 4*assignmentGroupId
 				if(assignmentsInGroup > 4)
-					assignmentsInGroup = 4;
+					assignmentsInGroup = 4
 				
 				for(let i = 0; i < assignmentsInGroup; i++) {
-					let strIndex = assignmentGroupId + i === 0?"int index":"index";
+					let strIndex = assignmentGroupId + i === 0?"int index":"index"
 					
 					str += 	"	"+strIndex+" = (int("+strIndices+"["+i+"])) * 4;\n"+
 							"	pos += mat4(mBones[index], mBones[index + 1], mBones[index + 2], mBones[index + 3])"+
-							"* vec4(aVertexPosition, 1.0) * "+strWeights+"["+i+"];\n";
+							"* vec4(aVertexPosition, 1.0) * "+strWeights+"["+i+"];\n"
 				}
 			}
 			str +=	"}\n"+
 					"else {\n"+
 					"	pos = vec4(aVertexPosition, 1.0);\n"+
-					"}\n";
+					"}\n"
 			
-			str += "gl_Position = mWorld * pos;\n";
+			str += "gl_Position = mWorld * pos;\n"
 		}
 		else
-			str += "gl_Position = mWorld * vec4(aVertexPosition, 1.0);\n";
+			str += "gl_Position = mWorld * vec4(aVertexPosition, 1.0);\n"
 		
 		str += "}"; // </MAIN>
 		
-		return str;
+		return str
 	}
 	else {		// fragment shader
-		var str = "precision mediump float;\n";
+		var str = "precision mediump float;\n"
 		
 		if(flags & SHADER_OPTION_TEXTURE)
-			str += "uniform sampler2D sampTexture;\n";
+			str += "uniform sampler2D sampTexture;\n"
 		
 		if(flags & SHADER_OPTION_OVERLAY)
 			str += "uniform sampler2D sampOverlay;\n"+
-					"uniform vec3 overlayColor;\n";
+					"uniform vec3 overlayColor;\n"
 		
 		// uv coords are needed for any sort of texture/overlay
 		if(flags & (SHADER_OPTION_OVERLAY | SHADER_OPTION_TEXTURE))
-			str += "varying vec2 uv;\n";
+			str += "varying vec2 uv;\n"
 		
 		if(flags & SHADER_OPTION_DIFFUSE_COLOR)
-			str += "varying vec4 diffuse_color;\n";
+			str += "varying vec4 diffuse_color;\n"
 		
 		// stolen func from the internet
 		if(flags & SHADER_OPTION_WIREFRAME)
@@ -139,59 +139,59 @@ function composeShaderString(flags) {
 				"vec3 d = fwidth(vBC);\n"+
 				"vec3 a3 = smoothstep(vec3(0.0), d*1.02, vBC);\n"+
 				"return min(min(a3.x, a3.y), a3.z);\n"+
-			"}\n\n";
+			"}\n\n"
 		
 		str += "\
-			void main(void) {\n";
+			void main(void) {\n"
 		
 		if(flags & SHADER_OPTION_TEXTURE_LOD)
-			var fnTexture = "texture2DLodEXT";
+			var fnTexture = "texture2DLodEXT"
 		else
-			var fnTexture = "texture2D";
+			var fnTexture = "texture2D"
 		
 		if(flags & SHADER_OPTION_OVERLAY) {
-			str += "vec4 overlayTexel = "+fnTexture+"(sampOverlay, uv);\n";
+			str += "vec4 overlayTexel = "+fnTexture+"(sampOverlay, uv);\n"
 			
 			if(flags & SHADER_OPTION_TEXTURE)
-				str += "vec4 textureTexel = "+fnTexture+"(sampTexture, uv);\n";
+				str += "vec4 textureTexel = "+fnTexture+"(sampTexture, uv);\n"
 		}
 				
-		var fragInput;
+		var fragInput
 		if(flags & SHADER_OPTION_TEXTURE) {
 			if(flags & SHADER_OPTION_OVERLAY) {
-				str += "vec4 overlay = vec4(overlayColor * overlayTexel.rgb, overlayTexel.a);";
-				str += "float alpha0 = 1.0 - (1.0 - textureTexel.a) * (1.0 - overlay.a);";
+				str += "vec4 overlay = vec4(overlayColor * overlayTexel.rgb, overlayTexel.a);"
+				str += "float alpha0 = 1.0 - (1.0 - textureTexel.a) * (1.0 - overlay.a);"
 			
-				fragInput = "vec4(mix(textureTexel.rgb, overlay.rgb, overlay.a / alpha0), alpha0)";
-				// fragInput = "vec4(mix(textureTexel.rgb, overlayTexel.rgb * overlayColor, overlayTexel.a), textureTexel.a)";
+				fragInput = "vec4(mix(textureTexel.rgb, overlay.rgb, overlay.a / alpha0), alpha0)"
+				// fragInput = "vec4(mix(textureTexel.rgb, overlayTexel.rgb * overlayColor, overlayTexel.a), textureTexel.a)"
 			}
 			else
-				fragInput = fnTexture+"( sampTexture, uv)";
+				fragInput = fnTexture+"( sampTexture, uv)"
 		}
 		else if(flags & SHADER_OPTION_OVERLAY) {
 			if(flags & SHADER_OPTION_DIFFUSE_COLOR)
-				fragInput = "mix(diffuse_color, vec4(overlayTexel.rgb * overlayColor, overlayTexel.a), overlayTexel.a)";
+				fragInput = "mix(diffuse_color, vec4(overlayTexel.rgb * overlayColor, overlayTexel.a), overlayTexel.a)"
 			else
-				fragInput = "vec4(overlayTexel.rgb * overlayColor, overlayTexel.a)";
+				fragInput = "vec4(overlayTexel.rgb * overlayColor, overlayTexel.a)"
 		}
 		else if(flags & SHADER_OPTION_DIFFUSE_COLOR)
-			fragInput = "diffuse_color";
+			fragInput = "diffuse_color"
 		else // default color
-			fragInput = "vec4(0.6, 0.6, 0.6, 1.0)";
+			fragInput = "vec4(0.6, 0.6, 0.6, 1.0)"
 		
 		
 		// compute frag color
-		str += "gl_FragColor = ";
+		str += "gl_FragColor = "
 		
 		if(flags & SHADER_OPTION_WIREFRAME)
-			str += "mix(vec4(0.2, 0.2, 0.2, 1.0), "+fragInput+", edgeFactor() * 0.5 + 0.5);\n";
+			str += "mix(vec4(0.2, 0.2, 0.2, 1.0), "+fragInput+", edgeFactor() * 0.5 + 0.5);\n"
 		else
-			str += fragInput+";\n";
+			str += fragInput+";\n"
 		
 		/*
 		if(flags & (SHADER_OPTION_OVERLAY | SHADER_OPTION_TEXTURE))
 			str += "if(gl_FragColor.a < 0.95)\n"+
-					"	discard;\n";
+					"	discard;\n"
 		*/
 		
 		return str + "}"; // close main()
@@ -205,20 +205,20 @@ const
 	SHADER_OPTION_SKELETON = 		8,
 	SHADER_OPTION_TYPE = 	   	   16, // if set: vertexshader; otherwise: fragmentshader
 	SHADER_OPTION_DIFFUSE_COLOR =  32,
-	SHADER_OPTION_TEXTURE_LOD =	   64;
+	SHADER_OPTION_TEXTURE_LOD =	   64
 
 const 
 	RENDER_CAUSE_RENDER_ONCE = 	0,
 	RENDER_CAUSE_ANIMATION = 	1,
 	RENDER_CAUSE_MOUSE = 		2,
-	RENDER_CAUSE_MOVEMENT = 	2;
+	RENDER_CAUSE_MOVEMENT = 	2
 
 const
 	RESOURCE_ERROR_INEXISTENT = 1,
-	RESOURCE_ERROR_FAILED_TO_PARSE = 2;
+	RESOURCE_ERROR_FAILED_TO_PARSE = 2
 	
 const
-	CLIPSACE_CONVERSION = 1; // 0.01;
+	CLIPSACE_CONVERSION = 1; // 0.01
 
 function getMaxAssignmentsOfFlag(flags) {
 	return (flags >> 8) & 15; // length
@@ -226,7 +226,7 @@ function getMaxAssignmentsOfFlag(flags) {
 
 function setMaxAssignmentsOfFlag(flags, maxAssignments) {
 	if(!maxAssignments)
-		return false;
+		return false
 	
 	return (flags | (maxAssignments << 8)); // offset
 }
@@ -237,7 +237,7 @@ class Scene {
 		
 		this._callStack = new Array(10)
 		this._currentCallStackIndex = 0
-		gl = WebGLDebugUtils.makeDebugContext(gl, this.onGlError.bind(this), this.glTraceCallstack.bind(this));
+		gl = WebGLDebugUtils.makeDebugContext(gl, this.onGlError.bind(this), this.glTraceCallstack.bind(this))
 		
 		this.gl = gl
 		/* gl setup */
@@ -253,8 +253,8 @@ class Scene {
 		gl.enable(gl.BLEND)
 		gl.disable(gl.DEPTH_TEST)
 		
-		// gl.enable(gl.CULL_FACE);
-		// gl.cullFace(gl.BACK);
+		// gl.enable(gl.CULL_FACE)
+		// gl.cullFace(gl.BACK)
 		
 		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight)
 		
@@ -274,7 +274,6 @@ class Scene {
 		this.overlayColor = [1, 0, 0]
 		
 		this.mesh = []
-		this.s_Cond = {}
 		
 		this.renderCause = 0
 		
@@ -307,7 +306,7 @@ class Scene {
 		
 		this.useShaderByFlags(this.flags)
 	}
-			
+	
 	initRenderLoop(iCause) {
 		if(this.renderCause && iCause)
 			this.renderCause = this.renderCause | iCause
@@ -326,7 +325,7 @@ class Scene {
 		else
 			this.renderStep()
 	}
-				
+	
 	renderStep() {
 		let currentShaderFlags = this.shader.flags,
 			gl = this.gl
@@ -344,11 +343,11 @@ class Scene {
 		
 		this.prepareBoneData()
 		
-		var combinationMask = SHADER_OPTION_SKELETON | SHADER_OPTION_TEXTURE_LOD
+		let combinationMask = SHADER_OPTION_SKELETON | SHADER_OPTION_TEXTURE_LOD
 		
 		for(let i = 0; i < this.mesh.submeshes.length; i++) {
 			let m = this.mesh.submeshes[i]
-			let combinedMask = ((m.flags | this.flags) & ~combinationMask) | (m.flags & this.flags);
+			let combinedMask = ((m.flags | this.flags) & ~combinationMask) | (m.flags & this.flags)
 			
 			if(combinedMask !== currentShaderFlags) {
 				this.useShaderByFlags(combinedMask)
@@ -362,7 +361,7 @@ class Scene {
 			gl.drawArrays(gl.TRIANGLES, 0, m.faceCount*3)
 		}
 	}
-			
+	
 	stopRenderLoop(iCause) {
 		this.renderCause = this.renderCause & ~iCause
 	}
@@ -372,35 +371,27 @@ class Scene {
 	}
 	
 	setOverlayColor(value) {
-		this.overlayColor = [value[0]/255, value[1]/255, value[2]/255];
-		this.initRenderLoop(RENDER_CAUSE_RENDER_ONCE);
+		this.overlayColor = [value[0]/255, value[1]/255, value[2]/255]
+		this.initRenderLoop(RENDER_CAUSE_RENDER_ONCE)
 	}
 	
 	setShader(shader) {
-		this.shader = shader;
+		this.shader = shader
 		
 		this.useShader(this.shader)
 	}
-			
+	
 	getShader() {
 		return this.shader
 	}
 			
-	enableWireframe() {
-		this.flags = this.flags | SHADER_OPTION_WIREFRAME;
-	}
-	
-	disableWireframe() {
-		this.flags = this.flags & ~SHADER_OPTION_WIREFRAME;
-	}
-			
 	setSkeleton(skeleton) {
-		this.setSkeletonCondition("skeletonGiven", true)
-		
 		if(typeof this.onskeletonset === "function")
 			this.onskeletonset(skeleton, !!this.skeleton)
 		
 		this.skeleton = skeleton
+		
+		this.flags = this.flags | SHADER_OPTION_SKELETON
 		
 		this.initRenderLoop(RENDER_CAUSE_RENDER_ONCE)
 	}
@@ -409,7 +400,7 @@ class Scene {
 		if(!this.skeleton || !this.skeleton.isSkeleton)
 			return mat4.create()
 		
-		let bonePalette = this.skeleton.getBoneTransformations(this.getAnimationTime()/1000),
+		let bonePalette = this.skeleton.getBonePalette(this.getAnimationTime()/1000),
 			palette = [],
 			l = bonePalette.length
 		
@@ -420,24 +411,23 @@ class Scene {
 	}
 									
 	setMatrixUniforms() {
-		
 		let prog = this.getCurrentProgram(),
 			gl = this.gl
 		
-		let loc = gl.getUniformLocation(prog, "mWorld");
-		gl.uniformMatrix4fv(loc, false, new Float32Array(this.getWorldMatrix()));
+		let loc = gl.getUniformLocation(prog, "mWorld")
+		gl.uniformMatrix4fv(loc, false, new Float32Array(this.getWorldMatrix()))
 		
-		loc = gl.getUniformLocation(prog, "mBones");
-		// this should never return null (product of wrong program assignments). fix this one day
+		loc = gl.getUniformLocation(prog, "mBones")
+		
 		if(loc != -1 && loc != null)
-			gl.uniform4fv(loc, this.recentBoneData);
+			gl.uniform4fv(loc, this.recentBoneData)
 	}
 			
 	prepareBoneData() {
 		if(!(this.flags & SHADER_OPTION_SKELETON))
-			return;
+			return
 		
-		this.recentBoneData = new Float32Array(this.getBoneMatrices());
+		this.recentBoneData = new Float32Array(this.getBoneMatrices())
 	}
 			
 	getWorldMatrix() {
@@ -462,18 +452,17 @@ class Scene {
 			 this.zoomFactor * this.viewportCorrectionY,
 			-this.zoomFactor
 			])
-		mat4.multiply(m, m, t);
+		mat4.multiply(m, m, t)
 		
-		var ortho = mat4.create();
+		var ortho = mat4.create()
 		// with y-axis flipped so that 0 is at the top
-		mat4.ortho(ortho, -1, 1, -1, 1, -5, 5);
-		mat4.multiply(m, ortho, m);
+		mat4.ortho(ortho, -1, 1, -1, 1, -5, 5)
+		mat4.multiply(m, ortho, m)
 		
-		return m;
+		return m
 	}
-			
+	
 	setAnimation(index) {
-		
 		this._anim = this.skeleton.setAnimation(index)
 		
 		this.animTimeOffset = 0
@@ -482,32 +471,32 @@ class Scene {
 	}
 			
 	setAnimationPosition(iPerc) {
-		this.animTimeOffset = this._anim.length*10*iPerc; // /100*1000
+		this.animTimeOffset = this._anim.length*10*iPerc // /100*1000
 		
-		this.initRenderLoop(RENDER_CAUSE_RENDER_ONCE);
+		this.initRenderLoop(RENDER_CAUSE_RENDER_ONCE)
 	}
-			
+	
 	playAnimation() {
 		this.animGlobalStartTime = (new Date()).getTime()
 		this.playsAnimation = true
 		
 		this.initRenderLoop(RENDER_CAUSE_ANIMATION)
 	}
-			
+	
 	pauseAnimation() {
 		this.playsAnimation = false
 		
 		this.animTimeOffset += (new Date()).getTime() - this.animGlobalStartTime
 		this.stopRenderLoop(RENDER_CAUSE_ANIMATION)
 	}
-			
+	
 	getAnimationTime() {
 		if(this.playsAnimation)
 			return this.animTimeOffset + (new Date()).getTime() - this.animGlobalStartTime
 		else
 			return this.animTimeOffset
 	}
-			
+	
 	getAnimationPosition() {
 		var v = this.getAnimationTime()
 		v /= 1000
@@ -517,19 +506,19 @@ class Scene {
 		
 		return v/this._anim.length*100
 	}
-			
+	
 	resetView() {
 		quat.set(this.qRot, 0, 0, 0, 1)
 		vec3.set(this.vTrans, 0, 0, 0)
 		
 		this.initRenderLoop(RENDER_CAUSE_RENDER_ONCE)
 	}
-			
+	
 	onViewRotation(x, y) {
 		this.xRot = -y/100
 		this.yRot = x/100
 	}
-			
+	
 	onViewRotationStop(x, y) {
 		var qNewRot = quat.create()
 		
@@ -542,7 +531,7 @@ class Scene {
 		this.xRot = 0
 		this.yRot = 0
 	}
-			
+	
 	onViewTranslation(x, y) {
 		
 		let m = 2/this.zoomFactor
@@ -598,30 +587,30 @@ class Scene {
 				smallest = Math.abs(z)
 			
 			if(smallest > 0.1) {
-				x /= smallest;
-				y /= smallest;
-				z /= smallest;
+				x /= smallest
+				y /= smallest
+				z /= smallest
 			}
 			
-			x = Math.round(x * precision);
-			y = Math.round(y * precision);
-			z = Math.round(z * precision);
+			x = Math.round(x * precision)
+			y = Math.round(y * precision)
+			z = Math.round(z * precision)
 			
-			angle = Math.round(angle*this.c_RtD);
+			angle = Math.round(angle*this.c_RtD)
 			
-			strRot = "Trans_Rotate(" + angle + ", " + x + ", "+ y +", " + z + ")";
+			strRot = "Trans_Rotate(" + angle + ", " + x + ", "+ y +", " + z + ")"
 		}
 		
 		if(this.vTrans[0] || this.vTrans[1] || this.vTrans[2]) {
 			var tx = this.vTrans[0],
 				ty = this.vTrans[1],
-				tz = this.vTrans[2];
+				tz = this.vTrans[2]
 			
-			tx = parseInt(tx * 1000);
-			ty = parseInt(ty * 1000);
-			tz = parseInt(tz * 1000);
+			tx = parseInt(tx * 1000)
+			ty = parseInt(ty * 1000)
+			tz = parseInt(tz * 1000)
 			
-			strTrans = "Trans_Translate("+tx+", "+ty+", "+tz+")";
+			strTrans = "Trans_Translate("+tx+", "+ty+", "+tz+")"
 		}
 		
 		if(strRot.length && strTrans.length)
@@ -635,11 +624,11 @@ class Scene {
 				rotateXY: "Trans_Mul("+strRotX+", "+strRotY+")",
 			}
 		else if(strTrans.length)
-			return strTrans;
+			return strTrans
 		
 		return false
 	}
-			
+	
 	zoom(addend) {
 		if(this.zoomLevel + addend < 0)
 			return
@@ -653,45 +642,23 @@ class Scene {
 		this.initRenderLoop(RENDER_CAUSE_RENDER_ONCE)
 	}
 	
-	setSkeletonCondition(key, val) {
-		if(arguments.length == 2) {
-			this.s_Cond[key] = val
-			this.updateSkeletonCondition()
-		}
-		else if(arguments.length)
-			return this.s_Cond[key]
-		
-		this.initRenderLoop(RENDER_CAUSE_RENDER_ONCE)
-	}
-	
-	updateSkeletonCondition() {
-		if(this.s_Cond.meshHasVertexAssignments && this.s_Cond.skeletonGiven)
-			this.flags = this.flags | SHADER_OPTION_SKELETON
-		else
-			this.flags = this.flags & ~SHADER_OPTION_SKELETON
-	}
-	
 	hasSkeletonRequirements() {
 		return this.flags & SHADER_OPTION_SKELETON
 	}
 	
 	useAsMatDef(file, materialName) {
 	}
-
+	
 	// session part
-
 	onGlError(e, funcName, args) {
 		let util = require("util")
 		RenderError(WebGLDebugUtils.glEnumToString(e) + " was caused by calling '" + funcName + "'\n" + util.inspect(args) +
 			"\n" + this.excertCallStack(),
 			this
 		)
-		log(
-			_sc.chpath + "/content/modules/cide/meshviewer/shader.txt",
-			bumpFlags(this.currentRenderFlags) + "\n----------------\n" +
+		error(bumpFlags(this.currentRenderFlags) + "\n----------------\n" +
 			composeShaderString(this.currentRenderFlags | SHADER_OPTION_TYPE) + "----------------\n" +
-			composeShaderString(thi.currentRenderFlags),
-			true
+			composeShaderString(this.currentRenderFlags)
 		)
 		this.stopRenderLoop()
 	}
@@ -709,7 +676,7 @@ class Scene {
 		
 		return s + "-callstack end-\n"
 	}
-			
+	
 	load(obj) {
 		let mesh = new Mesh(this, obj["bounding-box"], obj["bounding-radius"])
 		this.mesh = mesh
@@ -718,8 +685,49 @@ class Scene {
 			mesh.createSubmesh(this.gl).setData(obj.submeshes[i], this.gl)
 		
 		this.initRenderLoop(RENDER_CAUSE_RENDER_ONCE)
-	}
 		
+		this.loadSkeleton(obj.skeleton)
+	}
+	
+	loadSkeleton(data) {
+		let sk = new Skeleton()
+		
+		this.setSkeleton(sk)
+		sk.setBones(data.bones)
+		
+		/** [{
+				length,
+				name,
+				tracks: [{
+					bone-index,
+					frames: [{
+						position,
+						transformation: [{
+							pos,
+							rot,
+							scale
+						},{...}]
+					},{...}]
+				},{...}]
+			},
+			{...}]
+		*/
+		let anims = data.animations
+		let t, a, l, set
+		
+		for(let i = 0; i < anims.length; i++) {
+			for(t = 0; t < anims[i].tracks.length; t++) {
+				set = anims[i].tracks[t]
+				a = []
+				a[set["bone-index"]] = set["frames"]
+				
+				anims[i].tracks[t] = a
+			}
+		}
+		
+		sk.setAnimations(anims)
+	}
+	
 	setOption(name, value) {
 		switch(name) {
 			case "OVERLAY_COLOR":				
@@ -728,9 +736,9 @@ class Scene {
 			
 			case "SHOW_WIREFRAME":
 				if(value)
-					this.enableWireframe()
+					this.flags = this.flags | SHADER_OPTION_WIREFRAME
 				else
-					this.disableWireframe()
+					this.flags = this.flags & ~SHADER_OPTION_WIREFRAME
 			break
 			
 			case "SHOW_BOUNDING_BOX":
@@ -739,7 +747,7 @@ class Scene {
 		
 		this.initRenderLoop(RENDER_CAUSE_RENDER_ONCE)
 	}
-		
+	
 	setSize(x, y) {
 		this.canvas.width = x
 		this.canvas.height = y
@@ -750,7 +758,7 @@ class Scene {
 		
 		this.setViewportCorrection(x, y)
 	}
-		
+	
 	setViewportCorrection(w = 1, h = 1) {
 		let d = w/h
 		
@@ -763,7 +771,7 @@ class Scene {
 			this.viewportCorrectionY = 1/d
 		}
 	}
-		
+	
 	loadTexture(src, mesh, key, matName) {
 		var img = new Image()
 		
@@ -784,15 +792,15 @@ class Scene {
 			if(this.ontextureloadsucces)
 				this.ontextureloadsucces(tu)
 			
-			mesh.setTexture(texture, key);
+			mesh.setTexture(texture, key)
 		}
 		
 		if(this.ontextureloaderror)
 			img.onerror = _ => this.ontextureloaderror(tu)
-		
+		log(src)
 		img.src = encodeURI("file:" + src).replace(/#/g, "%23")
 	}
-		
+	
 	addShader(vs, fs, flags) {
 		if(!vs || !fs)
 			return error("Initializing Program failed, at least one (vertex- or fragment-shader) hasn't been identified")
@@ -803,7 +811,7 @@ class Scene {
 		
 		return this._sprograms[id]
 	}
-		
+	
 	getShaderByFlags(searchFlags) {
 		for(let id = 0; id < this._sprograms.length; id++)
 			if(this._sprograms[id].flags == searchFlags)
@@ -811,7 +819,7 @@ class Scene {
 		
 		return false
 	}
-		
+	
 	createShaderByFlags(flags) {
 		return this.addShader(
 			this.parseShader(composeShaderString(flags | SHADER_OPTION_TYPE), VSHADER),
@@ -819,14 +827,13 @@ class Scene {
 			flags
 		)
 	}
-		
+	
 	useShaderByFlags(flags) {
 		let shader = this.getShaderByFlags(flags)
 		
 		if(!shader)
 			shader = this.createShaderByFlags(flags)
 		
-		// on compilation error
 		if(!shader)
 			return false
 		
@@ -837,17 +844,17 @@ class Scene {
 		
 		return true
 	}
-		
+	
 	useShader(shader) {
 		if(!shader || !shader.isShader)
-			return;
+			return
 		
-		gl.useProgram(shader.program);
-		this.shader = shader;
+		gl.useProgram(shader.program)
+		this.shader = shader
 		
 		shader.setAttrLocs(this.gl)
 	}
-		
+	
 	createShaderProgram(vs, fs) {
 		// Create the shader program
 		let gl = this.gl,
@@ -862,7 +869,7 @@ class Scene {
 		
 		return prog
 	}
-		
+	
 	parseShader(string, type) {
 		
 		let shader, gl = this.gl
@@ -889,7 +896,7 @@ class Scene {
 	}
 	
 	getCurrentProgram() {
-		return this.shader.program;
+		return this.shader.program
 	}		
 	
 	enableViewControls(target) {
@@ -921,8 +928,8 @@ class Scene {
 					e.clientY - this._ctrl.mousemoveOriginY
 				)
 			
-				this._ctrl.mousemoveOriginX = e.clientX;
-				this._ctrl.mousemoveOriginY = e.clientY;
+				this._ctrl.mousemoveOriginX = e.clientX
+				this._ctrl.mousemoveOriginY = e.clientY
 			}
 		})
 		
@@ -968,24 +975,24 @@ class Mesh {
 		return Materials.get(mName, pathDir).then(function(mat) {
 			
 			if(_mesh._scene._sess.onmatload)
-				_mesh._scene._sess.onmatload(mat, _mesh._scene.id, mName);
+				_mesh._scene._sess.onmatload(mat, _mesh._scene.id, mName)
 			
 			if(!mat)
-				return;
+				return
 			
-			var t_units =  mat.find("texture_unit");
+			var t_units =  mat.find("texture_unit")
 			
 			for(var i in t_units) {
 				if(t_units[i].texture && t_units[i].texture.length)
 					if(t_units[i].name == "Overlay")
-						_mesh._scene._sess.loadTexture(pathDir + "/" + t_units[i].texture[0], subMesh, "overlay", mName);
+						_mesh._scene._sess.loadTexture(pathDir + "/" + t_units[i].texture[0], subMesh, "overlay", mName)
 					else
-						_mesh._scene._sess.loadTexture(pathDir +"/"+ t_units[i].texture[0], subMesh, "texture", mName);
+						_mesh._scene._sess.loadTexture(pathDir +"/"+ t_units[i].texture[0], subMesh, "texture", mName)
 			}
 		});*/
 	}		
 }
-
+var S = 0
 class Submesh {
 	constructor(id, parent, gl) {
 		this.positionBuffer = gl.createBuffer()
@@ -999,10 +1006,22 @@ class Submesh {
 		let apos = [],
 			abary = [],
 			auv = [],
+			abi = [],
+			abw = [],
 			fcs = data.faces,
 			fcount = fcs.length,
 			vtcs = data.vertices,
-			v1, v2, v3
+			v1, v2, v3,
+			maxBones = 0, b
+		
+		for(let i = 0; i < vtcs.length; i++)
+			if(vtcs[i]["bone-indices"].length > maxBones)
+				maxBones = vtcs[i]["bone-indices"].length
+		
+		if(maxBones > 0 && maxBones < 5)
+			maxBones = 4
+		else if(maxBones > 4)
+			maxBones = 8
 		
 		/**
 			bone-indices: Array[n]
@@ -1049,11 +1068,28 @@ class Submesh {
 			
 			auv.push(v3.texcoord[0])
 			auv.push(v3.texcoord[1])
+			
+			for(b = 0; b < maxBones; b++) {
+				abi.push(v1["bone-indices"][b] || -1)
+				abw.push(v1["bone-weights"][b] || 0)
+			}
+			
+			for(b = 0; b < maxBones; b++) {
+				abi.push(v2["bone-indices"][b] || -1)
+				abw.push(v2["bone-weights"][b] || 0)
+			}
+			
+			for(b = 0; b < maxBones; b++) {
+				abi.push(v3["bone-indices"][b] || -1)
+				abw.push(v3["bone-weights"][b] || 0)
+			}
 		}
 		
 		this.setPositionBufferData(gl, apos, fcount)
 		this.setBarycentricBufferData(gl, abary)
 		this.setUVBufferData(gl, auv)
+		
+		this.setVertexAssignments(gl, abi, abw, maxBones)
 	}
 	
 	setPositionBufferData(gl, array, faceCount) {
@@ -1065,7 +1101,7 @@ class Submesh {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer)
 		gl.bufferData(gl.ARRAY_BUFFER, array, gl.STATIC_DRAW)
 	}
-		
+	
 	setBarycentricBufferData(gl, array) {
 		if(!(array instanceof Float32Array))
 			array = new Float32Array(array)
@@ -1073,7 +1109,7 @@ class Submesh {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.barycentricBuffer)
 		gl.bufferData(gl.ARRAY_BUFFER, array, gl.STATIC_DRAW)
 	}
-		
+	
 	setUVBufferData(gl, array) {
 		if(!this.uvBuffer)
 			this.uvBuffer = gl.createBuffer()
@@ -1084,7 +1120,7 @@ class Submesh {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.uvBuffer)
 		gl.bufferData(gl.ARRAY_BUFFER, array, gl.STATIC_DRAW)
 	}
-		
+	
 	setDiffuseColorBufferData(gl, array) {
 		if(!this.colorBuffer)
 			this.colorBuffer = gl.createBuffer()
@@ -1092,12 +1128,12 @@ class Submesh {
 		if(!(array instanceof Float32Array))
 			array = new Float32Array(array)
 	
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer)
 		gl.bufferData(gl.ARRAY_BUFFER, array, gl.STATIC_DRAW)
 		
 		this.flags = this.flags | SHADER_OPTION_DIFFUSE_COLOR
 	}
-		
+	
 	setVertexAssignments(gl, buffer_Indices, buffer_Weights, maxAssignments) {
 		
 		if(!(buffer_Indices instanceof Float32Array))
@@ -1121,13 +1157,13 @@ class Submesh {
 		
 		this.flags = this.flags | SHADER_OPTION_SKELETON
 	}
-		
+	
 	reloadTexture(gl, key, img) {
 		gl.bindTexture(gl.TEXTURE_2D, this.getTexture(key))
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-		gl.bindTexture(gl.TEXTURE_2D, null);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img)
+		gl.bindTexture(gl.TEXTURE_2D, null)
 	}
-		
+	
 	setUpForRenderProcess(gl, combinedFlags, shader) {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer)
 		gl.enableVertexAttribArray(shader.attrPos)
@@ -1182,7 +1218,7 @@ class Submesh {
 		gl.enableVertexAttribArray(shader.attrUV)
 		gl.vertexAttribPointer(shader.attrUV, 2, gl.FLOAT, false, 0, 0)
 		
-		var tId = 0
+		let tId = 0
 		
 		if(this.texTexture) {
 			gl.activeTexture(gl.TEXTURE0)
@@ -1193,13 +1229,11 @@ class Submesh {
 		}
 		
 		if(this.texOverlay) {
-			// overlay texture
 			gl.activeTexture(gl["TEXTURE" + tId])
 			gl.bindTexture(gl.TEXTURE_2D, this.texOverlay)
 			gl.uniform1i(gl.getUniformLocation(shader.program, "sampOverlay"), tId)
 			
-			// overlay color
-			var loc = gl.getUniformLocation(this.getCurrentProgram(), "overlayColor")
+			let loc = gl.getUniformLocation(this.getCurrentProgram(), "overlayColor")
 			gl.uniform3fv(loc, new Float32Array(this.parent._scene.overlayColor))
 		}
 	}
@@ -1241,7 +1275,7 @@ class Shader {
 			return
 		// attribute position
 		this.attrPos = gl.getAttribLocation(this.program, "aVertexPosition")
-		gl.enableVertexAttribArray(this.attrPos);
+		gl.enableVertexAttribArray(this.attrPos)
 		
 		// attribute wireframe
 		this.attrBary = gl.getAttribLocation(this.program, "barycentric")
@@ -1258,10 +1292,10 @@ class Shader {
 		this.attrColor = gl.getAttribLocation(this.program, "vDiffuseColor")
 		
 		if(this.attrColor != -1)
-			gl.enableVertexAttribArray(this.attrColor);
+			gl.enableVertexAttribArray(this.attrColor)
 		
 		// attribute boneIndices
-		this.attrBIndices0 = gl.getAttribLocation(this.program, "boneIndices0");
+		this.attrBIndices0 = gl.getAttribLocation(this.program, "boneIndices0")
 		
 		if(this.attrBIndices0 != -1)
 			gl.enableVertexAttribArray(this.attrBIndices0)
@@ -1306,7 +1340,7 @@ class Skeleton {
 		return this._a
 	}
 	
-	getBoneTransformations(time) {
+	getBonePalette(time) {
 		
 		if(this._a === -1) {
 			var r = []
@@ -1316,22 +1350,20 @@ class Skeleton {
 			return r
 		}
 		
-		var tracks = this._a.getTracks(),
+		var tracks = this._a.tracks,
 			result = [],
 			mTransformation,
 			parentBindNTrans = {}
 		
 		if(time > this._a.length)
 			time = this._a.length
-				
-		// iterate through all bones
-		for(var iList = 0; iList < this.boneAmount; iList++) {
+		
+		for(var iBone = 0; iBone < this.boneAmount; iBone++) {
 			
-			var iBone = this.sortedBones[iList],
-				bone = this.bones[iBone]
+			let bone = this.bones[iBone]
 			
 			// get animations tracks
-			var trackData = tracks[iBone]
+			let trackData = tracks[iBone]
 			
 			mTransformation = mat4.create()
 			
@@ -1344,17 +1376,18 @@ class Skeleton {
 					last = -1
 				
 				// calculate current keyframe transformation, if any
-				for(let i = 0; i < l; i += 3) {
+				for(let i = 0; i < l; i++) {
 					// iterate to the right anim keyframeset
-					if(trackData[i] >= time) {
+					if(trackData[i].position >= time) {
 						
 						// calculate animation weight depending on the given time value
-						var t = 1 - (time - trackData[last]) /( trackData[i] - trackData[last])
+						var t = 1 - (time - trackData[last].position)/
+							(trackData[i].position - trackData[last].position)
 						
 						var rot = quat.create(),
 							trans = vec3.create()
 						
-						vec3.lerp(trans, trackData[i + 1], trackData[last + 1], t)
+						vec3.lerp(trans, trackData[i].transformation.pos, trackData[last + 1], t)
 						quat.slerp(rot, trackData[i + 2], trackData[last + 2], t)
 						
 						mat4.fromRotationTranslation(mTransformation, rot, trans)
@@ -1362,7 +1395,7 @@ class Skeleton {
 					}
 					else
 						last = i
-				} // <<end of keyframe iteration
+				}
 			}
 			
 			mat4.multiply(mTransformation, bone.local, mTransformation)
@@ -1377,45 +1410,22 @@ class Skeleton {
 			result[bone.origId] = mTransformation
 			
 		} // <<end of bone iteration
-		
+		if(!S) {
+			S++
+			log(result)
+		}
 		return result
 	}
 	
-	setBones(mBones, aSortedBonesIds) {
-		if(mBones && mBones.length) {
-			this.bones = mBones
-			this.boneAmount = mBones.length
-			
-			this.sortedBones = aSortedBonesIds
+	setBones(bones) {
+		if(bones) {
+			this.bones = bones
+			this.boneAmount = bones.length
 		}
 	}
 	
-	addAnimation(name, length) {
-		var id = this.animations.length
-		
-		this.animations[id] = new Animation(name, length, id)
-		
-		return this.animations[id]
-	}
-}
-
-
-class Animation {
-	constructor(name, length, id) {
-		this.name = name
-		this.length = length
-		this.id = id
-	}
-	
-	setTracks(tracks) {
-		for(var i in tracks)
-			return this.tracks = tracks
-		
-		return false
-	}
-	
-	getTracks() {
-		return this.tracks
+	setAnimations(a) {
+		this.animations = a
 	}
 }
 
@@ -1426,7 +1436,7 @@ function RenderError(string, scene) {
 	if(RENDER_REPORT_PRINTED)
 		var o = {}
 	else {
-		var o = scene.getRenderReport(scene.gl)
+		var o = new RenderReport(scene.gl)
 		RENDER_REPORT_PRINTED = true
 	}
 	if(!Object.keys(o).length)

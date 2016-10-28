@@ -52,3 +52,7 @@ app/wininfo.json
 app/compiled.css
 /node_modules
 /pre_dist
+/app/node_modules/electron-rebuild
+/app/node_modules/ffi
+/app/node_modules/.bin/electron-rebuild
+/app/node_modules/.bin/electron-rebuild.cmd

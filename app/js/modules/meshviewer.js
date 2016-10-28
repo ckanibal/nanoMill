@@ -12,6 +12,16 @@ class Meshviewer extends Layout_SubModule {
 		this.cnv.height = 1
 		$(this.root).append(this.cnv)
 		
+		this.$menu = $('<div class="flex-row --MV-menu"></div>')
+		$(this.root).append(this.$menu[0])
+		this.$menu.html(`
+			<div class="--MV-play">play</div>
+		`)
+		
+		this.$menu.find('--MV-play').click(_ => {
+			this.scene.playAnimation()
+		})
+		
 		hook("onLayoutChange", () => {
 			let w = $(this.root).width(),
 				h = $(this.root).height()
@@ -49,3 +59,15 @@ Meshviewer.def = {
 }
 
 registerModule(Meshviewer.def)
+
+function doLittle() {
+	for(let i = 0; i < _modules.length; i++)
+		if(_modules[i].constructor.def.alias === "meshviewer") {
+			_modules[i].scene.setAnimation(0)
+			_modules[i].scene.playAnimation()
+			return _modules[i].scene
+		}
+	
+	return
+		"none"
+}

@@ -183,3 +183,17 @@ EditorView.def = {
 registerModule(EditorView.def)
 
 var _dumped_editors = []
+
+/** entry points of c4meshloader.dll
+	extern "C" char* load_mesh(const char* filename);
+	extern "C" void free_mesh(char* text);
+*/
+
+function loadMesh() {
+	let ffi = require('ffi'),
+		ref = require('ref')
+	
+	let dll = ffi.Library(path(__dirname, "dlls/libc4meshloader32.dll"), {
+		
+	})
+}
