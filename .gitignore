@@ -56,3 +56,4 @@ app/compiled.css
 /app/node_modules/ffi
 /app/node_modules/.bin/electron-rebuild
 /app/node_modules/.bin/electron-rebuild.cmd
+/app/node_modules/ref

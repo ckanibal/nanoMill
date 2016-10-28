@@ -28,7 +28,6 @@ function ClrToRGBa(clr) {
 	}
 }
 
-// shader composer - creates new shaders on the fly if needed
 function composeShaderString(flags) {
 	
 	if(flags & SHADER_OPTION_TYPE) {
@@ -110,7 +109,7 @@ function composeShaderString(flags) {
 		else
 			str += "gl_Position = mWorld * vec4(aVertexPosition, 1.0);\n"
 		
-		str += "}"; // </MAIN>
+		str += "}" // </MAIN>
 		
 		return str
 	}
@@ -194,7 +193,7 @@ function composeShaderString(flags) {
 					"	discard;\n"
 		*/
 		
-		return str + "}"; // close main()
+		return str + "}" // close main()
 	}
 }
 
@@ -216,20 +215,25 @@ const
 const
 	RESOURCE_ERROR_INEXISTENT = 1,
 	RESOURCE_ERROR_FAILED_TO_PARSE = 2
-	
+
 const
-	CLIPSACE_CONVERSION = 1; // 0.01
+	MAX_ALLOWED_BONE_ASSIGNMENTS = 15,
+	BONE_ASS_SHIFT = 8
 
 function getMaxAssignmentsOfFlag(flags) {
-	return (flags >> 8) & 15; // length
+	return (flags >> BONE_ASS_SHIFT) & MAX_ALLOWED_BONE_ASSIGNMENTS
 }
 
 function setMaxAssignmentsOfFlag(flags, maxAssignments) {
 	if(!maxAssignments)
 		return false
 	
-	return (flags | (maxAssignments << 8)); // offset
+	return (flags | (maxAssignments << BONE_ASS_SHIFT))
 }
+
+const
+	R2D = 180/Math.PI,
+	D2R = Math.PI/180
 
 class Scene {
 	constructor(gl, cnv) {
@@ -291,11 +295,8 @@ class Scene {
 		this.qRot = quat.create()
 		this.vTrans = vec3.create()
 		this.qAxisSwap = quat.create()
-		// constants to convert from radiant to degree
-		this.c_RtD = 180/Math.PI
-		this.c_DtR = Math.PI/180
 		
-		quat.rotateY(this.qAxisSwap, this.qAxisSwap, 90*this.c_DtR)
+		quat.rotateY(this.qAxisSwap, this.qAxisSwap, 90*D2R)
 		
 		this.canvas = cnv
 		this.width = cnv.width
@@ -571,8 +572,8 @@ class Scene {
 			var angleX = Math.acos(vec3.dot([0, 1, 0], [0, y, z])),
 				angleY = Math.acos(vec3.dot([1, 0, 0], [x, 0, z]))
 			
-			angleX = Math.round(angleX*this.c_RtD)
-			angleY = Math.round(angleY*this.c_RtD)
+			angleX = Math.round(angleX*R2D)
+			angleY = Math.round(angleY*R2D)
 			
 			strRotX = "Trans_Rotate("+angleX+", 1, 0, 0)"
 			strRotY = "Trans_Rotate("+angleY+", 0, 1, 0)"
@@ -596,7 +597,7 @@ class Scene {
 			y = Math.round(y * precision)
 			z = Math.round(z * precision)
 			
-			angle = Math.round(angle*this.c_RtD)
+			angle = Math.round(angle*R2D)
 			
 			strRot = "Trans_Rotate(" + angle + ", " + x + ", "+ y +", " + z + ")"
 		}
@@ -657,7 +658,7 @@ class Scene {
 			this
 		)
 		error(bumpFlags(this.currentRenderFlags) + "\n----------------\n" +
-			composeShaderString(this.currentRenderFlags | SHADER_OPTION_TYPE) + "----------------\n" +
+			composeShaderString(this.currentRenderFlags | SHADER_OPTION_TYPE) + "\n----------------\n" +
 			composeShaderString(this.currentRenderFlags)
 		)
 		this.stopRenderLoop()
@@ -692,7 +693,6 @@ class Scene {
 	loadSkeleton(data) {
 		let sk = new Skeleton()
 		
-		this.setSkeleton(sk)
 		sk.setBones(data.bones)
 		
 		/** [{
@@ -726,6 +726,8 @@ class Scene {
 		}
 		
 		sk.setAnimations(anims)
+		
+		this.setSkeleton(sk)
 	}
 	
 	setOption(name, value) {
@@ -1336,7 +1338,7 @@ class Skeleton {
 		if(id === -1)
 			this._a = -1
 		this._a = this.animations[id]
-		
+		log(this)
 		return this._a
 	}
 	
@@ -1426,6 +1428,7 @@ class Skeleton {
 	
 	setAnimations(a) {
 		this.animations = a
+		this.setAnimation(0)
 	}
 }
 

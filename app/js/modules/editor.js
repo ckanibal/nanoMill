@@ -100,6 +100,7 @@ class EditorView extends Layout_Deck {
                 mod.setup(file, text, "ini")
                 this.showChild(this.getChildIndex(mod))
             break
+			
 			case ".json":
 				if(file.name !== "mesh.json")
 					break
@@ -108,8 +109,13 @@ class EditorView extends Layout_Deck {
                 this.registerChild(mod)
                 mod.setup(file, JSON.parse(text))
                 this.showChild(this.getChildIndex(mod))
-			break;
-			
+			break
+			/*
+			case ".json":
+			case ".mesh":
+				loadMesh(file)
+			break
+			*/
 			default:
 			return
         }
@@ -185,15 +191,19 @@ registerModule(EditorView.def)
 var _dumped_editors = []
 
 /** entry points of c4meshloader.dll
-	extern "C" char* load_mesh(const char* filename);
-	extern "C" void free_mesh(char* text);
+	extern "C" char* load_mesh(const char* filename)
+	extern "C" void free_mesh(char* text)
 */
 
-function loadMesh() {
+function loadMesh(file) {
 	let ffi = require('ffi'),
-		ref = require('ref')
+		path = require('path')/*,
+		ref = require('ref')*/
 	
-	let dll = ffi.Library(path(__dirname, "dlls/libc4meshloader32.dll"), {
-		
+	let dll = ffi.Library(path.join(__dirname, "dlls/libc4meshloader32.dll"), {
+		"load_mesh": ["string", ["string"]],
+		"free_mesh": ["void", ["string"]]
 	})
+	
+	log(dll.load_mesh(file.path))
 }
