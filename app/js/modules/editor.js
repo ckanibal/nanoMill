@@ -104,18 +104,17 @@ class EditorView extends Layout_Deck {
 			case ".json":
 				if(file.name !== "mesh.json")
 					break
-			case ".mesh":
+				
 				mod = addModule("meshviewer")
                 this.registerChild(mod)
                 mod.setup(file, JSON.parse(text))
                 this.showChild(this.getChildIndex(mod))
 			break
-			/*
-			case ".json":
+			
 			case ".mesh":
 				loadMesh(file)
 			break
-			*/
+			
 			default:
 			return
         }
@@ -200,10 +199,12 @@ function loadMesh(file) {
 		path = require('path')/*,
 		ref = require('ref')*/
 	
-	let dll = ffi.Library(path.join(__dirname, "dlls/libc4meshloader32.dll"), {
+	let arch = process.arch === "x64"? "64" : "32"
+	log(_fs.statSync(__dirname, `dlls/libc4meshloader${arch}.dll`))
+	let dll = ffi.Library(path.join(__dirname, `dlls/libc4meshloader${arch}.dll`))/*, {
 		"load_mesh": ["string", ["string"]],
 		"free_mesh": ["void", ["string"]]
-	})
+	})*/
 	
-	log(dll.load_mesh(file.path))
+	// log(dll.load_mesh(file.path))
 }

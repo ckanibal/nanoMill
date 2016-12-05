@@ -401,7 +401,7 @@ class Scene {
 		if(!this.skeleton || !this.skeleton.isSkeleton)
 			return mat4.create()
 		
-		let bonePalette = this.skeleton.getBonePalette(this.getAnimationTime()/1000),
+		let bonePalette = this.skeleton.getSkinningPalette(this.getAnimationTime()/1000),
 			palette = [],
 			l = bonePalette.length
 		
@@ -1342,10 +1342,10 @@ class Skeleton {
 		return this._a
 	}
 	
-	getBonePalette(time) {
+	getSkinningPalette(time) {
 		
 		if(this._a === -1) {
-			var r = []
+			let r = []
 			for(var i = 0; i < this.boneAmount; i++)
 				r[i] = mat4.create()
 			
@@ -1361,7 +1361,6 @@ class Skeleton {
 			time = this._a.length
 		
 		for(var iBone = 0; iBone < this.boneAmount; iBone++) {
-			
 			let bone = this.bones[iBone]
 			
 			// get animations tracks
