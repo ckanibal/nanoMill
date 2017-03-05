@@ -14,18 +14,22 @@
 }
 
 .flex-col > .flex-splitter {
-	height: 4px;
+	height: 2px;
 	cursor: ns-resize;
+	border-top: 2px solid $bg-main;
+	border-bottom: 2px solid $bg-main;
 }
 
 .flex-row > .flex-splitter {
-	width: 4px;
+	width: 2px;
 	cursor: ew-resize;
+	border-left: 2px solid $bg-main;
+	border-right: 2px solid $bg-main;
 }
 
 .flex-row > .flex-splitter,
 .flex-col > .flex-splitter {
-	background-color: rgb(80, 80, 80);
+	background-color: $lyt-split;
 	
 	@include noUserSelect()
 	

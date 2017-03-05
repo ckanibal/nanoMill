@@ -66,8 +66,6 @@ var filemanager = new (function() {
 		
 		this.resources = a
 	}
-
-    // TODO: init Watcher, detecting loss of linked files
 })()
 
 function getResourcesData() {
@@ -80,3 +78,48 @@ function getResourcesData() {
 	
 	return a
 }
+
+class WorkspaceMaster {
+	constructor() {
+		this.wspaces = new Set()
+	}
+	
+	/**
+	 * returns a copy of the internal workspace holder
+	*/
+	getWorkspaces() {
+		return new Set(this.wspaces)
+	}
+}
+
+var wmaster = new WorkspaceMaster()
+
+/**
+* a workspace holds information about a specified folder in on the users drive
+* and collects data about editable components in the folder
+*/
+
+class Workspace {
+	constructor(dir_path) {
+		this.openedFiles = new Set()
+		this.files = []
+		this.dirs = []
+	}
+	
+	getOpenedFiles() {
+		
+	}
+	// TODO: watcher, detecting removal or change of opened files and inform user (n++ style)
+}
+
+/**
+* a class that represents a directory
+*/
+class Directory {
+	constructor() {
+		
+	}
+}
+
+
+// coding space

@@ -82,7 +82,7 @@ const __rootdir = __dirname
 const _fs = require('fs')
 const path = require('path')
 const {remote} = require('electron')
-var {__appDir, config, printLog, inDevMode, setConfig, getConfig, hideMenu, dialog } = remote.getGlobal("communicator")
+var {__appDir, config, printLog, inDevMode, setConfig, getConfig, hideMenu, dialog, toggleDevMode } = remote.getGlobal("communicator")
 
 {
 	setTimeout(_ => {
@@ -107,6 +107,7 @@ var {__appDir, config, printLog, inDevMode, setConfig, getConfig, hideMenu, dial
 <script type="text/javascript" src="js/modules/resview.js"></script>
 <script type="text/javascript" src="js/modules/texteditor.js"></script>
 <script type="text/javascript" src="js/modules/runint.js"></script>
+<script type="text/javascript" src="js/modules/explorer.js"></script>
 
 <script type="text/javascript" src="js/filemanager.js"></script>
 <script type="text/javascript" src="js/initialize.js"></script>

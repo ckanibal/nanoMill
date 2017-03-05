@@ -14,7 +14,7 @@ var defaultConfigVal = {
 	author: "Twonky",
 	ocver: "7,0",
 	dftTempDir: "...",
-	focussedRes: "",
+	focussedRes: ""
 }
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -36,6 +36,9 @@ function createWindow () {
 		},
 		hideMenu: _ => {
 			win.setMenu(null)
+		},
+		toggleDevMode: _ => {
+			config.inDevMode = !config.inDevMode;
 		},
 		dialog: dialog
 	}

@@ -9,10 +9,10 @@
 }
 
 .mod-head {
-	border-bottom: 1px solid $tb-brdr;
-	background-color: $tb-bg;
+	background-color: $bg-main;
 	color: $tb-clr;
 	height: 20px;
+	padding: 5px 3px;
 }
 
 .mod-button {
@@ -31,6 +31,7 @@
 	cursor: default;
 	position: relative;
 	margin: 0 2px;
+	padding: 3px 2px;
 	
 	&:focus {
 		outline: none;
@@ -50,7 +51,7 @@
 	}
 	
 	&:hover:not(:focus) .visible {
-		background-color: $tb-bg-hvr;
+		background-color: $bg-main;
 	}
 	
 	white-space: nowrwap;
@@ -70,8 +71,8 @@
 .mod-sel-item {
 	display: none;
 	padding: 0 3px;
-	font-size: 12px;
-	background-color: $tb-bg;
+	font-size: 14px;
+	background-color: $bg-main;
 	
 	@include noUserSelect();
 	
@@ -87,7 +88,7 @@
 .mod-head hr {
 	margin-top: 3px;
 	margin-bottom: 3px;
-	border-color: rgb(45, 45, 45);
+	border-color: $lyt-split;
 	border-style: solid;
 }
 

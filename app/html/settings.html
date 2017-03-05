@@ -1,0 +1,22 @@
+<div id="settings" class="flex-fill flex-col modal-style" style="display: none">
+	<p class='desc'>Autofill info</p>
+	<p>Author: <span><input id="author-input" class="small" type="text"/></span><br>
+	OC-Version: <span><input id="version-input" class="small" type="text"/></span></p>
+	<p>
+		<label for="c4GroupPicker">Pick c4group</label>
+		<span> or drop the program onto the window.</span>
+	</p>
+	<p class='desc'>Current path</p>
+	<p class='url' id='c4GroupPath'></p>
+	<input id="c4GroupPicker" type="file" style="display: none" />
+	<p>
+		<label for="ocExePicker">Same with openclonk(.exe)</label>
+	</p>
+	<p class='desc'>Current path</p>
+	<p class='url' id='ocExePath'></p>
+	<input id="ocExePicker" type="file" style="display: none" />
+	<hr>
+	<p>
+		If the layout is messed up due to bad programming, you can <label onclick='resetLayout(true)'>reset</label> it.
+	</p>
+</div>

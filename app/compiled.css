@@ -45,7 +45,7 @@
 
 /*
 
-reserved z indices
+reserved z-indices
 
 [0-6] Ace
 
@@ -55,13 +55,20 @@ reserved z indices
 
 [200] Modal
 */
+.abs-fill {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0; }
+
 .draft {
   display: none !important; }
 
 html, body {
   margin: 0;
   padding: 0;
-  background: #282828;
+  background: #26282b;
   color: gainsboro;
   font-family: "Roboto", sans-serif;
   height: 100%;
@@ -76,7 +83,7 @@ html, body {
   overflow: hidden; }
 
 .hb-btn {
-  color: #b4b4b4;
+  color: gray;
   cursor: default;
   font-size: 14px;
   text-shadow: 0 1px 0 #141414;
@@ -93,7 +100,7 @@ html, body {
   margin-right: 0; }
 
 .modal-style {
-  background: #282828; }
+  background: #26282b; }
   .modal-style label {
     color: steelblue;
     cursor: pointer; }
@@ -186,7 +193,7 @@ textarea::-webkit-input-placeholder {
 ::-webkit-scrollbar > *,
 ::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track-piece {
-  background-color: #282828; }
+  background-color: #26282b; }
 
 ::-webkit-scrollbar {
   padding: 0;
@@ -200,7 +207,7 @@ textarea::-webkit-input-placeholder {
   max-height: 12px;
   border: none;
   padding: 0px;
-  background-color: #282828; }
+  background-color: #26282b; }
 
 ::-webkit-scrollbar:vertical {
   width: 12px;
@@ -406,16 +413,20 @@ textarea::-webkit-input-placeholder {
   flex-direction: column; }
 
 .flex-col > .flex-splitter {
-  height: 4px;
-  cursor: ns-resize; }
+  height: 2px;
+  cursor: ns-resize;
+  border-top: 2px solid #26282b;
+  border-bottom: 2px solid #26282b; }
 
 .flex-row > .flex-splitter {
-  width: 4px;
-  cursor: ew-resize; }
+  width: 2px;
+  cursor: ew-resize;
+  border-left: 2px solid #26282b;
+  border-right: 2px solid #26282b; }
 
 .flex-row > .flex-splitter,
 .flex-col > .flex-splitter {
-  background-color: #505050;
+  background-color: #1d1f22;
   -webkit-user-select: none;
   user-select: none; }
   .flex-row > .flex-splitter:hover, .flex-row > .flex-splitter.dragged,
@@ -431,10 +442,10 @@ textarea::-webkit-input-placeholder {
   min-width: 50px; }
 
 .mod-head {
-  border-bottom: 1px solid 1px solid #2d2d2d;
-  background-color: #3c3c3c;
-  color: #b4b4b4;
-  height: 20px; }
+  background-color: #26282b;
+  color: gray;
+  height: 20px;
+  padding: 5px 3px; }
 
 .mod-button {
   text-shadow: 0 1px 0 #141414;
@@ -448,6 +459,7 @@ textarea::-webkit-input-placeholder {
   cursor: default;
   position: relative;
   margin: 0 2px;
+  padding: 3px 2px;
   white-space: nowrwap; }
   .mod-sel:focus {
     outline: none; }
@@ -459,7 +471,7 @@ textarea::-webkit-input-placeholder {
     .mod-sel:focus .mod-sel-item:hover {
       background-color: #787878; }
   .mod-sel:hover:not(:focus) .visible {
-    background-color: #787878; }
+    background-color: #26282b; }
 
 .mod-sel-list {
   position: absolute;
@@ -473,8 +485,8 @@ textarea::-webkit-input-placeholder {
 .mod-sel-item {
   display: none;
   padding: 0 3px;
-  font-size: 12px;
-  background-color: #3c3c3c;
+  font-size: 14px;
+  background-color: #26282b;
   -webkit-user-select: none;
   user-select: none;
   pointer-events: none;
@@ -486,7 +498,7 @@ textarea::-webkit-input-placeholder {
 .mod-head hr {
   margin-top: 3px;
   margin-bottom: 3px;
-  border-color: #2d2d2d;
+  border-color: #1d1f22;
   border-style: solid; }
 
 .mod-body {
@@ -659,12 +671,12 @@ textarea::-webkit-input-placeholder {
   max-width: 100%;
   font-variant-ligatures: none !important; }
   .ace_qtmill .ace_gutter {
-    background: #2d2d2d;
-    border-right: 1px solid #1e1e1e;
-    color: #787878;
+    background: #26282b;
+    border-right: none;
+    color: #646464;
     overflow: hidden; }
   .ace_qtmill .ace_content {
-    background: #3c3c3c; }
+    background: none; }
   .ace_qtmill .ace_print-margin {
     width: 1px;
     background: #2d2d2d; }
@@ -740,7 +752,7 @@ textarea::-webkit-input-placeholder {
   .ace_qtmill .ace_marker-layer .ace_selected-word {
     background: #141414;
     border: none;
-    animation: bracket 0.2s; }
+    /* animation: bracket 0.2s; */ }
   .ace_qtmill .ace_storage,
   .ace_qtmill .ace_keyword,
   .ace_qtmill .ace_meta.ace_tag {

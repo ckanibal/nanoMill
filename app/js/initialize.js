@@ -64,24 +64,11 @@ var _prf = {
 	}
 }
 
+/**
+ * This function restores the predefined layout, to allow users to get back
+ * to viable layout if the customized one failed to any sort of bugs (e.g. failing to load old state or accidently rumping it up)
+*/
 function createDefaultLayout(byUser) {
-	/*
-	var page = addPage(DIR_COL),
-		subFlex = addFlexer(DIR_ROW)
-
-	$("#mod-wrapper").append(page.root)
-
-	subFlex.root.style.height = `${$("#mod-wrapper").height()/5*4 || 500}px`
-	
-	page.registerChild(subFlex)
-	
-	let mod = addModule("navigator")
-	subFlex.registerChild(mod)
-	mod.root.style.width = `${$("#mod-wrapper").width()/3 || 200}px`
-	
-	subFlex.registerChild(addModule("editor"))
-	page.registerChild(addModule("runint"))
-	*/
 	var page = addPage(),
 		subFlex = addFlexer(DIR_COL),
 		subFlex2 = addFlexer(DIR_COL)
@@ -123,6 +110,11 @@ var mouseX = 0, mouseY = 0
 var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 
 {
+	/**
+		Initializer block.
+		This does take care of basic ui layout binding and reads out
+		layout preferences.
+	*/
 	log("initialize...")	
 	log("Node version: " + process.versions.node)
 	log("Chromium version: " + process.versions.chrome)
@@ -137,7 +129,10 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		_focussedRes = res
 		setConfig("focussedRes", res.path)
 	})
-
+	
+	/*
+		handling moduleframe resizing when dragging the splitters inbetween
+	*/
     $(document).on('mousedown', '.flex-splitter', function(e) {
         dragSplitterTarget = this
 
@@ -174,15 +169,17 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 
         requestAnimationFrame(fn)
 
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault()
+        e.stopPropagation()
     })
 
+	// track mouse position
     $(document).mousemove(function(e) {
         mouseX = e.clientX
         mouseY = e.clientY
     })
 
+	// stop dragging splitters
     $(document).mouseup(function(e) {
 		if(dragSplitterTarget) {
 			$(dragSplitterTarget).removeClass("dragged")
@@ -193,6 +190,7 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
         dragSplitterTarget = false
     })
 
+	// open file button
     $("#openf").click(openFilePicker)
 	
 	document.ondragover = document.ondrop = (e) => {
@@ -299,6 +297,8 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		
 		if(pages && pages.length) {
 			let handleLayoutInput = function(data, par) {
+				// whitelist modules for additional safety
+				// and take care of layout interpretation
 				switch(data.alias) {
 					case "page":
 						let page = addPage(data.dir)
@@ -322,6 +322,7 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 					case "editor":
 					case "intro":
 					case "navigator":
+					case "explorer":
 					case "runint":
 						let mod = addModule(data.alias)
 						if(!mod)
@@ -357,11 +358,20 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 	
 	require("./js/keybinding.js")
 	
+	let ffi = require('ffi')
+	let mloader = ffi.Library(__rootdir + "/cpp addons/addon/libc4meshloader64", {
+		'load_mesh': ['string', ['string']]
+	})
+	
+	// call test hello world example
+	let hworld = require(__rootdir + "/cpp addons/addon")
+	warn(hworld.hello())
+	
     log("end of initialize")
 }
 
 function pickFile(callback) {
-	var el = document.getElementById("filepicker")
+	let el = document.getElementById("filepicker")
 	
 	el.onchange = callback
 	el.click()
@@ -378,6 +388,7 @@ function receiveLocalResource(p) {
 		return setConfig("ocexe", p)
 
 	let res = filemanager.addResource(p)
+	
 	if(res)
 		execHook("onFileOpen", res)
 }

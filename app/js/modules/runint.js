@@ -98,7 +98,7 @@ class RuntimeInterface extends Layout_Module{
 		else
 			main = main[0]
 		
-		let results = cmds.match(/(?:^|\W)--(\w+)(?!\w)/g)
+		let results = cmds.match(/(?:^|\W)-+(\w+)(?!\w)/g)
 		
 		if(results)
 			results.forEach(function(v) {
@@ -176,6 +176,16 @@ class RuntimeInterface extends Layout_Module{
 			args.push("-x")
 			opC4group(args)
 		}
+		else if(main === "c4group") {
+			if(!getConfig("c4group"))
+				if(mod)
+					mod.print("path to c4group is undefined")
+				else
+					return false
+			
+			if(mod)
+				opC4group(args, mod, true)
+		}
 		else if(main === "help" && mod) {
 			mod.print(helpInfo())
 			mod.clearInput()
@@ -208,6 +218,12 @@ class RuntimeInterface extends Layout_Module{
 		}
 		else if(main === "clearall") {
 			execHook("clearAllRunInts")
+			if(mod)
+				mod.clearInput()
+		} 
+		else if(main === "siedlerclonk") {
+			toggleDevMode()
+			
 			if(mod)
 				mod.clearInput()
 		}
@@ -248,11 +264,43 @@ function startEditor(args) {
 	}
 }
 
-function opC4group(args, mod) {
+/**
+Commands: -l List
+          -x Explode
+          -u Unpack
+          -p Pack
+          -t [filename] Pack To
+          -y [ppid] Apply update (waiting for ppid to terminate first)
+          -g [source] [target] [title] Make update
+          -s Sort
+
+Options:  -v Verbose -r Recursive
+          -i Register shell -u Unregister shell
+          -x:<command> Execute shell command when done
+
+Examples: c4group pack.ocg -x
+          c4group update.ocu -g ver1.ocf ver2.ocf New_Version
+          c4group -i
+*/
+
+function opC4group(args, mod, fListenStdOut) {
 	if(!args)
 		return false
 	
-	cprocess.spawn(getConfig("c4group"), args)
+	if(!fListenStdOut)
+		cprocess.spawn(getConfig("c4group"), args)
+	else {
+		let proc = cprocess.spawn(getConfig("c4group"), args)
+		
+		proc.stdout.on('data', function (data) {
+			execHook("onStdOut", RuntimeInterface.validateStdout(data.toString()))
+		})
+		
+		proc.on('exit', function (code) {
+			if(code)
+				log('child process exited with code ' + code.toString())
+		})
+	}
 	
 	return true
 }
@@ -279,6 +327,11 @@ ctrl+r				executes 'run --sel' in pseudo-console\n\
 ctrl+q				executes 'kill' in pseudo-console\n\
 ".replace(/\n/gi, "<br>")
 }
+/**
+to be undocumented
+
+siedlerclonk		toggles devMode; needs restart of app to take effect
+*/
 
 var _params = {}
 
