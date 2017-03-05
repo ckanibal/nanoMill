@@ -144,20 +144,33 @@ class Explorer extends Layout_Module {
 	}
 	
 	modalNewWorkspace() {
-		let $el = $(`<p class="desc">Select workspace directory. <label class="browse-picker">Browse</label></p><p class="url">...</p>
-		<p class="desc">suggest directories...</p></div>`)
-		$el.find(".browse-picker").click((e) => {
-			let remote = require('remote');
-			let dialog = remote.require('electron').dialog;
-
-			let path = dialog.showOpenDialog({
-				properties: ['openDirectory']
-			})
-			
-			log(path)
+		let $el = $(`<div><p class="desc">Select workspace directory</p>
+		<p class="desc">suggest directories...</p>
+		<div class="confirm-modal"><label>Confirm</label></div></div>`)
+		
+		let url = ui.urlPicker(undefined, () => {
+			$el.find(".confirm-modal")[0].dataset.url
+		})
+		
+		$el.find(".desc").eq(0).after(url)
+		
+		let exp = this
+		$el.find(".confirm-modal").click(function() {
+			let ws = wmaster.addWorkspace(this.dataset.url)
+			exp.showWorkspaceContent(ws)
+			hideModal()
 		})
 		
 		showModal("Select working space", $el[0])
+	}
+	
+	showWorkspaceContent(ws) {
+		// keep reference
+		this.wspace = ws
+		
+		// if workspace is yet to be loaded, do nothing at let hook callbacks do the job
+		if(!ws.loaded)
+			return
 	}
 	
 	static isEditableExt(ext) {log(ext)
@@ -177,10 +190,6 @@ class Explorer extends Layout_Module {
 	static getDefinitionList(path, callback) {
 		let proc = cprocess.spawn(getConfig("c4group"), [path, "-l"])
 		proc.stdout.on('data', callback)
-	}
-	
-	static showModal() {
-		//require(path.join(__rootdir, "js/template_modal.js")).show()
 	}
 	
 	getSpecialMenuProps() {

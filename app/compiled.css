@@ -117,12 +117,20 @@ html, body {
   .modal-style .url {
     padding: 10px 15px;
     margin: 10px 0;
-    background-color: #234861;
-    color: #7dc5de;
+    background-color: #1e2123;
+    color: #83b4c5;
     -webkit-user-select: text;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis; }
+  .modal-style .url-browse {
+    padding: 10px 15px;
+    margin: 10px 0;
+    background-color: #1e2123;
+    color: #83b4c5; }
+    .modal-style .url-browse:hover {
+      background-color: #234861;
+      color: #7dc5de; }
   .modal-style input[type=text] {
     -webkit-appearance: none;
     border: none;
@@ -154,6 +162,14 @@ html, body {
     font-family: "Roboto"; }
     .modal-style textarea:focus, .modal-style textarea:hover {
       outline: 1px solid steelblue; }
+
+.modal-confirm {
+  align-self: flex-end;
+  margin-top: 10px; }
+  .modal-confirm label {
+    padding: 10px 15px;
+    display: inline-block;
+    background-color: #234861; }
 
 input,
 textarea {
@@ -340,6 +356,7 @@ textarea::-webkit-input-placeholder {
     text-align: center;
     text-shadow: 0 1px 0 grey; }
 
+/* ui object stuff */
 @font-face {
   font-family: 'icomoon';
   src: url("sass/icomoon.ttf?-icmbrc") format("truetype");
@@ -624,14 +641,6 @@ textarea::-webkit-input-placeholder {
   cursor: pointer; }
   .--RESV-temp-entry:hover {
     background-color: #505050; }
-
-.--RESV-confirm {
-  align-self: flex-end;
-  margin-top: 10px; }
-  .--RESV-confirm label {
-    padding: 10px 15px;
-    display: inline-block;
-    background-color: #234861; }
 
 .--RESV-label:hover {
   background-color: #505050; }

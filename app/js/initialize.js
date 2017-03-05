@@ -269,6 +269,25 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 	
 	document.getElementById("version-input").value = getConfig("ocver")
 	
+	
+	
+	document.getElementById("ace-font-size").onchange = function(e) {
+		if(!this.value || !this.value.length)
+			this.value = getConfig("acefontsize") || "12"
+		else {
+			setConfig("acefontsize", this.value)
+			
+			// delegate new value
+			// don't use instance of, but check for equal alias since instanceof would throw
+			// an error if such a class is not defined
+			for(let i = 0; i < _modules.length; i++)
+				if(_modules[i].constructor.def.alias === "texteditor")
+					_modules[i].setFontSize(this.value)
+		}
+	}
+	
+	document.getElementById("ace-font-size").value = getConfig("acefontsize") || "12"
+	
 	try {
 		if(!config)
 			throw "No config given"
@@ -357,15 +376,6 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 	})
 	
 	require("./js/keybinding.js")
-	
-	let ffi = require('ffi')
-	let mloader = ffi.Library(__rootdir + "/cpp addons/addon/libc4meshloader64", {
-		'load_mesh': ['string', ['string']]
-	})
-	
-	// call test hello world example
-	let hworld = require(__rootdir + "/cpp addons/addon")
-	warn(hworld.hello())
 	
     log("end of initialize")
 }
@@ -461,4 +471,27 @@ function openFilePicker() {
 		for(let i = 0; i < files.length; i++)
 			receiveLocalResource(files[i].path)
 	})
+}
+
+/** ui object containing small layout items to fill any page */
+var ui = {
+	urlPicker: function(txt = "...", callback) {
+		let $el = $(`<div class="flex-row"><p class="url flex-fill">${txt}</p><div class="url-browse">Browse</div></div>`)
+		
+		$el.find(".url-browse").click(_ => {
+			let p = remote.dialog.showOpenDialog({
+				properties: ['openDirectory']
+			})
+			
+			if(!p)
+				return
+			
+			$el.find(".url").html(p[0])
+			
+			if(callback)
+				callback(p[0])
+		})
+		
+		return $el[0]
+	}
 }

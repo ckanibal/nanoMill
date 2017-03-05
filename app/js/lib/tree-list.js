@@ -15,26 +15,33 @@ class TreeList {
 		this.onExpandItem = nofn
 		
 		// entry holder
-		this._entries = []
+		this.roots = []
 	}
 	
-	addItem(par) {
-		
-		// if no parent object given, add entry on top level
-		if(!par)
-			par = this.wrapper
-		
+	addRoot() {
 		let item = new TreeItem("entry")
 		
-		this._entries.push(item)
+		this.root.push(item)
 		
-		
+		return root
+	}
+	
+	static createItem(title = "unnamed") {
+		return new TreeItem(title)
 	}
 }
 
 class TreeItem {
 	constructor(title) {
-		this.el = $('<div>${title}</div>')[0]
+		this.el = $(`<div>${title}</div>`)[0]
+	}
+	
+	addChild() {
+		// if no children yet, create array and mark as parent
+		if(!this.children)
+			this.children = []
+		
+		$(this.el).addClass("--tree-par")
 	}
 }
 

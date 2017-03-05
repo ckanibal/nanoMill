@@ -33,7 +33,7 @@ class TextEditor extends Layout_SubModule {
             enableLiveAutocompletion: true,
             wrapBehavioursEnabled: true,
 			fontFamily: "SpaceMono",
-			fontSize: "11px"
+			fontSize: getConfig("acefontsize") + "px" || "12px"
         })
 
         editor.getSession().setUseWrapMode(true)
@@ -51,6 +51,12 @@ class TextEditor extends Layout_SubModule {
 		let langtools = ace.require("ace/ext/language_tools")
 		langtools.setCompleters([langtools.snippetCompleter, langtools.keyWordCompleter])
     }
+	
+	setFontSize(size) {
+		this.editor.setOptions({
+		  fontSize: size + "px"
+		})
+	}
 	
 	checkFileState() {
 		if(this.editor.getSession().getUndoManager().isClean() === this.isUnchanged)

@@ -90,6 +90,16 @@ class WorkspaceMaster {
 	getWorkspaces() {
 		return new Set(this.wspaces)
 	}
+	
+	/**
+	* creates a workspaces directing at the given path
+	*/
+	addWorkspace(p) {
+		let ws = new Workspace(p)
+		this.wspaces.add(ws)
+		
+		return ws
+	}
 }
 
 var wmaster = new WorkspaceMaster()
@@ -104,6 +114,11 @@ class Workspace {
 		this.openedFiles = new Set()
 		this.files = []
 		this.dirs = []
+		
+		this.loaded = false
+		
+		// load data
+		
 	}
 	
 	getOpenedFiles() {

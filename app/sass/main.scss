@@ -141,12 +141,24 @@ html, body {
 	.url {
 		padding: 10px 15px;
 		margin: 10px 0;
-		background-color: #234861;
-		color: #7dc5de;
+		background-color: #1e2123;
+		color: #83b4c5;
 		-webkit-user-select: text;
 		white-space: nowrap;                   
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+	
+	.url-browse {
+		padding: 10px 15px;
+		margin: 10px 0;
+		background-color: #1e2123;
+		color: #83b4c5;
+		
+		&:hover {
+			background-color: #234861;
+			color: #7dc5de;
+		}
 	}
 	
 	input[type=text] {
@@ -190,6 +202,19 @@ html, body {
 		&:hover {
 			outline: 1px solid steelblue;
 		}
+	}
+}
+
+.modal-confirm {
+	align-self: flex-end;
+	margin-top: 15px;
+	text-algin: right;
+
+	label {
+		padding: 10px 15px;
+		display: inline-block;
+		
+		background-color: #234861;
 	}
 }
 
@@ -456,3 +481,10 @@ $list-in-dur: 0.3s;
 		text-shadow: 0 1px 0 grey;
 	}
 }
+
+
+/* ui object stuff */
+
+.url-browse {
+}
+

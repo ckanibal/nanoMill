@@ -39,7 +39,7 @@ module.exports.show = function() {
 		$("#modal").find(".modal-content").html("")
 		showModal("New " + plate.name, $body[0])
 		
-		let $confirm = $(`<div class='--RESV-confirm'><label>Create</label></div>`)
+		let $confirm = $(`<div class='modal-confirm'><label>Create</label></div>`)
 		
 		$confirm.click((e) => {
 			let picker = document.getElementById("--RESV-dest-pick")
