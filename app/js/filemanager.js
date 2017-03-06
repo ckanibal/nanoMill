@@ -146,10 +146,7 @@ class Workspace {
 			// make a recursive call to iterate all directories and fill in the linked tree
 			let fn = function(files, dir, tree) {
 				for(let i = 0; i < files.length; i++) {
-					
-					if(!Workspace.isAcceptedFileType(path.extname(files[i])))
-						continue
-					
+										
 					let p = path.join(dir, files[i])
 					
 					let stat = fs.statSync(p)
@@ -160,21 +157,24 @@ class Workspace {
 						let branch = new LinkedTree(files[i])
 						tree.add(branch)
 						
-						let items = fs.readdirSync(dir_path)
+						let subdir = path.join(dir_path, files[i])
+						
+						let items = fs.readdirSync(subdir)
 						
 						if(items)
-							fn(items, dir_path, branch)
+							fn(items, subdir, branch)
 						
-						// do some sorting...
+						// do some oc specific sorting...
 					}
-					else
+					else if(Workspace.isAcceptedFileType(path.extname(files[i])))
 						tree.add(new LinkedTree(files[i]))
 				}
 			}
 			
 			this.tree = new LinkedTree("root")
 			fn(files, dir_path, this.tree)
-		
+			
+			this.loaded = true
 			wmaster.saveInConfig()
 		
 			execHook("onWorkspaceLoad", this)

@@ -50,7 +50,7 @@ class Explorer extends Layout_Module {
 			exp.showWorkspaceContent(ws)
 			
 			// display loading indicator
-			$(this.body).html(`<div class="abs-fill flex-col" style="justify-content: center"><div style="align-self: center">...</dib></div>`)
+			this.body.innerHTML = `<div class="abs-fill flex-col" style="justify-content: center"><div style="align-self: center">...</dib></div>`
 			hideModal()
 		})
 		
