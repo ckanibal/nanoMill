@@ -411,8 +411,7 @@ function openFile(res) {
 }
 
 function resIsEditable(res) {
-	if(
-		res.leaf === ".c" ||
+	if( res.leaf === ".c" ||
 		res.leaf === ".txt" ||
 		res.leaf === ".ocm" ||
 		res.leaf === ".glsl" ||
@@ -421,6 +420,7 @@ function resIsEditable(res) {
 	
 	return false
 }
+
 
 function openFiles(paths) {
 	for(var i = 0; i < files.length; i++) {

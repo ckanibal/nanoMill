@@ -1,0 +1,11 @@
+
+.tree-item {
+
+	.tree-label {
+		&:hover {
+			background-color: $hvr;
+		}
+	}
+	
+	padding: 2px 8px;
+}

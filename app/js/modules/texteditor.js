@@ -1,3 +1,4 @@
+// provide every editor dom instace with a unique id by this index
 var _nextTextEditorId = 0
 
 class TextEditor extends Layout_SubModule {
@@ -48,6 +49,7 @@ class TextEditor extends Layout_SubModule {
 			setTimeout(this.checkFileState.bind(this), 1)
 		})
 		
+		// get rid of the locale lang tools, since it will suggest any word in the document
 		let langtools = ace.require("ace/ext/language_tools")
 		langtools.setCompleters([langtools.snippetCompleter, langtools.keyWordCompleter])
     }

@@ -80,7 +80,8 @@
 <script>
 const cprocess = require("child_process")
 const __rootdir = __dirname
-const _fs = require('fs')
+const fs = require('fs')
+const _fs = fs // deprecated
 const path = require('path')
 const {remote} = require('electron')
 var {__appDir, config, printLog, inDevMode, setConfig, getConfig, hideMenu, dialog, toggleDevMode } = remote.getGlobal("communicator")

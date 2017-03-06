@@ -238,7 +238,7 @@ class Layout_Module extends Layout_Element {
         var $el = $(".mod-con.draft").clone()
 
         this.root = $el[0]
-		this.body = $el.find(".mod-body")
+		this.body = $el.find(".mod-body")[0]
 
         log("module created - constructor name: " + this.constructor.def.alias)
         $el.removeClass("draft")

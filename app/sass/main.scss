@@ -205,16 +205,18 @@ html, body {
 	}
 }
 
-.modal-confirm {
+.confirm-modal {
 	align-self: flex-end;
 	margin-top: 15px;
-	text-algin: right;
+	text-align: right;
 
 	label {
 		padding: 10px 15px;
 		display: inline-block;
 		
-		background-color: #234861;
+		&[data-valid="true"] {
+			background-color: #234861;
+		}
 	}
 }
 

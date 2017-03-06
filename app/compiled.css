@@ -163,13 +163,15 @@ html, body {
     .modal-style textarea:focus, .modal-style textarea:hover {
       outline: 1px solid steelblue; }
 
-.modal-confirm {
+.confirm-modal {
   align-self: flex-end;
-  margin-top: 10px; }
-  .modal-confirm label {
+  margin-top: 15px;
+  text-align: right; }
+  .confirm-modal label {
     padding: 10px 15px;
-    display: inline-block;
-    background-color: #234861; }
+    display: inline-block; }
+    .confirm-modal label[data-valid="true"] {
+      background-color: #234861; }
 
 input,
 textarea {
@@ -357,6 +359,11 @@ textarea::-webkit-input-placeholder {
     text-shadow: 0 1px 0 grey; }
 
 /* ui object stuff */
+.tree-item {
+  padding: 2px 8px; }
+  .tree-item .tree-label:hover {
+    background-color: #505050; }
+
 @font-face {
   font-family: 'icomoon';
   src: url("sass/icomoon.ttf?-icmbrc") format("truetype");

@@ -82,6 +82,11 @@ function getResourcesData() {
 class WorkspaceMaster {
 	constructor() {
 		this.wspaces = new Set()
+		
+		// restore workspaces by config
+		let a = getConfig("workspaces")
+		
+		a.forEach(this.addWorkspace.bind(this))
 	}
 	
 	/**
@@ -100,41 +105,105 @@ class WorkspaceMaster {
 		
 		return ws
 	}
+	
+	/**
+		stores paths of workspaces in an array into our json config file
+	*/
+	saveInConfig() {
+		let a = []
+		
+		for(let w of this.wspaces)
+			a.push(w.path)
+		
+		setConfig('workspaces', a)
+	}
 }
 
-var wmaster = new WorkspaceMaster()
-
 /**
-* a workspace holds information about a specified folder in on the users drive
+* a workspace holds information about a specific folder inon the user's drive
 * and collects data about editable components in the folder
 */
 
 class Workspace {
 	constructor(dir_path) {
 		this.openedFiles = new Set()
-		this.files = []
-		this.dirs = []
+		
+		this.items = []
+		
+		this.path = dir_path
 		
 		this.loaded = false
 		
 		// load data
+		fs.readdir(dir_path, (err, files) => {
+			if(err) {
+				error( "Could not list the directory.", err )
+				return
+			}
+			
+			let LinkedTree = require(path.join(__dirname, "js/lib/linkedtree.js"))
+			
+			// make a recursive call to iterate all directories and fill in the linked tree
+			let fn = function(files, dir, tree) {
+				for(let i = 0; i < files.length; i++) {
+					
+					if(!Workspace.isAcceptedFileType(path.extname(files[i])))
+						continue
+					
+					let p = path.join(dir, files[i])
+					
+					let stat = fs.statSync(p)
+					if(!stat)
+						continue;
+					
+					if(stat.isDirectory()) {
+						let branch = new LinkedTree(files[i])
+						tree.add(branch)
+						
+						let items = fs.readdirSync(dir_path)
+						
+						if(items)
+							fn(items, dir_path, branch)
+						
+						// do some sorting...
+					}
+					else
+						tree.add(new LinkedTree(files[i]))
+				}
+			}
+			
+			this.tree = new LinkedTree("root")
+			fn(files, dir_path, this.tree)
 		
+			wmaster.saveInConfig()
+		
+			execHook("onWorkspaceLoad", this)
+		})
 	}
 	
 	getOpenedFiles() {
 		
 	}
+	
+	static isAcceptedFileType(ext) {
+		switch(ext) {
+			case ".ocf":
+			case ".ocd":
+			case ".ocg":
+			case ".ocs":
+			case ".txt":
+			case ".glsl":
+			case ".c":
+				return true;
+			default:
+				return false;
+		}
+	}
 	// TODO: watcher, detecting removal or change of opened files and inform user (n++ style)
 }
 
-/**
-* a class that represents a directory
-*/
-class Directory {
-	constructor() {
-		
-	}
-}
+
+var wmaster = new WorkspaceMaster()
 
 
 // coding space
