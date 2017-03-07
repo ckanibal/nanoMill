@@ -23,7 +23,7 @@
 
 .ace_qtmill {
 
-	color: #DEDEDE;
+	color: rgb(200, 200, 200);
 	@include absoluteFill();
 	position: absolute !important;
 	
@@ -174,7 +174,6 @@
 	.ace_marker-layer .ace_selected-word {
 		background: #141414;
 		border: none;
-		/* animation: bracket 0.2s; */
 	}
 	
 	.ace_storage,

@@ -364,7 +364,8 @@ textarea::-webkit-input-placeholder {
   margin-left: 15px;
   /** indicator for empty folders */ }
   .tree-item .tree-label {
-    padding: 2px 5px; }
+    padding: 2px 5px;
+    color: #c8c8c8; }
     .tree-item .tree-label:hover {
       background-color: #505050; }
   .tree-item.tree-parent > .tree-label:before {
@@ -704,7 +705,7 @@ textarea::-webkit-input-placeholder {
   font-family: "SpaceMono"; }
 
 .ace_qtmill {
-  color: #DEDEDE;
+  color: #c8c8c8;
   position: absolute;
   top: 0;
   right: 0;
@@ -794,8 +795,7 @@ textarea::-webkit-input-placeholder {
     background: #3c3c3c; }
   .ace_qtmill .ace_marker-layer .ace_selected-word {
     background: #141414;
-    border: none;
-    /* animation: bracket 0.2s; */ }
+    border: none; }
   .ace_qtmill .ace_storage,
   .ace_qtmill .ace_keyword,
   .ace_qtmill .ace_meta.ace_tag {
