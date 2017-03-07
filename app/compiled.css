@@ -365,7 +365,10 @@ textarea::-webkit-input-placeholder {
   /** indicator for empty folders */ }
   .tree-item .tree-label {
     padding: 2px 5px;
-    color: #c8c8c8; }
+    color: #c8c8c8;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
     .tree-item .tree-label:hover {
       background-color: #505050; }
   .tree-item.tree-parent > .tree-label:before {
@@ -626,7 +629,9 @@ textarea::-webkit-input-placeholder {
     padding: 5px 7px; }
 
 .--NAV-fdir {
-  color: grey; }
+  color: grey;
+  overflow-x: hidden;
+  text-overflow: ellipsis; }
 
 .--NAV-entry-close {
   opacity: 0;

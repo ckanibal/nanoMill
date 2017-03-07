@@ -8,6 +8,9 @@
 		
 		padding: 2px 5px;
 		color: rgb(200, 200, 200);
+		overflow-x: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	
 	padding: 0 15px;

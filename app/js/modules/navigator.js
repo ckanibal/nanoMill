@@ -55,29 +55,28 @@ class Navigator extends Layout_Module {
 						this.entries[i].$el.addClass('unsaved')
 					break;
 				}
-		}, modId)
+		}, this.modId)
 	}
 	
 	insertFileEntry(file) {
-		var $root = $(this.root)
-
-		var $el = $(`
+		let dirname = path.basename(path.dirname(file.path))
+		
+		this.body.insertAdjacentHTML("beforeend", `
 			<div class='--NAV-entry'>
 				<div class='ALE-label'>
-					<div class='--NAV-fdir'>${path.basename(file.dirName)}/</div>
+					<div class='--NAV-fdir'>${dirname}/</div>
 					${file.name}<span class='unsaved-mark'>*</span>
 				</div>
 				<div class='--NAV-entry-close flex-col'><div class='icon-x-s'></div></div>
 			</div>`)
-
-		$root.find(".mod-body").append($el[0])
-
-		$el.click(function(e) {
+		
+		let el = this.body.lastChild
+		el.addEventListener("click", function(e) {
 			execHook("onOpenedFileSelect", file)
 			e.stopPropagation()
 		})
 
-		$el.find(".--NAV-entry-close").click(function(e) {
+		el.getElementsByClassName("--NAV-entry-close")[0].addEventListener("click", function(e) {
 			if(file.mod) {
 				if(file.mod.requestClose()) {
 					file.mod.performClose()
@@ -91,7 +90,7 @@ class Navigator extends Layout_Module {
 			e.preventDefault()
 		})
 		
-		this.entries.push({ $el, file })
+		this.entries.push({ $el: $(el), file })
 	}
 	
 	getEntryByFile(file) {
