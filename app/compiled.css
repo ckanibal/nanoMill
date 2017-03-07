@@ -383,7 +383,7 @@ textarea::-webkit-input-placeholder {
     content: ">";
     display: block;
     transform: rotate(0deg);
-    color: inherit; }
+    color: grey; }
   .tree-item.tree-collapsed > .tree-children {
     display: none; }
 
@@ -509,8 +509,7 @@ textarea::-webkit-input-placeholder {
   cursor: default;
   position: relative;
   margin: 0 2px;
-  padding: 3px 2px;
-  white-space: nowrwap; }
+  padding: 3px 2px; }
   .mod-sel:focus {
     outline: none; }
   .mod-sel:focus .mod-sel-list {
@@ -519,7 +518,8 @@ textarea::-webkit-input-placeholder {
     display: initial;
     pointer-events: auto; }
     .mod-sel:focus .mod-sel-item:hover {
-      background-color: #787878; }
+      background-color: #787878;
+      color: black; }
   .mod-sel:hover:not(:focus) .visible {
     background-color: #26282b; }
 

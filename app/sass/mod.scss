@@ -47,14 +47,13 @@
 		
 		&:hover {
 			background-color: $tb-bg-hvr;
+			color: black;
 		}
 	}
 	
 	&:hover:not(:focus) .visible {
 		background-color: $bg-main;
 	}
-	
-	white-space: nowrwap;
 }
 
 .mod-sel-list {
