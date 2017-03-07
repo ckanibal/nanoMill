@@ -676,8 +676,7 @@ textarea::-webkit-input-placeholder {
 
 .--RESV-temp-entry {
   font-size: 18px;
-  padding: 5px 8px;
-  margin: 5px 0;
+  padding: 10px 15px;
   cursor: pointer; }
   .--RESV-temp-entry:hover {
     background-color: #505050; }

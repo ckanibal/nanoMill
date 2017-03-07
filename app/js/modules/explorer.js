@@ -98,13 +98,14 @@ class Explorer extends Layout_Module {
 				icon: "icon-plus",
 				fn: _ => {
 					$(":focus").blur()
-					ResView.showModal()
+					require(path.join(__rootdir, "js/template_modal.js")).show()
 				}
 			},
 			{
 				label: "New workspace",
 				icon: "icon-plus",
 				fn: _ => {
+					this.modalNewWorkspace()
 					$(":focus").blur()
 				}
 			},
