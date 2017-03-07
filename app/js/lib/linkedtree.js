@@ -24,9 +24,9 @@ class LinkedTree {
 		this function creates an html list of the given LinkedTree
 		where tree items with children are expandable
 	*/
-	static toHtmlList(root, labelCallback) {
+	static toHtmlList(root, labelCallback, expEvent = 'click') {
 		
-		let fn = function(tree, par, expEvent = 'click') {
+		let fn = function(tree, par) {
 			let label = labelCallback?labelCallback(tree.value):tree.value
 			let html = `<div class="tree-item"><div class="tree-label">${label}</div><div class="tree-children"></div></div>`
 			
