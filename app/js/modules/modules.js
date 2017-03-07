@@ -402,15 +402,15 @@ class Layout_Module extends Layout_Element {
         let p = this.parent
 
         if(p.getDir() === dir) {
-            var mod = addModule("intro")
+            let mod = addModule("intro")
             p.registerChild(mod, p.getChildIndex(this) + 1)
 			let half = $(this.root)[property]()/2
 			mod.root.style[property] = half + "px"
 			this.root.style[property] = half + "px"
         }
         else {
-            var idx = p.getChildIndex(this)
-            var flexer = addFlexer(dir)
+            let idx = p.getChildIndex(this)
+            let flexer = addFlexer(dir)
 			
 			let half = $(this.root)[property]()/2
 			log(this.root.style[property])
@@ -635,4 +635,4 @@ function getModuleOfBody(el) {
 	for(let i = 0; i < _modules.length; i++)
 		if($(_modules[i].root).find(".mod-body")[0] === el)
 			return _modules[i]
-}
+}	
