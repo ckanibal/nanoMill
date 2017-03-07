@@ -220,17 +220,13 @@ class Workspace {
 	}
 	
 	openFile(i) {
-		if(!this.finfo[i])
-			throw "There is no such file to open"
-		
-		if(fileOpened)
+		if(this.fileOpened(i))
 			return
 		
 		// execute listeners
-		execHook("onFileOpen", this.finfo)
+		execHook("onFileOpen", this.finfo[i])
 		
 		this.opened.add(i)
-		
 	}
 	
 	static isAcceptedFileType(ext) {
@@ -256,7 +252,7 @@ var wmaster = new WorkspaceMaster()
 
 class FileInfo {
 	constructor(p, stat, name) {
-		this.p = p
+		this.path = p
 		this.stat = stat
 		this.name = name
 		this.leaf = path.extname(name)

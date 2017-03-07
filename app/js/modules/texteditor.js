@@ -1,12 +1,12 @@
 // provide every editor dom instace with a unique id by this index
-var _nextTextEditorId = 0
+let nextTextEditorId = 0
 
 class TextEditor extends Layout_SubModule {
 	
 	init() {
-		this.root.innerHTML = `<div id='${TE-_nextTextEditorId}' class='ace_qtmill'></div>`
+		this.root.innerHTML = `<div id='TE-${nextTextEditorId}' class='ace_qtmill'></div>`
 		
-		this.tid = _nextTextEditorId++
+		this.tid = nextTextEditorId++
 		
 		hook("onLayoutChange", () => {
 			this.editor.resize()
@@ -68,7 +68,7 @@ class TextEditor extends Layout_SubModule {
 	}
 	
 	save() {
-		_fs.writeFile(this.file.path, this.editor.getSession().getDocument().getValue(), 'utf8', (err) => {
+		fs.writeFile(this.file.path, this.editor.getSession().getDocument().getValue(), 'utf8', (err) => {
 			if(err)
 				throw `Failed to save file (${err})`
 			else {
@@ -82,7 +82,7 @@ class TextEditor extends Layout_SubModule {
 		this.editor.focus()
 	}
 	
-	requestClose() {
+	onClosePrevent() {
 		if(!this.editor)
 			return true
 		
@@ -115,7 +115,6 @@ class TextEditor extends Layout_SubModule {
 		this.editor.destroy()
 		this.editor = false
 		$("#TE-"+this.tid).remove()
-		cleanUpHooksOfMdl(this.id)
 	}
 }
 

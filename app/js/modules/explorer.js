@@ -50,8 +50,16 @@ class Explorer extends Layout_Module {
 		let items = this.body.getElementsByClassName("tree-label")
 		
 		for(let i = 0; i < items.length; i++) {
-			items[i].addEventListener("dblclick", function() {
+			items[i].addEventListener("dblclick", (e) => {
+				// get file index
+				let index = e.target.parentNode.dataset.value
+				let finfo = this.wspace.finfo[index]
 				
+				if(finfo.stat.isDirectory())
+					return
+				
+				if(extIsEditable(finfo.leaf))
+					this.wspace.openFile(index)
 			})
 		}
 	}

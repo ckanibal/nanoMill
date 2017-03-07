@@ -5,22 +5,22 @@ class EditorView extends Layout_Deck {
 	init(state) {
 		this.files = []
 		
-		hook("onFileOpen", (info) => {
+		hook("onFileOpen", (finfo) => {
 			
-			if(info.stats.isDirectory())
+			if(finfo.stat.isDirectory())
 				return
-
-			fs.readFile(info.path, 'utf8', (err, text) => {
-				
+			
+			fs.readFile(finfo.path, 'utf8', (err, text) => {
 				if(err)
 					throw `Failed to read file in EditorView (${err})`
 				
-				if(this.interpretFile(info, text)) {
-					execHook("onFileOpened", res)
-					execHook("onOpenedFileSelect", res)
+				if(this.interpretFile(finfo, text)) {
+					execHook("onFileOpened", finfo)
+					execHook("onOpenedFileSelect", finfo)
 				}
 			})
 			
+			// prevent furthur event execution
 			return true
 		}, this.modId)
 

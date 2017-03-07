@@ -417,15 +417,6 @@ function receiveLocalResource(p) {
 		execHook("onFileOpen", res)
 }
 
-// deprecated
-function openFile(res) {
-	warn("using deprecated function")
-	if(!resIsEditable(res))
-		return
-	
-	execHook("onFileOpen", res)
-}
-
 function extIsEditable(ext) {
 	if( ext === ".c" ||
 		ext === ".txt" ||

@@ -7,22 +7,6 @@ class Layout_Element {
 		this.isLayout_Element = true
 	}
 	
-	get root () {
-		return this._el
-	}
-	
-	set root (v) {
-		this._el = v
-	}
-	
-	get parent () {
-		return this._parent
-	}
-	
-	set parent (v) {
-		this._parent = v
-	}
-	
 	getLayoutInfo() {
 		return { w: this.root.style.width, h: this.root.style.height }
 	}
@@ -61,11 +45,11 @@ class Layout_Page extends Layout_Element {
     }
 	
 	get root () {
-		return this.flexer._el
+		return this.flexer.root
 	}
 	
 	set root (v) {
-		this.flexer._el = v
+		this.flexer.root = v
 	}
 	
 	getLayoutInfo() {
@@ -406,9 +390,9 @@ class Layout_Module extends Layout_Element {
 		if(this.onClosePrevent())
 			return
 		
-		let par = this._parent
-		$(this._el).remove()
-		this._parent.unregisterChild(this)
+		let par = this.parent
+		$(this.root).remove()
+		this.parent.unregisterChild(this)
 		par.adjustAppearance()
 		
 		// detach any callbacks of hook-system with reference to this module
@@ -523,8 +507,8 @@ class Layout_Deck extends Layout_Module {
             return error("No parameter given for registerChild")
         else if(!child.isLayout_Element)
             return log("Given child is not a layout element")
-
-		this.root.getElementsByClassName("mod-body")[0].appendchild(child.root)
+		
+		this.root.getElementsByClassName("mod-body")[0].appendChild(child.root)
 
         this.children.push(child)
 
@@ -567,6 +551,8 @@ class Layout_Deck extends Layout_Module {
 class Layout_SubModule extends Layout_Element {
 	constructor() {
 		super()
+		
+		this.root = document.createElement("div")
 	}
 	
 	setup() { }
@@ -591,9 +577,9 @@ class Layout_SubModule extends Layout_Element {
 		if(this.onClosePrevent())
 			return
 		
-		$(this._el).remove()
-		this._parent.unregisterChild(this)
-		this._parent.adjustAppearance()
+		$(this.root).remove()
+		this.parent.unregisterChild(this)
+		this.parent.adjustAppearance()
 		
 		// detach any callbacks of hook-system with reference to this module
 		cleanUpHooksOfMdl(this.id)
