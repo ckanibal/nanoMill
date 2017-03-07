@@ -30,7 +30,12 @@ class Explorer extends Layout_Module {
 		// ignore root element and paste children as html tree lists
 		let branches = wspace.tree.children
 		for (var i = 0; i < branches.length; i++)
-			this.body.appendChild(LinkedTree.toHtmlList(branches[i], idx => wspace.finfo[idx].name))
+			this.body.appendChild(LinkedTree.toHtmlList(branches[i], idx => {
+				// get file name form workspace file info holder
+				let name = wspace.finfo[idx].name
+				// wrap span around extension
+				return name.replace(/(\.[^.]+?$)/, `<span style="color: grey">$1</span>`)
+			}))
 		
 		// bind double click behaviour to it
 		let items = this.body.getElementsByClassName("tree-label")
