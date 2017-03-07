@@ -1,35 +1,32 @@
 
 
-
 class EditorView extends Layout_Deck {
 
-	constructor(modId) {
-		super()
-		
+	init(state) {
 		this.files = []
 		
-		hook("onFileOpen", (res) => {
+		hook("onFileOpen", (info) => {
 			
-			if(res.stats.isDirectory())
+			if(info.stats.isDirectory())
 				return
 
-			_fs.readFile(res.path, 'utf8', (err, text) => {
+			fs.readFile(info.path, 'utf8', (err, text) => {
 				
 				if(err)
 					throw `Failed to read file in EditorView (${err})`
 				
-				if(this.interpretFile(res, text)) {
+				if(this.interpretFile(info, text)) {
 					execHook("onFileOpened", res)
 					execHook("onOpenedFileSelect", res)
 				}
 			})
 			
 			return true
-		}, modId)
+		}, this.modId)
 
 		hook("onOpenedFileSelect", (file) => {
 			this.showFile(file)
-		}, modId)
+		}, this.modId)
 		
 		hook("closeOpenedFile", (file) => {
 			let idx = this.getFileIndex(file)
@@ -42,7 +39,7 @@ class EditorView extends Layout_Deck {
 			this.unregisterChild(child)
 			
 			return true
-		}, modId)
+		}, this.modId)
 		
 		for(let i = 0; i < _dumped_editors.length; i++) {
 			this.registerFile(_dumped_editors[i].file, _dumped_editors[i])
@@ -152,9 +149,7 @@ class EditorView extends Layout_Deck {
 		this.children[idx].focus()
 	}
 	
-	onDeletion() {
-		cleanUpHooksOfMdl(this.id)
-		
+	onClose() {
 		for(let i = 0; i < this.files.length; i++)
 			this.files[i].editor = null
 		
@@ -171,6 +166,6 @@ EditorView.def = {
 	title: "Editor"
 }
 
-registerModule(EditorView.def)
+defineModule(EditorView.def)
 
 var _dumped_editors = []

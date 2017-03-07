@@ -48,6 +48,7 @@ class Layout_Page extends Layout_Element {
 		
 		$(this.flexer.root).addClass("flex-fill")
 		
+		// override functon, to prevent flexer from removing itself, when empty
 		this.flexer.adjustAppearance = function() { }
 	}
 	
@@ -110,7 +111,7 @@ class Layout_Flex extends Layout_Element {
 
 
         if(index === undefined || !this.children.length) {
-            $(this.root).append(child.root)
+            this.root.appendChild(child.root)
 
             this.children.push(child)
         }
@@ -160,7 +161,8 @@ class Layout_Flex extends Layout_Element {
 			$("#mod-buffer").append(child.root)
 			
 			let root = this.root
-			
+			log(p)
+			log(this)
 			if(p.getDir() === DIR_ROW) {
 				child.root.style.width = root.style.width
 				child.root.style.height = ""
@@ -230,7 +232,10 @@ class Layout_Flex extends Layout_Element {
 }
 
 class Layout_Module extends Layout_Element {
-
+	
+	/**
+		don't overload constructor if possible, use init() instead
+	*/
     constructor() {
 		
 		super()
@@ -362,6 +367,12 @@ class Layout_Module extends Layout_Element {
 				fn.call(this, props2)
         })
     }
+	
+	/**
+		stub that's called when the module gets initialized
+		@param state: data that has been saved according to the getSaveData() method, to restore the recent session
+	*/
+	init(state) { }
 
     redefine(modAlias) {
 		if(modAlias === this.constructor.def.alias)
@@ -374,17 +385,44 @@ class Layout_Module extends Layout_Element {
 
 		p.registerChild(mod, p.getChildIndex(this))
 		
-        removeModule(this)
+        this.close()
 		
 		mod.root.style.width = w
 		mod.root.style.height = h
 		
 		execHook("onLayoutChange")
     }
-
-    onDeletion() {
-		cleanUpHooksOfMdl(this.id)
+	
+	/**
+		overrideable callback
+		return true, will prevent the module from getting closed
+	*/
+	onClosePrevent() {
+		return false
 	}
+	
+	close() {
+		// call stub, which might abort closing this module
+		if(this.onClosePrevent())
+			return
+		
+		let par = this._parent
+		$(this._el).remove()
+		this._parent.unregisterChild(this)
+		par.adjustAppearance()
+		
+		// detach any callbacks of hook-system with reference to this module
+		cleanUpHooksOfMdl(this.id)
+		// remove global reference
+		removeFromModuleList(this)
+		
+		this.onClose()
+	}
+	
+	/**
+		overrideable callback
+	*/
+	onClose() { }
 
     addSibling(fVertical) {
 
@@ -428,12 +466,6 @@ class Layout_Module extends Layout_Element {
 		
 		execHook("onLayoutChange")
     }
-
-    deleteModule() {
-        $(this._el).remove()
-        this._parent.unregisterChild(this)
-        this._parent.adjustAppearance()
-    }
 	
 	getBasicMenuProps() {
 		return [
@@ -441,9 +473,7 @@ class Layout_Module extends Layout_Element {
 				label: "Close Frame",
 				icon: "icon-x-s",
 				fn: function() {
-					let p = this.parent
-					removeModule(this)
-					p.adjustAppearance()
+					this.close()
 					$(":focus").blur()
 				}
 			},
@@ -473,8 +503,10 @@ class Layout_Module extends Layout_Element {
 	isSub() { return false }
 	
 	getLayoutInfo() {
-		return { alias: this.constructor.def.alias, w: this.root.style.width, h: this.root.style.height }
+		return { alias: this.constructor.def.alias, w: this.root.style.width, h: this.root.style.height, state: this.getSaveData() }
 	}
+	
+	getSaveData() {}
 }
 
 class Layout_Deck extends Layout_Module {
@@ -490,10 +522,9 @@ class Layout_Deck extends Layout_Module {
         if(!child)
             return error("No parameter given for registerChild")
         else if(!child.isLayout_Element)
-            return log("Given child is not a Layout_Element")
+            return log("Given child is not a layout element")
 
-
-        $(this.root).find(".mod-body").append(child.root)
+		this.root.getElementsByClassName("mod-body")[0].appendchild(child.root)
 
         this.children.push(child)
 
@@ -546,17 +577,44 @@ class Layout_SubModule extends Layout_Element {
 	
 	isSub() { return true }
 	
-	requestClose() { return true }
 	
-	performClose() {
-		cleanUpHooksOfMdl(this.id)
+	/**
+		callback stub
+		returning true, will prevent the module from getting closed
+	*/
+	onClosePrevent() {
+		return false
 	}
+	
+	close() {
+		// call stub, which might abort closing this module
+		if(this.onClosePrevent())
+			return
+		
+		$(this._el).remove()
+		this._parent.unregisterChild(this)
+		this._parent.adjustAppearance()
+		
+		// detach any callbacks of hook-system with reference to this module
+		cleanUpHooksOfMdl(this.id)
+		// remove global reference
+		removeFromModuleList(this)
+		
+		this.onClose()
+	}
+	
+	/**
+		callback stub
+	*/
+	onClose() { }
+	
+	getSaveData() {}
 }
 
 var _modules = []
 var _modDefs = {}
 
-function registerModule(def) {
+function defineModule(def) {
 	
 	if(_modDefs[def.alias])
 		error(`mod alias already defined (${def.alias}); registration rejected`)
@@ -565,7 +623,7 @@ function registerModule(def) {
 }
 
 var modId = 0
-function addModule(modAlias) {
+function addModule(modAlias, stateinfo) {
 
     var def = _modDefs[modAlias]
 	
@@ -577,25 +635,19 @@ function addModule(modAlias) {
     _modules.push(mod)
 	
 	mod.id = modId++
-
+	
+	// initialize module with saved info, if any
+	mod.init(stateinfo)
+	
     return mod
 }
 
-function removeModule(mod) {
-
-    mod.onDeletion()
-	
-    var p = mod.parent
-    if(p)
-        p.unregisterChild(mod)
-
+function removeFromModuleList(mod) {
     var a = []
 
     for(var i = 0; i < _modules.length; i++)
         if(_modules[i] !== mod)
             a.push(_modules[i])
-
-	$(mod.root).remove()
 	
     _modules = a
 }

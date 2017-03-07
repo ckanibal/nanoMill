@@ -3,16 +3,14 @@ var _nextTextEditorId = 0
 
 class TextEditor extends Layout_SubModule {
 	
-	constructor(modId) {
-		super()
-		
-		this.root = $("<div id='TE-" + _nextTextEditorId + "' class='ace_qtmill'></div>")[0]
+	init() {
+		this.root.innerHTML = `<div id='${TE-_nextTextEditorId}' class='ace_qtmill'></div>`
 		
 		this.tid = _nextTextEditorId++
 		
 		hook("onLayoutChange", () => {
 			this.editor.resize()
-		}, modId)
+		}, this.modId)
 	}
 
     setup(file, txt, mode) {
@@ -113,7 +111,7 @@ class TextEditor extends Layout_SubModule {
 		}
 	}
 	
-	performClose() {
+	onClose() {
 		this.editor.destroy()
 		this.editor = false
 		$("#TE-"+this.tid).remove()
@@ -128,4 +126,4 @@ TextEditor.def = {
 	isSub: true
 }
 
-registerModule(TextEditor.def)
+defineModule(TextEditor.def)

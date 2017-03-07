@@ -81,7 +81,7 @@ function getResourcesData() {
 
 class WorkspaceMaster {
 	constructor() {
-		this.wspaces = new Set()
+		this.wspaces = []
 		
 		// restore workspaces by config
 		let a = getConfig("workspaces")
@@ -102,7 +102,7 @@ class WorkspaceMaster {
 	*/
 	addWorkspace(p) {
 		let ws = new Workspace(p)
-		this.wspaces.add(ws)
+		this.wspaces.push(ws)
 		
 		return ws
 	}
@@ -118,6 +118,18 @@ class WorkspaceMaster {
 		
 		setConfig('workspaces', a)
 	}
+	
+	getIndexOf(workspace) {
+		for(let i = 0; i < this.wspaces.length; i++)
+			if(workspace === this.wspaces[i])
+				return i
+		
+		return -1
+	}
+	
+	getWorkspace(index) {
+		return this.wspaces[index]
+	}
 }
 
 /**
@@ -132,6 +144,8 @@ class Workspace {
 		this.finfo = []
 		// represents the directory hierarchy with indices for finfo
 		this.tree = null
+		// holder of indices of opened files
+		this.opened = new Set()
 		
 		this.loaded = false
 		
@@ -201,7 +215,21 @@ class Workspace {
 		return i
 	}
 	
-	getOpenedFiles() {
+	fileOpened(i) {
+		return this.opened.has(i)
+	}
+	
+	openFile(i) {
+		if(!this.finfo[i])
+			throw "There is no such file to open"
+		
+		if(fileOpened)
+			return
+		
+		// execute listeners
+		execHook("onFileOpen", this.finfo)
+		
+		this.opened.add(i)
 		
 	}
 	
@@ -220,6 +248,7 @@ class Workspace {
 		}
 	}
 	// TODO: watcher, detecting removal or change of opened files and inform user (n++ style)
+	// (and show newly added files, could be checked when window gets the focused)
 }
 
 
@@ -230,6 +259,7 @@ class FileInfo {
 		this.p = p
 		this.stat = stat
 		this.name = name
+		this.leaf = path.extname(name)
 	}
 }
 

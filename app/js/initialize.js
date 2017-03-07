@@ -31,6 +31,40 @@ function cleanUpHooksOfMdl(modId) {
 	}
 }
 
+class HookList {
+	constructor() {
+		this.list = []
+	}
+	
+	in(name, fn, modId) {
+		
+		if(!modId && modId !== 0)
+			modId = -1
+		
+		if(!_hookList[name])
+			_hookList[name] = []
+
+		_hookList[name].push({ fn, modId })
+	}
+	
+	/**
+		deletes all referenced functions from  a specific module
+	*/
+	freeOfModule() {
+		for(let hookName in _hookList) {
+			let a = []
+			let fnList = _hookList[hookName]
+			for(let i = 0; i < fnList.length; i++)
+				if(fnList[i].modId !== modId)
+					a.push(fnList[i])
+			
+			_hookList[hookName] = a
+		}
+	}
+}
+
+/// var hook = new HookList()
+
 var log, warn, error
 
 function _delegateLog() {
@@ -70,26 +104,21 @@ var _prf = {
 */
 function createDefaultLayout(byUser) {
 	var page = addPage(),
-		subFlex = addFlexer(DIR_COL),
-		subFlex2 = addFlexer(DIR_COL)
+		subFlex = addFlexer(DIR_COL)
 
 	$("#mod-wrapper").append(page.root)
 
 	subFlex.root.style.width = `${$("#mod-wrapper").width()/5*2 || 500}px`
 	
 	page.registerChild(subFlex)
-	page.registerChild(subFlex2)
 	
-	let mod = addModule("resview")
+	let mod = addModule("navigator")
 	subFlex.registerChild(mod)
-	mod.root.style.height = `${$("#mod-wrapper").height()/2 || 200}px`
-	subFlex.registerChild(addModule("navigator"))
+	mod.root.style.height = `${$("#mod-wrapper").height()/3 || 200}px`
+	subFlex.registerChild(addModule("explorer"))
 
 	mod = addModule("editor")	
-	subFlex2.registerChild(mod)
-	mod.root.style.height = `${$("#mod-wrapper").height()/4*3 || 600}px`
-	
-	subFlex2.registerChild(addModule("runint"))
+	page.registerChild(mod)
 	
 	page.root.style.animation = "fade-in 0.3s"
 	warn("Default layout used (Forced by user: " + (byUser || "false") + ")")
@@ -294,21 +323,6 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		
 		let a = []
 		let r = config.resources
-		var cf = getConfig("focussedRes")
-		
-		for(let i = 0; i < r.length; i++)
-			if(r[i]) {
-				let p = r[i]
-				_fs.stat(r[i], (err, stat) => {
-					if(err)
-						error(`Failed to reload resource (${err})\n${p}`)
-					else {
-						let res = filemanager.addResource(p, stat)
-						if(p === cf)
-							execHook("onResFocus", res)
-					}
-				})
-			}
 			
 		config.resources = []
 		
@@ -337,16 +351,14 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 						for(let i = 0; i < data.chldrn.length; i++)
 							handleLayoutInput(data.chldrn[i], flexer)
 					break;
-					case "resview":
 					case "editor":
 					case "intro":
 					case "navigator":
 					case "explorer":
-					case "runint":
-						let mod = addModule(data.alias)
+						let mod = addModule(data.alias, data.state)
 						if(!mod)
 							break;
-						
+												
 						par.registerChild(mod)
 						mod.root.style.width = data.w
 						mod.root.style.height = data.h
@@ -368,7 +380,6 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 	
 	window.addEventListener("beforeunload", _ => {
 		setConfig("pages", getLayoutData())
-		setConfig("resources", getResourcesData())
 	})
 	
 	$("#newstuff").click(_ => {
@@ -380,15 +391,18 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
     log("end of initialize")
 }
 
+/**
+	opens the file-picker dialog and executes the given callback on completion
+*/
 function pickFile(callback) {
 	let el = document.getElementById("filepicker")
 	
 	el.onchange = callback
 	el.click()
 }
-
+// deprecated
 function receiveLocalResource(p) {
-	
+	warn("using deprecated function")
 	let name = path.basename(p),
 		leaf = path.extname(p)
 	
@@ -403,19 +417,21 @@ function receiveLocalResource(p) {
 		execHook("onFileOpen", res)
 }
 
+// deprecated
 function openFile(res) {
+	warn("using deprecated function")
 	if(!resIsEditable(res))
 		return
 	
 	execHook("onFileOpen", res)
 }
 
-function resIsEditable(res) {
-	if( res.leaf === ".c" ||
-		res.leaf === ".txt" ||
-		res.leaf === ".ocm" ||
-		res.leaf === ".glsl" ||
-		res.leaf === ".material")
+function extIsEditable(ext) {
+	if( ext === ".c" ||
+		ext === ".txt" ||
+		ext === ".ocm" ||
+		ext === ".glsl" ||
+		ext === ".material")
 		return true
 	
 	return false

@@ -26,7 +26,7 @@ class LinkedTree {
 	*/
 	static toHtmlList(root, labelCallback) {
 		
-		let fn = function(tree, par) {
+		let fn = function(tree, par, expEvent = 'click') {
 			let label = labelCallback?labelCallback(tree.value):tree.value
 			let html = `<div class="tree-item"><div class="tree-label">${label}</div><div class="tree-children"></div></div>`
 			
@@ -38,7 +38,7 @@ class LinkedTree {
 			// add functionality to expand and collapse the children holder
 			if(tree.children) {
 				item.className += ' tree-parent tree-collapsed'
-				item.firstChild.addEventListener('click', function(e) {
+				item.firstChild.addEventListener(expEvent, function(e) {
 					toggleClass(item, 'tree-collapsed')
 				})
 				

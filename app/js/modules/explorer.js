@@ -1,24 +1,33 @@
 class Explorer extends Layout_Module {
 	
-	constructor(modId) {
-		super()
-		let wspaces = wmaster.getWorkspaces()
-		
-		// if no workspaces set, show button to create one
-		if(!wspaces.length) {
-			// create parent object that fills the module body
-			this.body.insertAdjacentHTML('beforeEnd', `<div class="abs-fill flex-col" style="justify-content: center"></div>`)
+	init(state) {
+		// restore workspace from saved index of the previous session
+		if(state && state.workspace !== -1 && wmaster.getWorkspace(state.workspace))
+			this.setWorkspace(wmaster.getWorkspace(state.workspace))
+		// otherwise offer to select one
+		else {
+			let wspaces = wmaster.getWorkspaces()
 			
-			// add desc/button to it
-			let p = this.body.lastChild
-			p.insertAdjacentHTML('beforeEnd', `<div style="align-self: center; text-align: center">No workspace targeted,<br>click to add one.</div>`)
-			p.lastChild.onclick = this.modalNewWorkspace.bind(this)
+			// if no workspaces set, show button to create one
+			if(!wspaces.length) {
+				// create parent object that fills the module body
+				this.body.insertAdjacentHTML('beforeEnd', `<div class="abs-fill flex-col" style="justify-content: center"></div>`)
+				
+				// add desc/button to it
+				let p = this.body.lastChild
+				p.insertAdjacentHTML('beforeEnd', `<div style="align-self: center; text-align: center">No workspace targeted,<br>click to add one.</div>`)
+				p.lastChild.onclick = this.modalNewWorkspace.bind(this)
+			}
 		}
 		
 		hook("onWorkspaceLoad", (wspace) => {
 			if(this.wspace === wspace)
 				this.showWorkspace(wspace)
-		}, modId)
+		}, this.modId)
+	}
+	
+	setWorkspace(wspace) {
+		this.wspace = wspace
 	}
 	
 	showWorkspace(wspace) {
@@ -35,7 +44,7 @@ class Explorer extends Layout_Module {
 				let name = wspace.finfo[idx].name
 				// wrap span around extension
 				return name.replace(/(\.[^.]+?$)/, `<span style="color: grey">$1</span>`)
-			}))
+			}, 'dblclick'))
 		
 		// bind double click behaviour to it
 		let items = this.body.getElementsByClassName("tree-label")
@@ -45,15 +54,6 @@ class Explorer extends Layout_Module {
 				
 			})
 		}
-	}
-	
-	showWorkspaceContent(ws) {
-		// keep reference
-		this.wspace = ws
-		
-		// if workspace is yet to be loaded, do nothing at let hook callbacks do the job
-		if(!ws.loaded)
-			return
 	}
 	
 	modalNewWorkspace() {
@@ -73,7 +73,7 @@ class Explorer extends Layout_Module {
 				return
 			
 			let ws = wmaster.addWorkspace(this.dataset.valid)
-			exp.showWorkspaceContent(ws)
+			exp.setWorkspace(ws)
 			
 			// display loading indicator
 			exp.body.innerHTML = `<div class="abs-fill flex-col" style="justify-content: center"><div style="align-self: center">...</dib></div>`
@@ -109,6 +109,10 @@ class Explorer extends Layout_Module {
 			}
 		]
 	}
+	
+	getSaveData() {
+		return {workspace: wmaster.getIndexOf(this.wspace)}
+	}
 }
 
 
@@ -123,4 +127,4 @@ Explorer.def = {
 	title: "Explorer",
 }
 
-registerModule(Explorer.def)
+defineModule(Explorer.def)

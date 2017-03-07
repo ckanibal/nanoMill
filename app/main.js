@@ -1,7 +1,7 @@
 const {app, BrowserWindow, dialog} = require('electron')
-const _fs = require('fs')
+const fs = require('fs')
 
-var output = _fs.createWriteStream(`${app.getPath('userData')}/error.log`, {flags: "w", })
+var output = fs.createWriteStream(`${app.getPath('userData')}/error.log`, {flags: "w", })
 
 output.write(`Detected platform: ${process.platform}\n`)
 
@@ -50,7 +50,7 @@ function createWindow () {
 	
 	// Make sure to have valid values
 	try {
-		let str = _fs.readFileSync(`${app.getPath('userData')}/config.json`)
+		let str = fs.readFileSync(`${app.getPath('userData')}/config.json`)
 
 		if(!str)
 			"Cannot read config file"
@@ -148,6 +148,6 @@ app.on('activate', () => {
 })
 
 app.on('before-quit', () => {
-	_fs.writeFileSync(`${app.getPath('userData')}/config.json`, JSON.stringify(config))
+	fs.writeFileSync(`${app.getPath('userData')}/config.json`, JSON.stringify(config))
 	output.end()
 })

@@ -3,12 +3,10 @@
 
 class Navigator extends Layout_Module {
 
-	constructor(modId) {
-		super()
-		
+	init(state) {
 		this.entries = []
 		
-		hook("onFileOpened", this.insertFileEntry.bind(this), modId)
+		hook("onFileOpened", this.insertFileEntry.bind(this), this.modId)
 		
 		hook("onOpenedFileSelect", (file) => {
 			$(this.root).find(".selected-file").removeClass("selected-file")
@@ -16,7 +14,7 @@ class Navigator extends Layout_Module {
 			for(let i = 0; i < this.entries.length; i++)
 				if(this.entries[i].file === file)
 					this.entries[i].$el.addClass("selected-file")
-		}, modId)
+		}, this.modId)
 		
 		let rList = filemanager.getResourcesCopy()
 
@@ -35,7 +33,7 @@ class Navigator extends Layout_Module {
 					this.entries[i].$el.addClass("current-file")
 					break;
 				}
-		}, modId)
+		}, this.modId)
 		
 		hook("onFileClosed", (res) => {
 			let a  = []
@@ -46,7 +44,7 @@ class Navigator extends Layout_Module {
 					a.push(this.entries[i])
 			
 			this.entries = a
-		}, modId)
+		}, this.modId)
 		
 		hook("onFileChangeStateChange", (res, clean) => {
 			for(let i = 0; i < this.entries.length; i++)
@@ -111,4 +109,4 @@ Navigator.def = {
 	title: "Opened Documents",
 }
 
-registerModule(Navigator.def)
+defineModule(Navigator.def)
