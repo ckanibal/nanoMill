@@ -4,7 +4,7 @@ class LinkedTree {
 		this.value = val
 	}
 	
-	add(child) {		
+	addChild(child) {		
 		if(!this.children)
 			this.children = []
 		
@@ -24,17 +24,19 @@ class LinkedTree {
 		this function creates an html list of the given LinkedTree
 		where tree items with children are expandable
 	*/
-	static toHtmlList(root) {
+	static toHtmlList(root, labelCallback) {
 		
 		let fn = function(tree, par) {
-			
-			let html = `<div class="tree-item"><div class="tree-label">${tree.value}</div><div class="tree-children"></div></div>`
+			let label = labelCallback?labelCallback(tree.value):tree.value
+			let html = `<div class="tree-item"><div class="tree-label">${label}</div><div class="tree-children"></div></div>`
 			
 			par.insertAdjacentHTML('beforeEnd', html)
+			// select newly create element
+			let item = par.lastChild
+			item.dataset.value = tree.value
 			
 			// add functionality to expand and collapse the children holder
 			if(tree.children) {
-				let item = par.lastChild
 				item.className += ' tree-parent tree-collapsed'
 				item.firstChild.addEventListener('click', function(e) {
 					toggleClass(item, 'tree-collapsed')

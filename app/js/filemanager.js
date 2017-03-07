@@ -128,10 +128,14 @@ class WorkspaceMaster {
 class Workspace {
 	constructor(dir_path) {
 		this.path = dir_path
+		// file info storage
+		this.finfo = []
+		// represents the directory hierarchy with indices for finfo
+		this.tree = null
 		
 		this.loaded = false
 		
-		// load data
+		// collect directory information
 		fs.readdir(dir_path, (err, files) => {
 			if(err) {
 				error( "Could not list the directory.", err )
@@ -141,18 +145,23 @@ class Workspace {
 			let LinkedTree = require(path.join(__dirname, "js/lib/linkedtree.js"))
 			
 			// make a recursive call to iterate all directories and fill in the linked tree
-			let fn = function(files, dir, tree) {
+			let fn = (files, dir, tree) => {
 				for(let i = 0; i < files.length; i++) {
 										
 					let p = path.join(dir, files[i])
 					
 					let stat = fs.statSync(p)
-					if(!stat)
+					if(!stat || !(stat.isDirectory() || Workspace.isAcceptedFileType(path.extname(files[i]))))
 						continue
 					
+					// add information about the file to local info holder
+					// and save its array index into the linked tree
+					let idx = this.addFileInfo(new FileInfo(p, stat, files[i]))
+					let branch = new LinkedTree(idx)
+					tree.addChild(branch)
+					
+					// subdirectory to take a look into
 					if(stat.isDirectory()) {
-						let branch = new LinkedTree(files[i])
-						tree.add(branch)
 						
 						let subdir = path.join(dir_path, files[i])
 						
@@ -171,8 +180,6 @@ class Workspace {
 						// ...
 						
 					}
-					else if(Workspace.isAcceptedFileType(path.extname(files[i])))
-						tree.add(new LinkedTree(files[i]))
 				}
 			}
 			
@@ -184,6 +191,14 @@ class Workspace {
 		
 			execHook("onWorkspaceLoad", this)
 		})
+	}
+	
+	addFileInfo(finfo) {
+		let i = this.finfo.length
+		
+		this.finfo[i] = finfo
+		
+		return i
 	}
 	
 	getOpenedFiles() {
@@ -210,5 +225,12 @@ class Workspace {
 
 var wmaster = new WorkspaceMaster()
 
+class FileInfo {
+	constructor(p, stat, name) {
+		this.p = p
+		this.stat = stat
+		this.name = name
+	}
+}
 
 // coding space

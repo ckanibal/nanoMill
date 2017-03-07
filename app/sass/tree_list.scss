@@ -30,6 +30,7 @@
 	&.tree-parent > .tree-children:empty:after {
 		content: "empty";
 		font-style: italic;
+		color: grey;
 	}
 	
 	&.tree-collapsed > .tree-label {		

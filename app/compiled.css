@@ -378,7 +378,8 @@ textarea::-webkit-input-placeholder {
     text-shadow: 0 1px 0 black; }
   .tree-item.tree-parent > .tree-children:empty:after {
     content: "empty";
-    font-style: italic; }
+    font-style: italic;
+    color: grey; }
   .tree-item.tree-collapsed > .tree-label:before {
     content: ">";
     display: block;

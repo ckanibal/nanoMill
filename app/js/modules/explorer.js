@@ -30,7 +30,16 @@ class Explorer extends Layout_Module {
 		// ignore root element and paste children as html tree lists
 		let branches = wspace.tree.children
 		for (var i = 0; i < branches.length; i++)
-			this.body.appendChild(LinkedTree.toHtmlList(branches[i]))
+			this.body.appendChild(LinkedTree.toHtmlList(branches[i], idx => wspace.finfo[idx].name))
+		
+		// bind double click behaviour to it
+		let items = this.body.getElementsByClassName("tree-label")
+		
+		for(let i = 0; i < items.length; i++) {
+			items[i].addEventListener("dblclick", function() {
+				
+			})
+		}
 	}
 	
 	showWorkspaceContent(ws) {
@@ -94,6 +103,12 @@ class Explorer extends Layout_Module {
 				}
 			}
 		]
+	}
+}
+
+
+class FileTree {
+	constructor(tree) {
 	}
 }
 
