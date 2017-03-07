@@ -360,9 +360,11 @@ textarea::-webkit-input-placeholder {
 
 /* ui object stuff */
 .tree-item {
-  padding: 2px 8px; }
-  .tree-item .tree-label:hover {
-    background-color: #505050; }
+  padding: 0 5px; }
+  .tree-item .tree-label {
+    padding: 2px 5px; }
+    .tree-item .tree-label:hover {
+      background-color: #505050; }
 
 @font-face {
   font-family: 'icomoon';

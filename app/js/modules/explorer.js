@@ -23,11 +23,20 @@ class Explorer extends Layout_Module {
 	
 	showWorkspace(wspace) {
 		// clear content
-		this.body.innerHTML = ""
+		this.body.innerHTML = null
 		
 		let LinkedTree = require(path.join(__dirname, "js/lib/linkedtree.js"))
 		
 		this.body.appendChild(LinkedTree.toHtmlList(wspace.tree))
+	}
+	
+	showWorkspaceContent(ws) {
+		// keep reference
+		this.wspace = ws
+		
+		// if workspace is yet to be loaded, do nothing at let hook callbacks do the job
+		if(!ws.loaded)
+			return
 	}
 	
 	modalNewWorkspace() {
@@ -50,20 +59,11 @@ class Explorer extends Layout_Module {
 			exp.showWorkspaceContent(ws)
 			
 			// display loading indicator
-			this.body.innerHTML = `<div class="abs-fill flex-col" style="justify-content: center"><div style="align-self: center">...</dib></div>`
+			exp.body.innerHTML = `<div class="abs-fill flex-col" style="justify-content: center"><div style="align-self: center">...</dib></div>`
 			hideModal()
 		})
 		
 		showModal("Select working space", $el[0])
-	}
-	
-	showWorkspaceContent(ws) {
-		// keep reference
-		this.wspace = ws
-		
-		// if workspace is yet to be loaded, do nothing at let hook callbacks do the job
-		if(!ws.loaded)
-			return
 	}
 	
 	getSpecialMenuProps() {
