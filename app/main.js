@@ -31,6 +31,11 @@ function createWindow () {
 		setConfig: (key, value) => {
 			config.config[key] = value
 		},
+		wipeConfig: (key) => {
+			if(!key)
+				return
+			config.config[key] = undefined
+		},
 		getConfig: (key) => {
 			return config.config[key] || defaultConfigVal[key]
 		},

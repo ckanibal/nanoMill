@@ -9,5 +9,43 @@
 		padding: 2px 5px;
 	}
 	
-	padding: 0 5px;
+	padding: 0 15px;
+	margin-left: 15px;
+	
+	&.tree-parent > .tree-label{
+		
+		&:before {
+			content: ">";
+			display: block;
+			transform: rotate(90deg);
+			transition: transform .1s ease-out, color .1s ease-out;
+			margin-left: -20px;
+			position: absolute;
+			color: deepskyblue;
+			text-shadow: 0 1px 0 black;
+		}
+	}
+	
+	/** indicator for empty folders */
+	&.tree-parent > .tree-children:empty:after {
+		content: "empty";
+		font-style: italic;
+	}
+	
+	&.tree-collapsed > .tree-label {		
+		&:before {
+			content: ">";
+			display: block;
+			transform: rotate(0deg);
+			color: grey;
+		}
+	}
+	
+	&.tree-collapsed > .tree-children {
+		display: none;
+	}
+}
+
+.tree-children {
+	padding-left: 20px;
 }

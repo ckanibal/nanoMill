@@ -360,11 +360,35 @@ textarea::-webkit-input-placeholder {
 
 /* ui object stuff */
 .tree-item {
-  padding: 0 5px; }
+  padding: 0 15px;
+  margin-left: 15px;
+  /** indicator for empty folders */ }
   .tree-item .tree-label {
     padding: 2px 5px; }
     .tree-item .tree-label:hover {
       background-color: #505050; }
+  .tree-item.tree-parent > .tree-label:before {
+    content: ">";
+    display: block;
+    transform: rotate(90deg);
+    transition: transform .1s ease-out, color .1s ease-out;
+    margin-left: -20px;
+    position: absolute;
+    color: deepskyblue;
+    text-shadow: 0 1px 0 black; }
+  .tree-item.tree-parent > .tree-children:empty:after {
+    content: "empty";
+    font-style: italic; }
+  .tree-item.tree-collapsed > .tree-label:before {
+    content: ">";
+    display: block;
+    transform: rotate(0deg);
+    color: inherit; }
+  .tree-item.tree-collapsed > .tree-children {
+    display: none; }
+
+.tree-children {
+  padding-left: 20px; }
 
 @font-face {
   font-family: 'icomoon';

@@ -495,3 +495,13 @@ var ui = {
 		return $el[0]
 	}
 }
+
+function toggleClass(el, cl) {
+	let cname = el.className
+	let i = cname.indexOf(cl)
+	
+	if(i === -1)
+		el.className += ' ' + cl
+	else
+		el.className = cname.substr(0, i) + cname.substr(i + cname.length)
+}

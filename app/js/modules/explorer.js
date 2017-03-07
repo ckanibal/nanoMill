@@ -27,7 +27,10 @@ class Explorer extends Layout_Module {
 		
 		let LinkedTree = require(path.join(__dirname, "js/lib/linkedtree.js"))
 		
-		this.body.appendChild(LinkedTree.toHtmlList(wspace.tree))
+		// ignore root element and paste children as html tree lists
+		let branches = wspace.tree.children
+		for (var i = 0; i < branches.length; i++)
+			this.body.appendChild(LinkedTree.toHtmlList(branches[i]))
 	}
 	
 	showWorkspaceContent(ws) {

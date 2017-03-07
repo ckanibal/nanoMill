@@ -84,7 +84,7 @@ const fs = require('fs')
 const _fs = fs // deprecated
 const path = require('path')
 const {remote} = require('electron')
-var {__appDir, config, printLog, inDevMode, setConfig, getConfig, hideMenu, dialog, toggleDevMode } = remote.getGlobal("communicator")
+var {__appDir, config, printLog, inDevMode, setConfig, getConfig, wipeConfig, hideMenu, dialog, toggleDevMode } = remote.getGlobal("communicator")
 
 {
 	setTimeout(_ => {

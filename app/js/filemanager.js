@@ -86,7 +86,8 @@ class WorkspaceMaster {
 		// restore workspaces by config
 		let a = getConfig("workspaces")
 		
-		a.forEach(this.addWorkspace.bind(this))
+		if(a)
+			a.forEach(this.addWorkspace.bind(this))
 	}
 	
 	/**
@@ -126,10 +127,6 @@ class WorkspaceMaster {
 
 class Workspace {
 	constructor(dir_path) {
-		this.openedFiles = new Set()
-		
-		this.items = []
-		
 		this.path = dir_path
 		
 		this.loaded = false
@@ -151,7 +148,7 @@ class Workspace {
 					
 					let stat = fs.statSync(p)
 					if(!stat)
-						continue;
+						continue
 					
 					if(stat.isDirectory()) {
 						let branch = new LinkedTree(files[i])
@@ -164,7 +161,15 @@ class Workspace {
 						if(items)
 							fn(items, subdir, branch)
 						
-						// do some oc specific sorting...
+						// if there are no valid files found in subdirectory,
+						// still assign an assign to branch, so it gets recoginized as
+						// a parent tree item
+						if(!branch.children)
+							branch.children = []
+						// otherwise sort in an clonk typical manner
+						
+						// ...
+						
 					}
 					else if(Workspace.isAcceptedFileType(path.extname(files[i])))
 						tree.add(new LinkedTree(files[i]))
