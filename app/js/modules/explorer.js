@@ -55,7 +55,7 @@ class Explorer extends Layout_Module {
 			// open editable files; expand/collapse directories
 			items[i].addEventListener("dblclick", (e) => {
 				// get file index
-				let index = e.target.parentNode.dataset.value
+				let index = items[i].parentNode.dataset.value
 				let finfo = this.wspace.finfo[index]
 				
 				if(Elem.hasClass(items[i].parentNode, "tree-parent"))
