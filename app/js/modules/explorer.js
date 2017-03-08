@@ -58,10 +58,10 @@ class Explorer extends Layout_Module {
 				let index = e.target.parentNode.dataset.value
 				let finfo = this.wspace.finfo[index]
 				
-				if(Elem.hasClass(items[i].parentNode))
+				if(Elem.hasClass(items[i].parentNode, "tree-parent"))
 					return
 				
-				if(extIsEditable(finfo.leaf))
+				if(extIsEditable(finfo.ext))
 					this.wspace.openFile(index)
 			})
 			
