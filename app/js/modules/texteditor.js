@@ -84,12 +84,12 @@ class TextEditor extends Layout_SubModule {
 	
 	onClosePrevent() {
 		if(!this.editor)
-			return true
+			return false
 		
 		if(this.editor.getSession().getUndoManager().isClean())
-			return true
+			return false
 		else {
-			let r = dialog.showMessageBox({
+			let result = dialog.showMessageBox({
 					type: "question",
 					buttons: ["Save", "Discard Changes", "Cancel"],
 					defaultId: 0,
@@ -99,22 +99,22 @@ class TextEditor extends Layout_SubModule {
 					noLink: true
 				}
 			)
-			
-			if(r === 0) {
+			// on "Save"
+			if(result === 0) {
 				this.save()
-				return true
-			}
-			else if(r === 1)
-				return true
-			else
 				return false
+			} // on "Discard Changes"
+			else if(result === 1)
+				return false
+			else // on "Cancel"
+				return true
 		}
 	}
 	
 	onClose() {
 		this.editor.destroy()
 		this.editor = false
-		$("#TE-"+this.tid).remove()
+		Elem.remove("TE-"+this.tid)
 	}
 }
 

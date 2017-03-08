@@ -363,7 +363,7 @@ class Layout_Module extends Layout_Element {
 	close() {
 		// call stub, which might abort closing this module
 		if(this.onClosePrevent())
-			return
+			return false
 		
 		let par = this.parent
 		$(this.root).remove()
@@ -376,6 +376,8 @@ class Layout_Module extends Layout_Element {
 		removeFromModuleList(this)
 		
 		this.onClose()
+		
+		return true
 	}
 	
 	/**
@@ -547,7 +549,7 @@ class Layout_SubModule extends Layout_Element {
 	close() {
 		// call stub, which might abort closing this module
 		if(this.onClosePrevent())
-			return
+			return false
 		
 		$(this.root).remove()
 		this.parent.unregisterChild(this)
@@ -559,6 +561,8 @@ class Layout_SubModule extends Layout_Element {
 		removeFromModuleList(this)
 		
 		this.onClose()
+		
+		return true
 	}
 	
 	/**

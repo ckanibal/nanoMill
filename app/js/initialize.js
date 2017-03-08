@@ -102,7 +102,7 @@ var _prf = {
  * This function restores the predefined layout, to allow users to get back
  * to viable layout if the customized one failed to any sort of bugs (e.g. failing to load old state or accidently rumping it up)
 */
-function createDefaultLayout(byUser) {
+function restoreDefaultLayout(byUser) {
 	var page = addPage(),
 		subFlex = addFlexer(DIR_COL)
 
@@ -128,9 +128,9 @@ function resetLayout() {
 	_pages = []
 	_modules = []
 	_flexers = []
-	$("#mod-wrapper").html("")
+	document.getElementById("mod-wrapper").innerHTML = ""
 	
-	createDefaultLayout(...arguments)
+	restoreDefaultLayout(...arguments)
 }
 
 var currentEditorMod, _focussedRes

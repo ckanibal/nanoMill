@@ -76,12 +76,10 @@ class Navigator extends Layout_Module {
 			e.stopPropagation()
 		})
 
-		el.getElementsByClassName("--NAV-entry-close")[0].addEventListener("click", function(e) {
+		el.lastChild.addEventListener("click", function(e) {
 			if(file.mod) {
-				if(file.mod.requestClose()) {
-					file.mod.performClose()
+				if(file.mod.close())
 					execHook("onFileClosed", file)
-				}
 			}
 			else
 				execHook("onFileClosed", file)
@@ -91,14 +89,6 @@ class Navigator extends Layout_Module {
 		})
 		
 		this.entries.push({ $el: $(el), file })
-	}
-	
-	getEntryByFile(file) {
-		for(let i = 0; i < this.entries.length; i++)
-			if(this.entries[i].file === file)
-				return this.entries[i]
-		
-		return -1
 	}
 }
 
