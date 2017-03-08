@@ -54,7 +54,7 @@ module.exports.parseScss = function() {
 	
 	let readFn = function*(defs) {
 		for(let i = 0; i < defs.length; i++) {
-			let txt = _fs.readFileSync(path.join(__dirname, defs[i].src), 'utf8')
+			let txt = fs.readFileSync(path.join(__dirname, defs[i].src), 'utf8')
 			
 			if(defs[i].mod)
 				txt = modSassString(txt, defs[i].mod)
@@ -82,7 +82,7 @@ module.exports.parseScss = function() {
 			else
 				$(document.head).append("<style id='compiled_style' type='text/css'>"+result.text+"</style>")
 			
-			_fs.writeFile(path.join(__rootdir, 'compiled.css'), result.text, 'utf8', (err) => {
+			fs.writeFile(path.join(__rootdir, 'compiled.css'), result.text, 'utf8', (err) => {
 				if(err)
 					throw err
 				

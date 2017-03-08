@@ -66,7 +66,7 @@ class Explorer extends Layout_Module {
 			
 			// contextmenu
 			items[i].addEventListener("contextmenu", (e) =>  {
-				new Contextmenu(this.getTreeMenuProps(items[i]), e.pageX, e.pageY)
+				new Contextmenu(e.pageX, e.pageY, this.getTreeMenuProps(items[i]))
 			})
 		}
 		
@@ -111,9 +111,40 @@ class Explorer extends Layout_Module {
 		if(finfo.ext === ".ocs")
 			props.push({
 				label: "Run",
+				icon: "icon-plus",
 				onclick: () => {},
 				onvalidate: () => { hasExecuteable() }
 			})
+			
+		// add unpack/pack commands
+		if(Explorer.isOcPackable(finfo.ext)) {
+			props.push({
+				label: "Pack",
+				icon: "icon-plus",
+				onclick: () => { opC4group([finfo.path, "-p"]) },
+				onvalidate: () => { return hasC4group() && finfo.stat.isDirectory()}
+			})
+			props.push({
+				label: "Unpack",
+				icon: "icon-plus",
+				onclick: () => { opC4group([finfo.path, "-u"]) },
+				onvalidate: () => { return hasC4group() && !finfo.stat.isDirectory()}
+			})
+		}
+		
+		props.push({
+			label: "Rename",
+			icon: "icon-plus",
+			onclick: () => {}
+		})
+		
+		props.push({
+			label: "Delete",
+			icon: "icon-plus",
+			onclick: () => {}
+		})
+		
+		return props
 	}
 	
 	getSpecialMenuProps() {
@@ -157,6 +188,18 @@ class Explorer extends Layout_Module {
 	
 	getSaveData() {
 		return {workspace: wmaster.getIndexOf(this.wspace)}
+	}
+	
+	/**
+	*/
+	static isOcPackable(ext) {
+		if( ext === ".ocs" || 
+			ext === ".ocd" ||
+			ext === ".ocf" ||
+			ext === ".ocg")
+			return true
+		
+		return false
 	}
 }
 

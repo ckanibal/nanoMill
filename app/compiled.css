@@ -396,9 +396,6 @@ textarea::-webkit-input-placeholder {
   .tree-item.tree-collapsed > .tree-children {
     display: none; }
 
-.tree-children {
-  padding-left: 20px; }
-
 .ctx-menu {
   position: absolute;
   background-color: #1f2125;

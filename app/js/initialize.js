@@ -355,6 +355,7 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 					break;
 					case "editor":
 					case "intro":
+					case "console":
 					case "navigator":
 					case "explorer":
 						let mod = addModule(data.alias, data.state)
@@ -384,7 +385,7 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		setConfig("pages", getLayoutData())
 	})
 	
-	$("#newstuff").click(_ => {
+	document.getElementById("newstuff").addEventListener("click", _ => {
 		require("./js/template_modal.js").show()
 	})
 	
@@ -490,8 +491,8 @@ function hasExecutable() {
 
 // checks weather "c4group" is set in configs,
 // to indicate that we can give operations to it (e.g. unpacking, ...)
-function hasExecutable() {
-	return !!getConfig("ocexe")
+function hasC4group() {
+	return !!getConfig("c4group")
 }
 
 /** ui object containing small layout items to fill any page */
@@ -515,4 +516,67 @@ var ui = {
 		
 		return $el[0]
 	}
+}
+
+var editor_proc
+
+function startEditor(args) {
+	if(!editor_proc) {
+		if(args)
+			editor_proc = cprocess.spawn(getConfig("ocexe"), [`--editor`, ...args])
+		else
+			editor_proc = cprocess.spawn(getConfig("ocexe"), [`--editor`])
+		
+		editor_proc.stdout.on('data', function (data) {
+			execHook("onStdOut", RuntimeInterface.validateStdout(data.toString()))
+		})
+		
+		editor_proc.on('exit', function (code) {
+			if(code)
+				log('child process exited with code ' + code.toString())
+			
+			editor_proc = false
+		})
+	}
+}
+
+/**
+Commands: -l List
+          -x Explode
+          -u Unpack
+          -p Pack
+          -t [filename] Pack To
+          -y [ppid] Apply update (waiting for ppid to terminate first)
+          -g [source] [target] [title] Make update
+          -s Sort
+
+Options:  -v Verbose -r Recursive
+          -i Register shell -u Unregister shell
+          -x:<command> Execute shell command when done
+
+Examples: c4group pack.ocg -x
+          c4group update.ocu -g ver1.ocf ver2.ocf New_Version
+          c4group -i
+*/
+
+function opC4group(args, fListenStdOut) {
+	if(!args)
+		return false
+	
+	if(!fListenStdOut)
+		cprocess.spawn(getConfig("c4group"), args)
+	else {
+		let proc = cprocess.spawn(getConfig("c4group"), args)
+		
+		proc.stdout.on('data', function (data) {
+			execHook("onStdOut", Console.validateStdout(data.toString()))
+		})
+		
+		proc.on('exit', function (code) {
+			if(code)
+				log('child process exited with code ' + code.toString())
+		})
+	}
+	
+	return true
 }

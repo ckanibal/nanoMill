@@ -265,7 +265,8 @@ class FileInfo {
 		this.path = p
 		this.stat = stat
 		this.name = name
-		this.leaf = path.extname(name)
+		this.ext = path.extname(name)
+		this.leaf = this.ext // deprecated
 	}
 }
 
