@@ -32,4 +32,8 @@ class Elem {
 		
 		return div.firstChild
 	}
+	
+	static hasClass(el, cl) {
+		return el.className.indexOf(cl) !== -1
+	}
 }

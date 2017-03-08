@@ -207,6 +207,14 @@ class Workspace {
 		})
 	}
 	
+	unlinkFile(i) {
+		// sanity check
+		if(!this.finfo[i])
+			return
+		
+		fs.unlink(this.finfo[i].path)
+	}
+	
 	/**
 		getter of name property, if no name set returns the basename of the specified path instead
 	*/

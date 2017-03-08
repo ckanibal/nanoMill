@@ -1,6 +1,7 @@
 	
 class Explorer extends Layout_Module {
 	init(state) {
+		this.body.style.overflowY = "auto"
 		// restore workspace from saved index of the previous session
 		if(state && state.workspace !== -1 && wmaster.getWorkspace(state.workspace))
 			this.setWorkspace(wmaster.getWorkspace(state.workspace))
@@ -57,7 +58,7 @@ class Explorer extends Layout_Module {
 				let index = e.target.parentNode.dataset.value
 				let finfo = this.wspace.finfo[index]
 				
-				if(finfo.stat.isDirectory())
+				if(Elem.hasClass(items[i].parentNode))
 					return
 				
 				if(extIsEditable(finfo.leaf))
@@ -141,7 +142,7 @@ class Explorer extends Layout_Module {
 		props.push({
 			label: "Delete",
 			icon: "icon-plus",
-			onclick: () => {}
+			onclick: () => {this.wspace.unlinkFile(findex)}
 		})
 		
 		return props

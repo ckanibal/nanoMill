@@ -25,16 +25,13 @@ var sass_defs = [
         src: "../sass/mod_nav.scss"
     },
     {
-        src: "../sass/mod_res_view.scss"
-    },
-    {
         src: "../sass/mod_ace.scss"
     },
     {
         src: "../sass/mod_ace_theme.scss"
     },
     {
-        src: "../sass/mod_runint.scss"
+        src: "../sass/mod_console.scss"
     }
 ]
 
