@@ -145,8 +145,7 @@ class Layout_Flex extends Layout_Element {
 			$("#mod-buffer").append(child.root)
 			
 			let root = this.root
-			log(p)
-			log(this)
+			
 			if(p.getDir() === DIR_ROW) {
 				child.root.style.width = root.style.width
 				child.root.style.height = ""
@@ -476,15 +475,15 @@ class Layout_Deck extends Layout_Module {
 	}
 
     registerChild(child) {
-
+		
         if(!child)
             return error("No parameter given for registerChild")
         else if(!child.isLayout_Element)
             return log("Given child is not a layout element")
 		
-		this.root.getElementsByClassName("mod-body")[0].appendChild(child.root)
-
-        this.children.push(child)
+		this.body.appendChild(child.root)
+		
+		this.children.push(child)
 
         child.parent = this
     }
@@ -529,14 +528,13 @@ class Layout_SubModule extends Layout_Element {
 		this.root = document.createElement("div")
 	}
 	
-	setup() { }
-	
 	save() { }
 	
 	onfocus() { }
 	
 	isSub() { return true }
 	
+	setup() {}
 	
 	/**
 		callback stub
@@ -551,9 +549,9 @@ class Layout_SubModule extends Layout_Element {
 		if(this.onClosePrevent())
 			return false
 		
-		$(this.root).remove()
-		this.parent.unregisterChild(this)
-		this.parent.adjustAppearance()
+		Elem.remove(this.root)
+		let par = this.parent
+		par.unregisterChild(this)
 		
 		// detach any callbacks of hook-system with reference to this module
 		cleanUpHooksOfMdl(this.id)

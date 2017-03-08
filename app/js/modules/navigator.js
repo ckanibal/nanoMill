@@ -75,8 +75,8 @@ class Navigator extends Layout_Module {
 			execHook("onOpenedFileSelect", file)
 			e.stopPropagation()
 		})
-
-		el.lastChild.addEventListener("click", function(e) {
+		
+		el.lastElementChild.addEventListener("click", function(e) {
 			if(file.mod) {
 				if(file.mod.close())
 					execHook("onFileClosed", file)
