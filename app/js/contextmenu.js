@@ -57,7 +57,7 @@ class Contextmenu {
 			
 			// when failing validation skip event binding and apply class
 			if(prop.onvalidate && !prop.onvalidate())
-				item.className = " invalid"
+				item.className += " invalid"
 			else {
 				// bind click handler
 				if(prop.onclick) {

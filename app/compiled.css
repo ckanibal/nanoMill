@@ -425,7 +425,8 @@ textarea::-webkit-input-placeholder {
   margin: 5px; }
 
 .ctx-menu-indicator {
-  margin: 5px; }
+  margin: 5px;
+  color: grey; }
 
 @font-face {
   font-family: 'icomoon';
