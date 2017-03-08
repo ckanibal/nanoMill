@@ -1,1 +1,9 @@
 -add option: scroll past end from ace editor renderer instance
+	look here: https://github.com/ajaxorg/ace/wiki/Configuring-Ace
+	
+
+icon:
+adjust size of icons of module header
+select workspace icon
+run icon
+contextmenu indicator

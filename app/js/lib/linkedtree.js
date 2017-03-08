@@ -39,7 +39,7 @@ class LinkedTree {
 			if(tree.children) {
 				item.className += ' tree-parent tree-collapsed'
 				item.firstChild.addEventListener(expEvent, function(e) {
-					toggleClass(item, 'tree-collapsed')
+					Elem.toggleClass(item, 'tree-collapsed')
 				})
 				
 				// add child elements

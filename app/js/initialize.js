@@ -257,8 +257,9 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 			setConfig("ocexe", p)
 			document.getElementById("ocExePath").innerHTML = p
 			
+			// start openclonk for a very short time and extract
+			// version number from stdout
 			var cp = cprocess.spawn(p, [`--editor`])
-			
 			var _inittime = (new Date()).getTime()
 			
 			cp.stdout.on('data', function (data) {
@@ -267,18 +268,19 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 					setConfig("ocver", m[1])
 					document.getElementById("version-input").value = m[1]
 					cp.kill()
-				}
+				} // if things did not happen as expected and reach 100ms, stop try
 				else if((new Date()).getTime() - _inittime > 100)
 					cp.kill()
 			})
 		}
 	}
 	
-	document.getElementById("sett-page-toggle").onclick = function() {
-		let $el = $('#settings')
-		$el[0].style.display = ""
-		$el.toggleClass('visible')
-	}
+	// setting up settings-page visibilty toggle
+	document.getElementById("sett-page-toggle").addEventListener("click", function () {
+		let el = document.getElementById("settings")
+		el.style.display = ""
+		Elem.toggleClass(el, 'visible')
+	})
 	
 	document.getElementById("author-input").onchange = function(e) {
 		if(!this.value || !this.value.length)
@@ -480,6 +482,18 @@ function openFilePicker() {
 	})
 }
 
+// checks weather "ocexe" is set in configs,
+// to indicate that we can give operations to it (e.g. running the game)
+function hasExecutable() {
+	return !!getConfig("ocexe")
+}
+
+// checks weather "c4group" is set in configs,
+// to indicate that we can give operations to it (e.g. unpacking, ...)
+function hasExecutable() {
+	return !!getConfig("ocexe")
+}
+
 /** ui object containing small layout items to fill any page */
 var ui = {
 	urlPicker: function(txt = "...", callback) {
@@ -501,18 +515,4 @@ var ui = {
 		
 		return $el[0]
 	}
-}
-
-function toggleClass(el, cl) {
-	let cname = el.className
-	let i = cname.indexOf(cl)
-	
-	if(i === -1)
-		el.className += ' ' + cl
-	else
-		el.className = cname.substr(0, i) + cname.substr(i + cname.length)
-}
-
-function remove(el) {
-	el.parentNode.removeChild(el)
 }

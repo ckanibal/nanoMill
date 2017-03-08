@@ -81,7 +81,6 @@
 const cprocess = require("child_process")
 const __rootdir = __dirname
 const fs = require('fs')
-const _fs = fs // deprecated
 const path = require('path')
 const {remote} = require('electron')
 var {__appDir, config, printLog, inDevMode, setConfig, getConfig, wipeConfig, hideMenu, dialog, toggleDevMode } = remote.getGlobal("communicator")
@@ -102,6 +101,7 @@ var {__appDir, config, printLog, inDevMode, setConfig, getConfig, wipeConfig, hi
 <script type="text/javascript" src="js/ace_add_ons/theme-textmate.js"></script>
 <script type="text/javascript" src="js/ace_add_ons/mode-ocscript.js"></script>
 
+<script type="text/javascript" src="js/lib/elem.js"></script>
 <script type="text/javascript" src="js/contextmenu.js"></script>
 
 <script type="text/javascript" src="js/modules/modules.js"></script>

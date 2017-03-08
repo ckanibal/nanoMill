@@ -17,7 +17,7 @@ class Contextmenu {
 		this.el.focus()
 		
 		this.el.addEventListener("blur", (e) => {
-			remove(e.target)
+			Elem.remove(e.target)
 		})
 	}
 	
@@ -132,6 +132,6 @@ class Submenu extends Contextmenu {
 	}
 	
 	remove() {
-		remove(this.el)
+		Elem.remove(this.el)
 	}
 }

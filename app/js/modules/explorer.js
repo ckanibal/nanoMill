@@ -46,10 +46,12 @@ class Explorer extends Layout_Module {
 				return name.replace(/(\.[^.]+?$)/, `<span style="color: grey">$1</span>`)
 			}, 'dblclick'))
 		
-		// bind double click behaviour to it
+		
+		// attach event listeners
 		let items = this.body.getElementsByClassName("tree-label")
 		
 		for(let i = 0; i < items.length; i++) {
+			// open editable files; expand/collapse directories
 			items[i].addEventListener("dblclick", (e) => {
 				// get file index
 				let index = e.target.parentNode.dataset.value
@@ -60,6 +62,11 @@ class Explorer extends Layout_Module {
 				
 				if(extIsEditable(finfo.leaf))
 					this.wspace.openFile(index)
+			})
+			
+			// contextmenu
+			items[i].addEventListener("contextmenu", (e) =>  {
+				new Contextmenu(this.getTreeMenuProps(items[i]), e.pageX, e.pageY)
 			})
 		}
 		
@@ -91,6 +98,22 @@ class Explorer extends Layout_Module {
 		})
 		
 		showModal("Select working space", $el[0])
+	}
+	
+	getTreeMenuProps(el) {
+		let props = []
+		
+		// get file info from workspace
+		let findex = el.parentNode.dataset.value
+		let finfo = this.wspace.finfo[findex]
+		
+		// add run option for scenarios
+		if(finfo.ext === ".ocs")
+			props.push({
+				label: "Run",
+				onclick: () => {},
+				onvalidate: () => { hasExecuteable() }
+			})
 	}
 	
 	getSpecialMenuProps() {
@@ -134,12 +157,6 @@ class Explorer extends Layout_Module {
 	
 	getSaveData() {
 		return {workspace: wmaster.getIndexOf(this.wspace)}
-	}
-}
-
-
-class FileTree {
-	constructor(tree) {
 	}
 }
 
