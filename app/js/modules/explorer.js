@@ -113,8 +113,8 @@ class Explorer extends Layout_Module {
 			props.push({
 				label: "Run",
 				icon: "icon-plus",
-				onclick: () => {},
-				onvalidate: () => hasExecutable()
+				onclick: _ => runOCEditor([finfo.path]),
+				onvalidate: _ => hasExecutable()
 			})
 			
 		// add unpack/pack commands
@@ -122,14 +122,14 @@ class Explorer extends Layout_Module {
 			props.push({
 				label: "Pack",
 				icon: "icon-plus",
-				onclick: () => { opC4group([finfo.path, "-p"]) },
-				onvalidate: () => { return hasC4group() && finfo.stat.isDirectory()}
+				onclick: _ => { runC4Group([finfo.path, "-p"]) },
+				onvalidate: _ => hasC4group() && finfo.stat.isDirectory()
 			})
 			props.push({
 				label: "Unpack",
 				icon: "icon-plus",
-				onclick: () => { opC4group([finfo.path, "-u"]) },
-				onvalidate: () => { return hasC4group() && !finfo.stat.isDirectory()}
+				onclick: () => { runC4Group([finfo.path, "-u"]) },
+				onvalidate: _ => hasC4group() && !finfo.stat.isDirectory()
 			})
 		}
 		
@@ -142,7 +142,7 @@ class Explorer extends Layout_Module {
 		props.push({
 			label: "Delete",
 			icon: "icon-plus",
-			onclick: () => {this.wspace.unlinkFile(findex)}
+			onclick: _ => {this.wspace.unlinkFile(findex)}
 		})
 		
 		return props

@@ -520,7 +520,7 @@ var ui = {
 
 var editor_proc
 
-function startEditor(args) {
+function runOCEditor(args) {
 	if(!editor_proc) {
 		if(args)
 			editor_proc = cprocess.spawn(getConfig("ocexe"), [`--editor`, ...args])
@@ -528,7 +528,7 @@ function startEditor(args) {
 			editor_proc = cprocess.spawn(getConfig("ocexe"), [`--editor`])
 		
 		editor_proc.stdout.on('data', function (data) {
-			execHook("onStdOut", RuntimeInterface.validateStdout(data.toString()))
+			execHook("onStdOut", ConsoleView.validateStdout(data.toString()))
 		})
 		
 		editor_proc.on('exit', function (code) {
@@ -559,7 +559,7 @@ Examples: c4group pack.ocg -x
           c4group -i
 */
 
-function opC4group(args, fListenStdOut) {
+function runC4Group(args, fListenStdOut) {
 	if(!args)
 		return false
 	

@@ -3,7 +3,7 @@ class ConsoleView extends Layout_Module{
     init() {
 		
 		this.body.insertAdjacentHTML("beforeend", `<div class='abs-fill flex-col --RNINT-list'></div>`)
-		this.list = this.body.firstChild
+		this.list = this.body.lastElementChild
 		
 		hook("onStdOut", (s) => {
 			this.print(s)
@@ -13,12 +13,13 @@ class ConsoleView extends Layout_Module{
 	}
 	
 	print(s) {
-		if(this.list.scrollHeight - this.list.scrollTop - parseInt(this.list.height()) < 11) {
-			this.list.insertAdjacentHTML(`<p class='--RNINT-entry'>${s}</p>`)
+		let rect = this.list.getBoundingClientRect()
+		if(this.list.scrollHeight - this.list.scrollTop - parseInt(rect.height) < 11) {
+			this.list.insertAdjacentHTML("beforeend", `<p class='--RNINT-entry'>${s}</p>`)
 			this.list.scrollTop = 1000000
 		}
 		else
-			this.list.insertAdjacentHTML(`<p class='--RNINT-entry'>${s}</p>`)
+			this.list.insertAdjacentHTML("beforeend", `<p class='--RNINT-entry'>${s}</p>`)
 	}
 	
 	clear() {
