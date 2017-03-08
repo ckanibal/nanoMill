@@ -108,7 +108,7 @@ class Explorer extends Layout_Module {
 				}
 			},
 			{
-				label: "Change workspace",
+				label: "Select workspace",
 				icon: "icon-plus",
 				fn: _ => {
 				}
