@@ -94,10 +94,9 @@ class Explorer extends Layout_Module {
 	getSpecialMenuProps() {
 		return [
 			{
-				label: "New...",
+				label: "New file",
 				icon: "icon-plus",
 				fn: _ => {
-					$(":focus").blur()
 					require(path.join(__rootdir, "js/template_modal.js")).show()
 				}
 			},
@@ -106,14 +105,12 @@ class Explorer extends Layout_Module {
 				icon: "icon-plus",
 				fn: _ => {
 					this.modalNewWorkspace()
-					$(":focus").blur()
 				}
 			},
 			{
 				label: "Change workspace",
 				icon: "icon-plus",
 				fn: _ => {
-					$(":focus").blur()
 				}
 			}
 		]

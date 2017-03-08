@@ -1,0 +1,1 @@
+-add option: scroll past end from ace editor renderer instance

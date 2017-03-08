@@ -512,3 +512,7 @@ function toggleClass(el, cl) {
 	else
 		el.className = cname.substr(0, i) + cname.substr(i + cname.length)
 }
+
+function remove(el) {
+	el.parentNode.removeChild(el)
+}

@@ -8,6 +8,9 @@ var sass_defs = [
 	{
         src: "../sass/tree_list.scss"
     },
+	{
+        src: "../sass/contextmenu.scss"
+    },
     {
         src: "../sass/icomoon.css",
         mod: "iconsToMixins"
@@ -34,6 +37,8 @@ var sass_defs = [
         src: "../sass/mod_runint.scss"
     }
 ]
+
+// TODO: simply read-out sass folder and parse any .scss file (still remember to modulate icomoon.css)
 
 module.exports.parseScss = function() {
 	

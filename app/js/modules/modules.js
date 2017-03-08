@@ -310,46 +310,21 @@ class Layout_Module extends Layout_Element {
 			})
 
 		})
-
-        $el.find(".mod-sett").click(() => {
-
-            var $menu = $el.find(".mod-sett-menu")
-
-            $menu.html("")
-
-            var fn = function(defList) {
-
-                if(!defList)
-                    return
-
-                for(var i = 0; i < defList.length; i++) {
-                    var data = defList[i]
-                    var $entry = $(`<div class='ALE-entry'>
-                                        <div class='ALE-label'>${data.label}
-                                        ${(data.icon?"<div class='flex-fill'></div>\
-											<div class='ALE-icon-w'>\
-                                                <div class='"+data.icon+"'></div>\
-											</div>":"")}
-										</div>
-                                   </div>`)
-                    if(data.fn)
-                        $entry.click(data.fn.bind(this))
-                    $menu.append($entry)
-                }
-            }
-
-			let props1 = this.getBasicMenuProps()
+		
+		// create context menu on settings button
+		// TODO: imeplement splitters: "<hr style='margin: 3px 5px; border-bottom-width: 0'>"
+		this.root.getElementsByClassName("mod-sett")[0].addEventListener("click", (e) => {
+			
+			let x = e.clientX - e.offsetX,
+				y = e.clientY + e.offsetY
+			
+			let props = this.getBasicMenuProps()
 			let props2 = this.getSpecialMenuProps()
-			if(props1) {
-				fn.call(this, props1)
-				if(props2) {
-					$menu.append("<hr style='margin: 3px 5px; border-bottom-width: 0'>")
-					fn.call(this, props2)
-				}
-			}
-			else if(props2)
-				fn.call(this, props2)
-        })
+			
+			if(props2)
+				props = props.concat(props2)
+			new Contextmenu(x, y, props)
+		})
     }
 	
 	/**
@@ -456,25 +431,22 @@ class Layout_Module extends Layout_Element {
 			{
 				label: "Close Frame",
 				icon: "icon-x-s",
-				fn: function() {
+				onclick: () => {
 					this.close()
-					$(":focus").blur()
 				}
 			},
 			{
 				label: "Add Frame",
 				icon: "icon-add-flex-v",
-				fn: function() {
+				onclick: () => {
 					this.addSibling(true)
-					$(":focus").blur()
 				}
 			},
 			{
 				label: "Add Frame",
 				icon: "icon-add-flex-h",
-				fn: function() {
+				onclick: () => {
 					this.addSibling()
-					$(":focus").blur()
 				}
 			}
 		]

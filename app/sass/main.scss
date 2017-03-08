@@ -11,6 +11,7 @@ reserved z-indices
 [200] Modal
 */
 
+$z-ctx-menu: 51;
 
 
 
@@ -71,18 +72,21 @@ $mod-x-padding: 7px;
     display: none !important;
 }
 
+
 html, body {
+	@include absoluteFill();
+	
     margin: 0;
     padding: 0;
     background: $bg-main;
     color: rgb(220, 220, 220);
     font-family: $font-stack;
-	height: 100%;
-	width: 100%;
 	animation: fade-in 0.5s;
 	-webkit-user-select: none;
 	-webkit-app-region: drag;
 	cursor: default;
+	
+	overflow: hidden;
 }
 
 #content {

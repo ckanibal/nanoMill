@@ -1,0 +1,24 @@
+
+.ctx-menu {
+	position: absolute;
+	background-color: rgb(31, 33, 37);
+	color: $font-clr;
+	z-index: $z-ctx-menu;
+	min-width: 200px;
+	
+	&:focus {
+		outline: 0;
+	}
+}
+
+.ctx-menu-item {
+	padding: 5px 5px;
+	
+	&:hover {
+		background-color: $hvr;
+	}
+}
+
+.ctx-menu-icon {
+	margin: 5px;
+}

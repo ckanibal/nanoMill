@@ -66,17 +66,21 @@ reserved z-indices
   display: none !important; }
 
 html, body {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   margin: 0;
   padding: 0;
   background: #26282b;
   color: gainsboro;
   font-family: "Roboto", sans-serif;
-  height: 100%;
-  width: 100%;
   animation: fade-in 0.5s;
   -webkit-user-select: none;
   -webkit-app-region: drag;
-  cursor: default; }
+  cursor: default;
+  overflow: hidden; }
 
 #content {
   position: relative;
@@ -394,6 +398,23 @@ textarea::-webkit-input-placeholder {
 
 .tree-children {
   padding-left: 20px; }
+
+.ctx-menu {
+  position: absolute;
+  background-color: #1f2125;
+  color: #b4b4b4;
+  z-index: 51;
+  min-width: 200px; }
+  .ctx-menu:focus {
+    outline: 0; }
+
+.ctx-menu-item {
+  padding: 5px 5px; }
+  .ctx-menu-item:hover {
+    background-color: #505050; }
+
+.ctx-menu-icon {
+  margin: 5px; }
 
 @font-face {
   font-family: 'icomoon';
