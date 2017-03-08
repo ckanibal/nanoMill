@@ -114,7 +114,7 @@ class Explorer extends Layout_Module {
 				label: "Run",
 				icon: "icon-plus",
 				onclick: () => {},
-				onvalidate: () => { hasExecuteable() }
+				onvalidate: () => { hasExecutable() }
 			})
 			
 		// add unpack/pack commands
