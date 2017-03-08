@@ -9,16 +9,33 @@
 	&:focus {
 		outline: 0;
 	}
+	
+	/** when failing to load any items into menu, still show something
+		to not confuse the user due to bad programming, thinking that nothing happens
+	*/
+	&:empty {
+		padding: 20px 30px;
+	}
 }
 
 .ctx-menu-item {
 	padding: 5px 5px;
+	position: relative;
 	
 	&:hover {
 		background-color: $hvr;
+	}
+	
+	&.invalid {
+		color: grey;
 	}
 }
 
 .ctx-menu-icon {
 	margin: 5px;
+}
+
+.ctx-menu-indicator {
+	margin: 5px;
+	color: grey;
 }

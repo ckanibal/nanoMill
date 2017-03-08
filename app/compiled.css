@@ -404,16 +404,27 @@ textarea::-webkit-input-placeholder {
   background-color: #1f2125;
   color: #b4b4b4;
   z-index: 51;
-  min-width: 200px; }
+  min-width: 200px;
+  /** when failing to load any items into menu, still show something
+		to not confuse the user due to bad programming, thinking that nothing happens
+	*/ }
   .ctx-menu:focus {
     outline: 0; }
+  .ctx-menu:empty {
+    padding: 20px 30px; }
 
 .ctx-menu-item {
-  padding: 5px 5px; }
+  padding: 5px 5px;
+  position: relative; }
   .ctx-menu-item:hover {
     background-color: #505050; }
+  .ctx-menu-item.invalid {
+    color: grey; }
 
 .ctx-menu-icon {
+  margin: 5px; }
+
+.ctx-menu-indicator {
   margin: 5px; }
 
 @font-face {

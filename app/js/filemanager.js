@@ -94,7 +94,7 @@ class WorkspaceMaster {
 	 * returns a copy of the internal workspace holder
 	*/
 	getWorkspaces() {
-		return new Set(this.wspaces)
+		return this.wspaces.slice()
 	}
 	
 	/**
@@ -205,6 +205,16 @@ class Workspace {
 		
 			execHook("onWorkspaceLoad", this)
 		})
+	}
+	
+	/**
+		getter of name property, if no name set returns the basename of the specified path instead
+	*/
+	getName() {
+		if(!this.name)
+			return path.basename(this.path)
+		
+		return name
 	}
 	
 	addFileInfo(finfo) {

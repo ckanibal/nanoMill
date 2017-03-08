@@ -1,5 +1,5 @@
-class Explorer extends Layout_Module {
 	
+class Explorer extends Layout_Module {
 	init(state) {
 		// restore workspace from saved index of the previous session
 		if(state && state.workspace !== -1 && wmaster.getWorkspace(state.workspace))
@@ -62,6 +62,8 @@ class Explorer extends Layout_Module {
 					this.wspace.openFile(index)
 			})
 		}
+		
+		this.setWorkspace(wspace)
 	}
 	
 	modalNewWorkspace() {
@@ -92,25 +94,39 @@ class Explorer extends Layout_Module {
 	}
 	
 	getSpecialMenuProps() {
+		
+		let sub_sel = []
+		
+		let workspaces = wmaster.getWorkspaces()
+		for(let i = 0; i < workspaces.length; i++) {
+			sub_sel.push({
+				label: workspaces[i].getName(),
+				onclick: _ => this.showWorkspace(workspaces[i])
+			})
+		}
+		
 		return [
 			{
 				label: "New file",
 				icon: "icon-plus",
-				fn: _ => {
+				onclick: _ => {
 					require(path.join(__rootdir, "js/template_modal.js")).show()
 				}
 			},
 			{
 				label: "New workspace",
 				icon: "icon-plus",
-				fn: _ => {
+				onclick: _ => {
 					this.modalNewWorkspace()
 				}
 			},
 			{
 				label: "Select workspace",
 				icon: "icon-plus",
-				fn: _ => {
+				submenu: sub_sel,
+				onvalidate: _ => {
+					// only allow access if there are any workspaces
+					return !!wmaster.getWorkspaces().length
 				}
 			}
 		]
