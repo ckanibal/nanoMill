@@ -177,7 +177,7 @@ class Workspace {
 					// subdirectory to take a look into
 					if(stat.isDirectory()) {
 						
-						let subdir = path.join(dir_path, files[i])
+						let subdir = path.join(dir, files[i])
 						
 						let items = fs.readdirSync(subdir)
 						
@@ -213,6 +213,22 @@ class Workspace {
 			return
 		
 		fs.unlink(this.finfo[i].path)
+		
+		this.finfo[i] = null
+		
+		// remove from linked tree
+		let fn = (tree) => {
+			for(let i = 0; i < tree.children; i++) {
+				if(tree.children[i].value === i) {
+					tree.removeChild(tree.children[i])
+					break
+				}
+				else
+					fn(tree.children[i])
+			}
+		}
+		
+		fn(this.tree)
 	}
 	
 	/**
