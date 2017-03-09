@@ -34,6 +34,7 @@
 		content: "empty";
 		font-style: italic;
 		color: grey;
+		margin-left: 20px;
 	}
 	
 	&.tree-collapsed > .tree-label {		
@@ -42,7 +43,6 @@
 			display: block;
 			transform: rotate(0deg);
 			color: grey;
-			margin-left: 20px;
 		}
 	}
 	

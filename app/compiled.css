@@ -391,13 +391,13 @@ textarea::-webkit-input-placeholder {
   .tree-item.tree-parent > .tree-children:empty:after {
     content: "empty";
     font-style: italic;
-    color: grey; }
+    color: grey;
+    margin-left: 20px; }
   .tree-item.tree-collapsed > .tree-label:before {
     content: ">";
     display: block;
     transform: rotate(0deg);
-    color: grey;
-    margin-left: 20px; }
+    color: grey; }
   .tree-item.tree-collapsed > .tree-children {
     display: none; }
 
