@@ -140,7 +140,7 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 
 {
 	/**
-		Initializer block.
+		Initializing block.
 		This does take care of basic ui layout binding and reads out
 		layout preferences.
 	*/
@@ -152,11 +152,6 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 	
 	hook("onCurrEditorSet", (mod, res) => {
 		currentEditorMod = mod
-	})
-	
-	hook("onResFocus", (res) => {
-		_focussedRes = res
-		setConfig("focussedRes", res.path)
 	})
 	
 	/*
@@ -203,13 +198,13 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
     })
 
 	// track mouse position
-    $(document).mousemove(function(e) {
-        mouseX = e.clientX
+	document.addEventListener("mousemove", (e) => {
+		mouseX = e.clientX
         mouseY = e.clientY
-    })
+	})
 
 	// stop dragging splitters
-    $(document).mouseup(function(e) {
+	document.addEventListener("mouseup", (e) => {
 		if(dragSplitterTarget) {
 			$(dragSplitterTarget).removeClass("dragged")
 			
@@ -217,7 +212,7 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		}
 		
         dragSplitterTarget = false
-    })
+	})
 	
 	document.getElementById("tb-file").addEventListener("click", function(e) {
 		let rect = this.getBoundingClientRect()
@@ -417,7 +412,7 @@ function pickFile(callback) {
 	el.onchange = callback
 	el.click()
 }
-// deprecated
+
 function receiveLocalResource(p) {
 	warn("using deprecated function")
 	let name = path.basename(p),
@@ -428,6 +423,7 @@ function receiveLocalResource(p) {
 	else if(name.match(/^openclonk/gi))
 		return setConfig("ocexe", p)
 
+	// deprecated
 	let res = filemanager.addResource(p)
 	
 	if(res)

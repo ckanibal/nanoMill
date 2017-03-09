@@ -105,7 +105,7 @@ class Explorer extends Layout_Module {
 		let props = []
 		
 		// get file info from workspace
-		let findex = el.parentNode.dataset.value
+		let findex = parseInt(el.parentNode.dataset.value)
 		let finfo = this.wspace.finfo[findex]
 		
 		// add run option for scenarios
