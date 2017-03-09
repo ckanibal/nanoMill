@@ -8,8 +8,6 @@ class ConsoleView extends Layout_Module{
 		hook("onStdOut", (s) => {
 			this.print(s)
 		}, this.modId)
-		
-		hook("clearAllRunInts", _ => this.clear(), this.modId)
 	}
 	
 	print(s) {
@@ -50,6 +48,14 @@ class ConsoleView extends Layout_Module{
 	static openTextAt(s) {log(s)
 		let [p, l, c] = s.split(":")
 		p = p.match(/[^\s]+$/)[0]
+	}
+	
+	getSpecialMenuProps() {
+		return [{
+			label: "Clear",
+			icon: "icon-console",
+			onclick: _ => this.clear()
+		}]
 	}
 }
 
