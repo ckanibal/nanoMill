@@ -396,7 +396,8 @@ textarea::-webkit-input-placeholder {
     content: ">";
     display: block;
     transform: rotate(0deg);
-    color: grey; }
+    color: grey;
+    margin-left: 20px; }
   .tree-item.tree-collapsed > .tree-children {
     display: none; }
 
