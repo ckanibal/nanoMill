@@ -13,6 +13,19 @@ class LinkedTree {
 		return child
 	}
 	
+	removeChild(child) {
+		// prevent from creating falsly an unneeded array
+		if(!this.children)
+			return
+		
+		let a = []
+		for(let i = 0; i < this.children; i++)
+			if(this.children[i] !== child)
+				a.push(this.children[i])
+		
+		this.children = a
+	}
+	
 	get firstChild() {
 		if(this.children)
 			return this.children[0]
