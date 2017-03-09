@@ -542,9 +542,6 @@ function runOCEditor(args) {
 		})
 		
 		editor_proc.on('exit', function (code) {
-			if(code)
-				log('child process exited with code ' + code.toString())
-			
 			editor_proc = false
 		})
 	}

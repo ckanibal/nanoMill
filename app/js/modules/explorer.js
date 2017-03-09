@@ -26,7 +26,7 @@ class Explorer extends Layout_Module {
 				this.showWorkspace(wspace)
 		}, this.modId)
 		
-		hook("onWorkspaceChange", (wspace) => {log(wspace.tree)
+		hook("onWorkspaceChange", (wspace) => {
 			if(this.wspace === wspace)
 				this.showWorkspace(wspace)
 		}, this.modId)
