@@ -207,41 +207,28 @@ class Workspace {
 		})
 	}
 	
-	unlinkFile(idx) {
+	unlinkFile(i) {
 		// sanity check
-		if(!this.finfo[idx])
+		if(!this.finfo[i])
 			return
 		
-		// fs.unlink(this.finfo[idx].path)
+		fs.unlink(this.finfo[i].path)
 		
-		this.finfo[idx] = null
-		// indicator to abort any recursive calls of the following functions
-		let unmatched = true
+		this.finfo[i] = null
 		
 		// remove from linked tree
-		let fn = (tree) => {log(idx)
-			for(let i = 0; i < tree.children.length; i++) {
-				let child = tree.children[i]
-				
-				if(child.value === idx) {
-					tree.removeChild(child)
-					unmatched = false
+		let fn = (tree) => {
+			for(let i = 0; i < tree.children; i++) {
+				if(tree.children[i].value === i) {
+					tree.removeChild(tree.children[i])
 					break
 				}
-				else if(child.children && unmatched)
-					fn(child)
+				else
+					fn(tree.children[i])
 			}
 		}
 		
 		fn(this.tree)
-	}
-	
-	packFile() {
-		
-	}
-	
-	unpackFile() {
-		
 	}
 	
 	/**
