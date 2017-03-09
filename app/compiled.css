@@ -78,7 +78,6 @@ html, body {
   font-family: "Roboto", sans-serif;
   animation: fade-in 0.5s;
   -webkit-user-select: none;
-  -webkit-app-region: drag;
   cursor: default;
   overflow: hidden; }
 
@@ -86,13 +85,18 @@ html, body {
   position: relative;
   overflow: hidden; }
 
+#titlebar {
+  -webkit-app-region: drag;
+  padding: 5px; }
+
 .hb-btn {
   color: gray;
   cursor: default;
   font-size: 14px;
   text-shadow: 0 1px 0 #141414;
   cursor: pointer;
-  padding: 2px 3px; }
+  padding: 2px 3px;
+  -webkit-app-region: no-drag; }
   .hb-btn:hover {
     background-color: #3c3c3c;
     text-shadow: none; }
@@ -509,14 +513,14 @@ textarea::-webkit-input-placeholder {
   border-left: 2px solid #26282b;
   border-right: 2px solid #26282b; }
 
-.flex-row > .flex-splitter,
-.flex-col > .flex-splitter {
+.flex-splitter,
+.flex-splitter {
   background-color: #1d1f22;
   -webkit-user-select: none;
   user-select: none; }
-  .flex-row > .flex-splitter:hover, .flex-row > .flex-splitter.dragged,
-  .flex-col > .flex-splitter:hover,
-  .flex-col > .flex-splitter.dragged {
+  .flex-splitter:hover, .flex-splitter.dragged,
+  .flex-splitter:hover,
+  .flex-splitter.dragged {
     background-color: steelblue; }
 
 #content.move-mod .mod-con:hover .mod-head {
@@ -530,7 +534,8 @@ textarea::-webkit-input-placeholder {
   background-color: #26282b;
   color: gray;
   height: 20px;
-  padding: 5px 3px; }
+  padding: 5px 3px;
+  -webkit-app-region: no-drag; }
 
 .mod-button {
   text-shadow: 0 1px 0 #141414;
@@ -669,56 +674,6 @@ textarea::-webkit-input-placeholder {
   width: 18px;
   justify-content: center; }
   .--NAV-entry-close:hover {
-    background-color: #505050; }
-
-.--RESV-entry {
-  color: #b4b4b4;
-  cursor: default;
-  -webkit-user-select: none;
-  user-select: none;
-  display: flex;
-  flex-direction: row;
-  font-size: 14px;
-  white-space: nowrap; }
-  .--RESV-entry:focus {
-    outline: none; }
-  .--RESV-entry:focus::before, .--RESV-entry.focussed::before {
-    width: 5px;
-    height: 5px;
-    border-radius: 5px;
-    display: block;
-    position: absolute;
-    content: " ";
-    background-color: steelblue;
-    align-self: center;
-    margin-left: 1px; }
-  .--RESV-entry:hover .--RESV-entry-close {
-    opacity: 1; }
-
-.--RESV-label {
-  padding: 5px 7px;
-  overflow: hidden;
-  white-space: nowrap; }
-
-.--RESV-fdir,
-.--RESV-fext {
-  color: grey; }
-
-.--RESV-temp-entry {
-  font-size: 18px;
-  padding: 10px 15px;
-  cursor: pointer; }
-  .--RESV-temp-entry:hover {
-    background-color: #505050; }
-
-.--RESV-label:hover {
-  background-color: #505050; }
-
-.--RESV-entry-close {
-  justify-content: center;
-  padding: 5px 7px;
-  opacity: 0; }
-  .--RESV-entry-close:hover {
     background-color: #505050; }
 
 @keyframes bracket {

@@ -6,5 +6,5 @@ icon:
 adjust size of icons of module header
 select workspace icon
 run icon
-contextmenu indicator
+window icons (including toggling the maximize icon)
 pack/unpack

@@ -27,8 +27,8 @@
 	border-right: 2px solid $bg-main;
 }
 
-.flex-row > .flex-splitter,
-.flex-col > .flex-splitter {
+.flex-splitter,
+.flex-splitter {
 	background-color: $lyt-split;
 	
 	@include noUserSelect()

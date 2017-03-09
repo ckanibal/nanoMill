@@ -83,7 +83,6 @@ html, body {
     font-family: $font-stack;
 	animation: fade-in 0.5s;
 	-webkit-user-select: none;
-	-webkit-app-region: drag;
 	cursor: default;
 	
 	overflow: hidden;
@@ -94,7 +93,9 @@ html, body {
 	overflow: hidden;
 }
 
-#headbar {
+#titlebar {
+	-webkit-app-region: drag;
+	padding: 5px;
 }
 
 .hb-btn {
@@ -104,6 +105,7 @@ html, body {
 	text-shadow: 0 1px 0 rgb(20, 20, 20);
 	cursor: pointer;
 	padding: 2px 3px;
+	-webkit-app-region: no-drag;
 	
 	&:hover {
 		background-color: $tb-bg;

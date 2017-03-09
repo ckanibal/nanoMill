@@ -82,6 +82,7 @@ function createWindow () {
 	config.window.icon = `${__dirname}/the-mill.ico`
 	config.window.show = false
 	config.window.backgroundColor = "#282828"
+	config.window.frame = false
 	
 	communicator.config = config.config
 	communicator.inDevMode = config.inDevMode

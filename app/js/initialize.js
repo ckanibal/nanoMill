@@ -218,9 +218,27 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		
         dragSplitterTarget = false
     })
-
-	// open file button
-    $("#openf").click(openFilePicker)
+	
+	document.getElementById("tb-file").addEventListener("click", function(e) {
+		let rect = this.getBoundingClientRect()
+		new Contextmenu(rect.left, rect.bottom, [{
+			label: "Open file",
+			onclick: _ => openFilePicker()
+		}])
+	})
+	
+	document.getElementById("minimizeWindow").addEventListener("click", _ => remote.getCurrentWindow().minimize())
+	document.getElementById("toggleWindowMode").addEventListener("click", _ => {
+		let win = remote.getCurrentWindow()
+		
+		if(win.isMaximized())
+			win.unmaximize()
+		else
+			win.maximize()
+	})
+	document.getElementById("closeWindow").addEventListener("click", _ => remote.getCurrentWindow().close())
+	
+	// window controls
 	
 	document.ondragover = document.ondrop = (e) => {
 		e.preventDefault()
@@ -383,10 +401,6 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 	
 	window.addEventListener("beforeunload", _ => {
 		setConfig("pages", getLayoutData())
-	})
-	
-	document.getElementById("newstuff").addEventListener("click", _ => {
-		require("./js/template_modal.js").show()
 	})
 	
 	require("./js/keybinding.js")
