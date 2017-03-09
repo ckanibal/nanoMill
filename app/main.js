@@ -53,7 +53,7 @@ function createWindow () {
 		let str = fs.readFileSync(`${app.getPath('userData')}/config.json`)
 
 		if(!str)
-			"Cannot read config file"
+			throw "Cannot read config file"
 		
 		config = JSON.parse(str)
 
