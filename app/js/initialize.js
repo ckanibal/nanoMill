@@ -569,24 +569,23 @@ Examples: c4group pack.ocg -x
           c4group -i
 */
 
-function runC4Group(args, fListenStdOut) {
+function runC4Group(args, fListenStdOut, callback) {
 	if(!args)
 		return false
 	
-	if(!fListenStdOut)
-		cprocess.spawn(getConfig("c4group"), args)
-	else {
-		let proc = cprocess.spawn(getConfig("c4group"), args)
+	let proc = cprocess.spawn(getConfig("c4group"), args)
+	
 		
+	if(fListenStdOut) {
 		proc.stdout.on('data', function (data) {
 			execHook("onStdOut", Console.validateStdout(data.toString()))
 		})
-		
-		proc.on('exit', function (code) {
-			if(code)
-				log('child process exited with code ' + code.toString())
-		})
 	}
+	
+	proc.on('exit', function (code) {
+		if(callback)
+			callback(code)
+	})
 	
 	return true
 }

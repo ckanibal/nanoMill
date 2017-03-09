@@ -19,11 +19,30 @@ class LinkedTree {
 			return
 		
 		let a = []
-		for(let i = 0; i < this.children; i++)
+		for(let i = 0; i < this.children.length; i++)
 			if(this.children[i] !== child)
 				a.push(this.children[i])
 		
 		this.children = a
+	}
+	
+	/**
+		executes a given callback for every child and its children
+	*/
+	forEach(callback) {
+		if(!callback || !this.children)
+			return
+		
+		for(let i = 0; i < this.children.length; i++) {
+			let child = this.children[i]
+			callback(child.value)
+			child.forEach(callback)
+		}
+	}
+	
+	// unsets the children array
+	removeChildren() {
+		this.children = undefined
 	}
 	
 	get firstChild() {
@@ -31,6 +50,60 @@ class LinkedTree {
 			return this.children[0]
 		
 		return undefined
+	}
+	
+	getElementByVal(val) {
+		if(val === this.value)
+			return this
+		
+		if(this.children) {
+			for(let i = 0; i < this.children.length; i++) {
+				let el = this.children[i].getElementByVal(val)
+				if(el)
+					return el
+			}
+		}
+	}
+	
+	getElementsByVal(val, ary) {
+		if(!ary)
+			ary = []
+		
+		if(val === this.value)
+			return ary.push(this)
+		
+		if(this.children) {
+			for(let i = 0; i < this.children.length; i++) {
+				this.children[i].getElementsByVal(val, ary)
+			}
+		}
+	}
+	
+	removeElementsOfVal() {
+		
+	}
+	
+	/**
+		removes the first element of the given value found and returns it
+		
+	*/
+	removeElementOfVal(val) {
+		if(!this.children)
+			return null
+		
+		for(let i = 0; i < this.children.length; i++) {
+			let child = this.children[i]
+			if(child.value === val) {log(child.value)
+				this.removeChild(child)
+				return child
+			}
+			
+			let grandchild = child.removeElementOfVal(val)
+			if(grandchild)
+				return grandchild
+		}
+		
+		return null
 	}
 	
 	/**

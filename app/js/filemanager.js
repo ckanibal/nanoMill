@@ -149,6 +149,19 @@ class Workspace {
 		
 		this.loaded = false
 		
+		this.loadDirectory(dir_path, (tree) => {
+			this.loaded = true
+			wmaster.saveInConfig()
+			this.tree = tree
+			execHook("onWorkspaceLoad", this)
+		})
+	}
+	
+	/**
+		loads data of a directory into internal file info holder
+		and invokes a callback with a linked tree as paramter, which reperesents the file hiearchy
+	*/
+	loadDirectory(dir_path, callback) {		
 		// collect directory information
 		fs.readdir(dir_path, (err, files) => {
 			if(err) {
@@ -190,20 +203,18 @@ class Workspace {
 						if(!branch.children)
 							branch.children = []
 						// otherwise sort in an clonk typical manner
-						
+						//else
 						// ...
 						
 					}
 				}
 			}
 			
-			this.tree = new LinkedTree("root")
-			fn(files, dir_path, this.tree)
+			let tree = new LinkedTree("root")
+			fn(files, dir_path, tree)
 			
-			this.loaded = true
-			wmaster.saveInConfig()
-		
-			execHook("onWorkspaceLoad", this)
+			if(callback)
+				callback(tree)
 		})
 	}
 	
@@ -212,36 +223,62 @@ class Workspace {
 		if(!this.finfo[idx])
 			return
 		
-		// fs.unlink(this.finfo[idx].path)
+		fs.unlink(this.finfo[idx].path)
 		
-		this.finfo[idx] = null
-		// indicator to abort any recursive calls of the following functions
-		let unmatched = true
+		this.finfo[idx] = undefined
+		// detach from tree
+		let branch = this.tree.removeElementOfVal(idx)
+		// dereference any file info object, which is referenced by the descendants
+		// of branch
+		branch.forEach((idx) => {
+			this.finfo[idx] = undefined
+		})
 		
-		// remove from linked tree
-		let fn = (tree) => {log(idx)
-			for(let i = 0; i < tree.children.length; i++) {
-				let child = tree.children[i]
+		execHook("onWorkspaceChange", this)
+	}
+	
+	/*
+		executes the c4group executable to unpack the file, given by the index
+		of the local file info holder
+	*/
+	packFile(idx) {
+		// command the c4group(.exe) to unpack our targeted file
+		runC4Group([this.finfo[idx].path, "-p"], false, () => {
+			// find element in tree
+			let branch = this.tree.getElementByVal(idx)
+			// remove all file infos referenced by the found element's children
+			branch.forEach((val) => {
+				this.finfo[val] = undefined
+			})
+			// detach children from element
+			branch.removeChildren()
+			// update file info
+			this.finfo[idx].updateSync()
+			// update workspace views
+			execHook("onWorkspaceChange", this)
+		})
+	}
+	
+	/*
+		executes the c4group executable to unpack the file, given by the index
+		of the local file info holder
+	*/
+	unpackFile(idx) {
+		runC4Group([this.finfo[idx].path, "-u"], false, () => {
+			// branch to update
+			let branch = this.tree.getElementByVal(idx)
+			
+			let unpack_dir = this.finfo[idx].path
+			this.loadDirectory(unpack_dir, (tree) => {
+				branch.children = tree.children
 				
-				if(child.value === idx) {
-					tree.removeChild(child)
-					unmatched = false
-					break
-				}
-				else if(child.children && unmatched)
-					fn(child)
-			}
-		}
-		
-		fn(this.tree)
-	}
-	
-	packFile() {
-		
-	}
-	
-	unpackFile() {
-		
+				// update stat
+				this.finfo[idx].updateSync()
+				
+				// update workspace views
+				execHook("onWorkspaceChange", this)
+			})
+		})
 	}
 	
 	/**
@@ -304,6 +341,16 @@ class FileInfo {
 		this.name = name
 		this.ext = path.extname(name)
 		this.leaf = this.ext // deprecated
+	}
+	
+	updateSync() {
+		this.stat = fs.statSync(this.path)
+	}
+	
+	update() {
+		fs.statSync(this.path, (stat) => {
+			this.stat = stat
+		})
 	}
 }
 

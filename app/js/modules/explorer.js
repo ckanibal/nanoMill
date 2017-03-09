@@ -25,6 +25,11 @@ class Explorer extends Layout_Module {
 			if(this.wspace === wspace)
 				this.showWorkspace(wspace)
 		}, this.modId)
+		
+		hook("onWorkspaceChange", (wspace) => {log(wspace.tree)
+			if(this.wspace === wspace)
+				this.showWorkspace(wspace)
+		}, this.modId)
 	}
 	
 	setWorkspace(wspace) {
@@ -105,6 +110,7 @@ class Explorer extends Layout_Module {
 		let props = []
 		
 		// get file info from workspace
+		// explicit parse as integer, for the linked tree compares with ===
 		let findex = parseInt(el.parentNode.dataset.value)
 		let finfo = this.wspace.finfo[findex]
 		
@@ -122,13 +128,13 @@ class Explorer extends Layout_Module {
 			props.push({
 				label: "Pack",
 				icon: "icon-plus",
-				onclick: _ => { runC4Group([finfo.path, "-p"]) },
+				onclick: _ => { this.wspace.packFile(findex) },
 				onvalidate: _ => hasC4group() && finfo.stat.isDirectory()
 			})
 			props.push({
 				label: "Unpack",
 				icon: "icon-plus",
-				onclick: () => { runC4Group([finfo.path, "-u"]) },
+				onclick: () => { this.wspace.unpackFile(findex) },
 				onvalidate: _ => hasC4group() && !finfo.stat.isDirectory()
 			})
 		}
