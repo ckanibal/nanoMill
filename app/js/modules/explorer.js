@@ -31,7 +31,11 @@ class Explorer extends Layout_Module {
 				this.showWorkspace(wspace)
 		}, this.modId)
 		
+		
+		// holds the selected items from the workspace representation
 		this.selected = []
+		// the currently active(or most recently selected) item
+		this.activeItem = null
 	}
 	
 	selectItem(item, multiSelect) {
@@ -41,6 +45,38 @@ class Explorer extends Layout_Module {
 		this.selected.push(item)
 		
 		Elem.addClass(item, "tree-selected")
+		
+		// update active item
+		if(this.activeItem)
+			Elem.removeClass(this.activeItem, "tree-active")
+		
+		this.activeItem = item
+		Elem.addClass(item, "tree-active")
+	}
+	
+	deselectItem(item) {
+		// recreate select array without the targeted item
+		let a = []
+		for(let i = 0; i < this.selected.length; i++)
+			if(this.selected[i] !== item)
+				a.push(this.selected[i])
+		
+		this.selected = a
+		
+		Elem.removeClass(item, "tree-selected")
+		
+		// if the item was active set it to the most recent element
+		if(Elem.hasClass(item, "tree-active")) {
+			Elem.removeClass(item, "tree-active")
+			
+			if(this.selected.length) {
+				let active = this.selected[this.selected.length - 1]
+				Elem.addClass(active, "tree-active")
+				this.activeItem = active
+			}
+			else
+				this.activeItem = null
+		}
 	}
 	
 	getSelectedItems() {
@@ -52,6 +88,10 @@ class Explorer extends Layout_Module {
 			Elem.removeClass(this.selected[i], "tree-selected")
 		
 		this.selected = []
+		
+		if(this.activeItem)
+			Elem.removeClass(this.activeItem, "tree-active")
+		this.activeItem = null
 	}
 	
 	setWorkspace(wspace) {
@@ -113,7 +153,10 @@ class Explorer extends Layout_Module {
 			
 			// select on single click
 			item.addEventListener("click", (e) => {
-				this.selectItem(par, e.ctrlKey)
+				if(Elem.hasClass(par, "tree-selected") && e.ctrlKey)
+					this.deselectItem(par)
+				else
+					this.selectItem(par, e.ctrlKey)
 			})
 			
 			// open editable files; expand/collapse directories on dblclick

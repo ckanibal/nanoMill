@@ -54,4 +54,9 @@
 		background-color: rgba(50, 120, 210, 0.3);
 		outline: 1px solid steelblue;
 	}
+	
+	&.tree-active > .tree-label {
+		background-color: rgba(50, 120, 210, 0.45);
+		outline: 1px solid steelblue;
+	}
 }
