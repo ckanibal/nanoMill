@@ -4,7 +4,10 @@ const fs = require('fs')
 const path = require('path')
 const {remote} = require('electron')
 
-var {__appDir, config, printLog, inDevMode, setConfig, getConfig, wipeConfig, hideMenu, dialog, toggleDevMode } = remote.getGlobal("communicator")
+// get constants and functions from main process
+const {__appDir, config, printLog, inDevMode, setConfig, getConfig, wipeConfig, hideMenu, dialog, toggleDevMode } = remote.getGlobal("communicator")
+
+const MOUSE_LEFT = 1
 
 {
 	setTimeout(_ => {

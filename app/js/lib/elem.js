@@ -1,6 +1,6 @@
 /**
 	this file provides a static class, which has different of the most common
-	html operations as function, trying to replace jquery, while still keeping things short and
+	html operations as method, trying to replace jquery, while still keeping things short and
 	natural
 */
 
@@ -18,7 +18,7 @@ class Elem {
 		if(i === -1)
 			el.className += ' ' + cl
 		else
-			el.className = cname.substr(0, i) + cname.substr(i + cname.length)
+			el.className = el.className.replace(new RegExp(`(?:^|\\s*)${cl}(?!\\S)(?:$|\\s*)`, "g"), " ").trim()
 	}
 	
 	static remove(el) {
@@ -35,5 +35,14 @@ class Elem {
 	
 	static hasClass(el, cl) {
 		return el.className.indexOf(cl) !== -1
+	}
+	
+	static addClass(el, cl) {
+		if(!Elem.hasClass(el, cl))
+			el.className += " " + cl
+	}
+	
+	static removeClass(el, cl) {
+		el.className = el.className.replace(new RegExp(`(?:^|\\s*)${cl}(?!\\S)(?:$|\\s*)`, "g"), " ").trim()
 	}
 }

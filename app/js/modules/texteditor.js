@@ -8,13 +8,12 @@ class TextEditor extends Layout_SubModule {
 		
 		this.tid = nextTextEditorId++
 		
-		hook("onLayoutChange", () => {
+		hook("onLayoutChange", () => {log(this)
 			this.editor.resize()
 		}, this.modId)
 	}
 
     setup(file, txt, mode) {
-
         if(!this.editor)
             this.editor = ace.edit("TE-"+this.tid)
 
@@ -47,7 +46,7 @@ class TextEditor extends Layout_SubModule {
 			setTimeout(this.checkFileState.bind(this), 1)
 		})
 		
-		// get rid of the locale lang tools, since it will suggest any word in the document
+		// get rid of the locale lang tool, since it will suggest any word in the document
 		let langtools = ace.require("ace/ext/language_tools")
 		langtools.setCompleters([langtools.snippetCompleter, langtools.keyWordCompleter])
     }

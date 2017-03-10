@@ -31,40 +31,6 @@ function cleanUpHooksOfMdl(modId) {
 	}
 }
 
-class HookList {
-	constructor() {
-		this.list = []
-	}
-	
-	in(name, fn, modId) {
-		
-		if(!modId && modId !== 0)
-			modId = -1
-		
-		if(!_hookList[name])
-			_hookList[name] = []
-
-		_hookList[name].push({ fn, modId })
-	}
-	
-	/**
-		deletes all referenced functions from  a specific module
-	*/
-	freeOfModule() {
-		for(let hookName in _hookList) {
-			let a = []
-			let fnList = _hookList[hookName]
-			for(let i = 0; i < fnList.length; i++)
-				if(fnList[i].modId !== modId)
-					a.push(fnList[i])
-			
-			_hookList[hookName] = a
-		}
-	}
-}
-
-/// var hook = new HookList()
-
 var log, warn, error
 
 function _delegateLog() {
@@ -106,7 +72,7 @@ function restoreDefaultLayout(byUser) {
 	var page = addPage(),
 		subFlex = addFlexer(DIR_COL)
 
-	$("#mod-wrapper").append(page.root)
+	document.getElementById("mod-wrapper").appendChild(page.root)
 
 	subFlex.root.style.width = `${$("#mod-wrapper").width()/5*2 || 500}px`
 	
@@ -248,9 +214,7 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		e.preventDefault()
 	}
 	
-    $("#savef").click(save)
-	
-	$("#c4GroupPath").html(getConfig("c4group") || "not set")
+	document.getElementById("c4GroupPath").innerHTML = getConfig("c4group") || "not set"
 	
 	document.getElementById("c4GroupPicker").onchange = function(e) {
 		let p = this.files[0].path
@@ -261,7 +225,7 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		}
 	}
 	
-	$("#ocExePath").html(getConfig("ocexe") || "not set")
+	document.getElementById("ocExePath").innerHTML = getConfig("ocexe") || "not set"
 	
 	document.getElementById("ocExePicker").onchange = function(e) {
 		let p = this.files[0].path
@@ -423,11 +387,8 @@ function receiveLocalResource(p) {
 	else if(name.match(/^openclonk/gi))
 		return setConfig("ocexe", p)
 
-	// deprecated
-	let res = filemanager.addResource(p)
-	
-	if(res)
-		execHook("onFileOpen", res)
+	// open globally
+	// ...
 }
 
 function extIsEditable(ext) {
@@ -443,11 +404,13 @@ function extIsEditable(ext) {
 
 
 function openFiles(paths) {
+	/*
 	for(var i = 0; i < files.length; i++) {
 		let res = filemanager.addResource(paths)
 		if(res)
 			execHook("onFileOpen", res)
 	}
+	*/
 }
 
 function showModal(title, contentEl) {
@@ -458,8 +421,10 @@ function showModal(title, contentEl) {
 }
 
 function hideModal() {
-	$("#modal").hide()
-	$("#modal").find(".modal-content").html("")
+	$("#modal").hide() // to replace
+	
+	let modal = document.getElementById("modal")
+	modal.getElementsByClassName("modal-content")[0].innerHTML = ""
 }
 
 function insertTemplateSpecials(s) {
@@ -528,7 +493,7 @@ var ui = {
 	}
 }
 
-var editor_proc
+let editor_proc
 
 function runOCEditor(args) {
 	if(!editor_proc) {

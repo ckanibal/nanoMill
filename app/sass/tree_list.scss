@@ -49,4 +49,9 @@
 	&.tree-collapsed > .tree-children {
 		display: none;
 	}
+	
+	&.tree-selected > .tree-label {
+		background-color: rgba(50, 120, 210, 0.3);
+		outline: 1px solid steelblue;
+	}
 }

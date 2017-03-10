@@ -9,14 +9,15 @@ class Navigator extends Layout_Module {
 		hook("onFileOpened", this.insertFileEntry.bind(this), this.modId)
 		
 		hook("onOpenedFileSelect", (file) => {
-			$(this.root).find(".selected-file").removeClass("selected-file")
+			Elem.removeClass(this.root.getElementsByClassName("selected-file")[0])
 			
 			for(let i = 0; i < this.entries.length; i++)
 				if(this.entries[i].file === file)
 					this.entries[i].$el.addClass("selected-file")
 		}, this.modId)
 		
-		let rList = filemanager.getResourcesCopy()
+		// TODO: get opened files
+		let rList = [] 
 
 		for(let i = 0; i < rList.length; i++)
 			if(rList[i].editor)

@@ -32,6 +32,9 @@ var sass_defs = [
     },
     {
         src: "../sass/mod_console.scss"
+    },
+    {
+        src: "../sass/mod_explorer.scss"
     }
 ]
 

@@ -153,8 +153,9 @@ class EditorView extends Layout_Deck {
 		for(let i = 0; i < this.files.length; i++)
 			this.files[i].editor = null
 		
+		// rescue submodules into global buffer (probably a global array, to prevent extra serialization)
 		for(let i = 0; i < this.children.length; i++) {
-			$("#submod-buffer").append(this.children[i].root)
+			document.getElementById("submod-buffer").appendChild(this.children[i].root)
 			_dumped_editors.push(this.children[i])
 		}
 	}

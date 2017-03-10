@@ -30,6 +30,28 @@ class Explorer extends Layout_Module {
 			if(this.wspace === wspace)
 				this.showWorkspace(wspace)
 		}, this.modId)
+		
+		this.selected = []
+	}
+	
+	selectItem(item, multiSelect) {
+		if(!multiSelect)
+			this.deselectItems()
+		
+		this.selected.push(item)
+		
+		Elem.addClass(item, "tree-selected")
+	}
+	
+	getSelectedItems() {
+		
+	}
+	
+	deselectItems() {
+		for(let i = 0; i < this.selected.length; i++)
+			Elem.removeClass(this.selected[i], "tree-selected")
+		
+		this.selected = []
 	}
 	
 	setWorkspace(wspace) {
@@ -37,6 +59,27 @@ class Explorer extends Layout_Module {
 	}
 	
 	showWorkspace(wspace) {
+		let expanded = []
+		let selectedOld = []
+		let oldScroll = 0
+		// if we simply update the set workspace, store information 
+		// to restore expanded and selected classes afterwards.
+		// identify the elements by their value of file index
+		if(this.wspace === wspace) {
+			let items = this.body.getElementsByClassName("tree-item")
+			for(let i = 0; i < items.length; i++) {
+				let item = items[i]
+				if(!Elem.hasClass(item, "tree-collapsed"))
+					expanded[item.dataset.value] = true
+				
+				if(Elem.hasClass(item, "tree-selected"))
+					selectedOld[item.dataset.value] = true
+			}
+			
+			// remember scroll position
+			oldScroll = this.body.scrollTop
+		}
+		
 		// clear content
 		this.body.innerHTML = null
 		
@@ -53,28 +96,47 @@ class Explorer extends Layout_Module {
 			}, 'dblclick'))
 		
 		
-		// attach event listeners
 		let items = this.body.getElementsByClassName("tree-label")
+		// reset internal selected holder, will be updated below
+		this.selected = []
 		
+		// restore state and bind event handlers
 		for(let i = 0; i < items.length; i++) {
-			// open editable files; expand/collapse directories
-			items[i].addEventListener("dblclick", (e) => {
+			let item = items[i]
+			// restore state for previously expanded...
+			let par = item.parentNode
+			if(expanded[par.dataset.value])
+				Elem.removeClass(par, "tree-collapsed")
+			// ...and select items
+			if(selectedOld[par.dataset.value])
+				this.selectItem(par, true)
+			
+			// select on single click
+			item.addEventListener("click", (e) => {
+				this.selectItem(par, e.ctrlKey)
+			})
+			
+			// open editable files; expand/collapse directories on dblclick
+			item.addEventListener("dblclick", (e) => {
 				// get file index
-				let index = items[i].parentNode.dataset.value
+				let index = item.parentNode.dataset.value
 				let finfo = this.wspace.finfo[index]
 				
-				if(Elem.hasClass(items[i].parentNode, "tree-parent"))
+				if(Elem.hasClass(item.parentNode, "tree-parent"))
 					return
 				
 				if(extIsEditable(finfo.ext))
 					this.wspace.openFile(index)
 			})
 			
-			// contextmenu
-			items[i].addEventListener("contextmenu", (e) =>  {
-				new Contextmenu(e.pageX, e.pageY, this.getTreeMenuProps(items[i]))
+			// attach contextmenu on right click
+			item.addEventListener("contextmenu", (e) =>  {
+				new Contextmenu(e.pageX, e.pageY, this.getTreeMenuProps(item))
 			})
 		}
+		
+		// restore scroll position
+		this.body.scrollTop = oldScroll
 		
 		this.setWorkspace(wspace)
 	}
@@ -142,7 +204,10 @@ class Explorer extends Layout_Module {
 		props.push({
 			label: "Rename",
 			icon: "icon-plus",
-			onclick: () => {}
+			onclick: () => {
+				let win = new remote.BrowserWindow({parent: remote.getCurrentWindow(), modal: true})
+				log("asd")
+			}
 		})
 		
 		props.push({

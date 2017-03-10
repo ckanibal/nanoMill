@@ -1,7 +1,8 @@
 -add option: scroll past end from ace editor renderer instance
 	look here: https://github.com/ajaxorg/ace/wiki/Configuring-Ace
 	
-
+prevent module being closed if only one is left
+	
 icon:
 adjust size of icons of module header
 select workspace icon

@@ -297,16 +297,17 @@ class Layout_Module extends Layout_Element {
 				execHook("onLayoutChange")
 				
 				e.stopPropagation()
-				$("#content").removeClass("move-mod")
 				
-				$(".mod-body").each(function() {
-					this.removeEventListener("click", fn, true)
-				})
+				Elem.removeClass(document.getElementById("content"))
+				
+				let bodies = document.getElementsByClassName("mod-body")
+				for(let i = 0; i < bodies.length; i++)
+					bodies[i].removeEventListener("click", fn, true)
 			}
 
-			$(".mod-body").each(function() {
-				this.addEventListener("click", fn, true)
-			})
+			let bodies = document.getElementsByClassName("mod-body")
+			for(let i = 0; i < bodies.length; i++)
+				bodies[i].addEventListener("click", fn, true)
 
 		})
 		
