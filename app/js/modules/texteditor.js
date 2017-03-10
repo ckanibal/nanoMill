@@ -9,7 +9,8 @@ class TextEditor extends Layout_SubModule {
 		this.tid = nextTextEditorId++
 		
 		hook("onLayoutChange", () => {log(this)
-			this.editor.resize()
+			if(this.editor)
+				this.editor.resize()
 		}, this.modId)
 	}
 
