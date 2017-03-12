@@ -2,6 +2,7 @@
 	look here: https://github.com/ajaxorg/ace/wiki/Configuring-Ace
 	
 prevent module being closed if only one is left
+option for sorting directories in a cr-editor typical manner or not
 	
 icon:
 adjust size of icons of module header

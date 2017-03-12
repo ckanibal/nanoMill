@@ -1,3 +1,6 @@
+/**
+	The WorkspaceMaster manages and stores the single Workspace instances.
+*/
 class WorkspaceMaster {
 	constructor() {
 		this.wspaces = []
@@ -38,6 +41,9 @@ class WorkspaceMaster {
 		setConfig('workspaces', a)
 	}
 	
+	/**
+		returns the index of the given workspace
+	*/
 	getIndexOf(workspace) {
 		for(let i = 0; i < this.wspaces.length; i++)
 			if(workspace === this.wspaces[i])
@@ -46,13 +52,16 @@ class WorkspaceMaster {
 		return -1
 	}
 	
+	/**
+		returns a workspace identified by its index
+	*/
 	getWorkspace(index) {
 		return this.wspaces[index]
 	}
 }
 
 /**
-* a workspace holds information about a specific folder inon the user's drive
+* a workspace holds information about a specific folder on the user's drive
 * and collects data about editable components in the folder
 */
 
@@ -65,7 +74,7 @@ class Workspace {
 		this.tree = null
 		// holder of indices of opened files
 		this.opened = new Set()
-		
+		// weather the first execution of loadDirectory has been finished
 		this.loaded = false
 		
 		this.loadDirectory(dir_path, (tree) => {
@@ -122,21 +131,24 @@ class Workspace {
 						if(!branch.children)
 							branch.children = []
 						// otherwise sort in an clonk typical manner
-						//else
-						// ...
-						
+						else
+							branch.children = this.sortFileIndicesByExt(branch.children)
 					}
 				}
 			}
 			
 			let tree = new LinkedTree("root")
 			fn(files, dir_path, tree)
+			tree.children = this.sortFileIndicesByExt(tree.children)
 			
 			if(callback)
 				callback(tree)
 		})
 	}
 	
+	/**
+		deletes a file or folder with all its descendants
+	*/
 	unlinkFile(idx) {
 		// sanity check
 		if(!this.finfo[idx])
@@ -156,7 +168,7 @@ class Workspace {
 		execHook("onWorkspaceChange", this)
 	}
 	
-	/*
+	/**
 		executes the c4group executable to unpack the file, given by the index
 		of the local file info holder
 	*/
@@ -178,7 +190,7 @@ class Workspace {
 		})
 	}
 	
-	/*
+	/**
 		executes the c4group executable to unpack the file, given by the index
 		of the local file info holder
 	*/
@@ -189,7 +201,7 @@ class Workspace {
 			
 			let unpack_dir = this.finfo[idx].path
 			this.loadDirectory(unpack_dir, (tree) => {
-				branch.children = tree.children
+				branch.children = this.fIndicesByExt(tree.children)
 				
 				// update stat
 				this.finfo[idx].updateSync()
@@ -210,6 +222,10 @@ class Workspace {
 		return name
 	}
 	
+	/**
+		pushes a FileInfo instance to the internal array and returns
+		its index in the array
+	*/
 	addFileInfo(finfo) {
 		let i = this.finfo.length
 		
@@ -218,10 +234,17 @@ class Workspace {
 		return i
 	}
 	
+	/**
+		checks if the file of the given index is marked
+		as opened or not
+	*/
 	fileOpened(i) {
 		return this.opened.has(i)
 	}
 	
+	/**
+		opens the file of the given index
+	*/
 	openFile(i) {
 		if(this.fileOpened(i))
 			return
@@ -232,6 +255,10 @@ class Workspace {
 		this.opened.add(i)
 	}
 	
+	/**
+		checks weather the given extension is editable and
+		can therefore be opened in the editor frame
+	*/
 	static isAcceptedFileType(ext) {
 		switch(ext) {
 			case ".ocf":
@@ -246,29 +273,99 @@ class Workspace {
 				return false;
 		}
 	}
+	
+	/**
+		the higher the value for the specific file extension is, the higher
+		it getes placed in the directory view
+	*/
+	static getExtSortValue(ext) {
+		switch(ext) {
+			case ".ocf":
+			return 15
+			case ".ocg":
+			return 10
+			case ".ocd":
+			return 1
+			
+			default:
+			return 5
+		}
+	}
+	
+	/**
+		sorts an array of LinkedTrees with file indices as their values
+		by their corresponding extension (cr editor sorting)
+	*/
+	sortFileIndicesByExt(fa) {
+		if(!fa)
+			return fa
+		
+		// copy input to not corrupt things outside this function
+		fa = fa.slice()
+		let a = []
+		
+		for(let q = 0; q < fa.length; q++) {
+			let lowest
+			let value = 0
+			for(let i = 0; i < fa.length; i++) {
+				let branch = fa[i]
+				// ignore deleted entries
+				if(branch !== null) {
+					let val = Workspace.getExtSortValue(this.finfo[branch.value].ext)
+					if(val > value) {
+						lowest = i
+						value = val
+					}
+				}
+			}
+			
+			a.push(fa[lowest])
+			// delete item from source list
+			fa[lowest] = null
+		}
+		
+		return a
+	}
+	
 	// TODO: watcher, detecting removal or change of opened files and inform user (n++ style)
 	// (and show newly added files, could be checked when window gets the focused)
 }
 
-
+// create a global instance
 var wmaster = new WorkspaceMaster()
 
+/**
+	The file info represents single files in a workspace, containing
+	the most basic information of their files.
+	The stat property, containg the result from from fs.stat* may not be up-to-date.
+	Therefor you can use update() and updateSync() to achieve that.
+*/
 class FileInfo {
 	constructor(p, stat, name) {
 		this.path = p
 		this.stat = stat
 		this.name = name
 		this.ext = path.extname(name)
-		this.leaf = this.ext // deprecated
 	}
 	
+	/**
+		updates the stat property given by fs.stat() synchronously
+	*/
 	updateSync() {
 		this.stat = fs.statSync(this.path)
 	}
 	
-	update() {
+	/**
+		updates the stat property given by fs.stat() asynchronously
+		and invokes the given callback afterwards with the FileInfo instance
+		as parameter
+	*/
+	update(callback) {
 		fs.statSync(this.path, (stat) => {
 			this.stat = stat
+			
+			if(callback)
+				callback(this)
 		})
 	}
 }
