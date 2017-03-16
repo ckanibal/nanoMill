@@ -84,3 +84,16 @@ var _prf = {
 		return t
 	}
 }
+
+/**
+	copies an array without the specified value
+*/
+function copyArrayWIO(ary, val) {
+	let a = []
+	let i = ary.length
+	while(--i)
+		if(ary[i] !== val)
+			a[i] = ary[i]
+	
+	return a
+}

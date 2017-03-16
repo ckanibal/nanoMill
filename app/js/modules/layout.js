@@ -155,7 +155,7 @@ class Layout extends Layout_Element {
 		
 		for(let i = 0; i < data.length; i++)
 			fn(data[i])
-		log(lyts)
+		
 		return lyts
 	}
 }
@@ -217,9 +217,9 @@ class Layout_Flex extends Layout_Element {
     }
 
     unregisterChild(mod) {
-        var a = []
+        let a = []
 
-        for(var i = 0; i < this.children.length; i++)
+        for(let i = 0; i < this.children.length; i++)
             if(this.children[i] !== mod)
                 a.push(this.children[i])
 
@@ -231,20 +231,39 @@ class Layout_Flex extends Layout_Element {
 		
         this.updateSplitters()
     }
+	
+	replaceChild(newChild, oldChild) {
+		// replace in children array
+		for(let i = 0; i < this.children.length; i++)
+            if(this.children[i] === oldChild) {
+                this.children[i] = newChild
+				break
+			}
+		
+		// dereference parent
+		oldChild.parent = null
+		
+		// transfer dimensions
+		newChild.root.style.width = oldChild.root.style.width
+		newChild.root.style.height = oldChild.root.style.height
+		
+		// replace root elements in dom tree
+		this.root.replaceChild(newChild.root, oldChild.root)
+	}
 
     adjustAppearance() {
+		// remove flexer without children
         if(!this.children.length) {
 			Elem.remove(this)
             this.parent.unregisterChild(this)
         }
+		// when having only a single child, remove the flexer too
+		// but apply important properties to the child
 		else if(this.children.length === 1) {
 			let child = this.children[0]
 			let p = this.parent
 			
-			document.getElementById("mod-buffer").appendChild(child.root)
-			
-			let root = this.root
-			
+			/*
 			if(p.getDir() === DIR_ROW) {
 				child.root.style.width = root.style.width
 				child.root.style.height = ""
@@ -254,11 +273,18 @@ class Layout_Flex extends Layout_Element {
 				child.root.style.width = ""
 			}
 			
-			Elem.remove(root)
+			// move child to buffer
+			// document.getElementById("mod-buffer").appendChild(child.root)
+			document.getElementById("mod-buffer").removeChild(child.root)
+			
+			Elem.remove(this.root)
 			
 			let idx = p.getChildIndex(this)
 			p.unregisterChild(this)
 			p.registerChild(child, idx)
+			*/
+			
+			p.replaceChild(child, this)
 		}
     }
 
@@ -273,6 +299,9 @@ class Layout_Flex extends Layout_Element {
     updateSplitters() {
 
         let prev, el = this.root.firstElementChild
+		
+		if(!el)
+			return
 		
 		if(Elem.hasClass(el, "flex-splitter")) {
 			Elem.remove(el)
@@ -433,10 +462,10 @@ class Layout_Module extends Layout_Element {
     }
 	
 	/**
-		stub that's called when the module gets initialized
+		stub that's invoked when the module gets constructed
 		@param state: data that has been saved according to the getSaveData() method, to restore the recent session
 	*/
-	init(state) { }
+	init(state) {}
 
     redefine(modAlias) {
 		if(modAlias === this.constructor.def.alias)
@@ -459,11 +488,9 @@ class Layout_Module extends Layout_Element {
 	
 	/**
 		overrideable callback
-		return true, will prevent the module from getting closed
+		@return when true, the closing procedure will be stopped
 	*/
-	onClosePrevent() {
-		return false
-	}
+	onClosePrevent() { return false }
 	
 	close() {
 		// call stub, which might abort closing this module
@@ -485,41 +512,44 @@ class Layout_Module extends Layout_Element {
 	}
 	
 	/**
-		overrideable callback
+		overrideable callback when the module gets closed
 	*/
-	onClose() { }
+	onClose() {}
 
     addSibling(fVertical) {
 
-        let dir, property
-		
+        let dir, mainDim, crossDim
 		if(fVertical) {
 			dir = DIR_COL
-			property = "height"
+			mainDim = "height"
+			crossDim = "width"
 		}
 		else {
 			dir = DIR_ROW
-			property = "width"
+			mainDim = "width"
+			crossDim = "height"
 		}
 		
         let p = this.parent
 		
 		// if the new module has to be positioned
-		// in the same way the flexer is laid out
+		// in the same direction the parent flexer is laid out
+		// just append a new flexer
         if(p.getDir() === dir) {
             let mod = this.source.createModule("intro")
             p.registerChild(mod, p.getChildIndex(this) + 1)
-			let half = this.root.getBoundingClientRect()[property]/2
-			mod.root.style[property] = half + "px"
-			this.root.style[property] = half + "px"
+			let half = this.root.getBoundingClientRect()[mainDim]/2
+			mod.root.style[mainDim] = half + "px"
+			this.root.style[mainDim] = half + "px"
         }
 		// otherwise move this module and the new one
-		// into the a new flexer laid out into the other direction
+		// into a new flexer with the given direction
         else {
+			// remember where to put the flexer
             let idx = p.getChildIndex(this)
             let flexer = new Flexer(dir)
 			
-			let half = this.root.getBoundingClientRect()[property]/2
+			let half = this.root.getBoundingClientRect()[mainDim]/2
 			p.registerChild(flexer, idx)
 			
 			p.unregisterChild(this)
@@ -527,9 +557,17 @@ class Layout_Module extends Layout_Element {
 			let mod = this.source.createModule("intro")
 			flexer.registerChild(this)
 			flexer.registerChild(mod)
-
-			mod.root.style[property] = half + "px"
-			this.root.style[property] = half + "px"
+			
+			// split up dimensions across the direction into half
+			this.root.style[mainDim] = half + "px"
+			
+			log(this.root.style.width)
+			log(this.root.style.height)
+			
+			// clear dimension on cross axis of module
+			// but apply it to the flexer
+			flexer.root.style[crossDim] = this.root.style[crossDim]
+			this.root.style[crossDim] = ""
         }
 		
 		execHook("onLayoutChange")
