@@ -1,39 +1,84 @@
-var
+const
     DIR_COL = 1,
     DIR_ROW = 2
 
+// id counter for creating a unique identifier for each module
+let mdlId = 0
+
 class Layout_Element {
 	constructor () {
-		this.isLayout_Element = true
 	}
+	
+	get isLayout_Element() {
+		return true
+	}
+	
+	set isLayout_Element(v) {}
 	
 	getLayoutInfo() {
 		return { w: this.root.style.width, h: this.root.style.height }
 	}
 }
 
-var _pages = []
-
-function addPage(dir) {
-	let page = new Layout_Page()
-	_pages.push(page)
-	page.setDir(dir)
-	
-	return page
-}
-
-class Layout_Page extends Layout_Element {
+class Layout extends Layout_Element {
 	constructor() {
 		super()
 		
+		this.mdls = []
+		
 		this.children = []
 		
-		this.flexer = new Flexer()
-		
-		$(this.flexer.root).addClass("flex-fill")
+		this.flexer = new Flexer(DIR_ROW)
+		log(this)
+		Elem.addClass(this.flexer.root, "flex-fill")
 		
 		// override functon, to prevent flexer from removing itself, when empty
 		this.flexer.adjustAppearance = function() { }
+	}
+	
+	createModule(mdlAlias, stateinfo) {
+		let def = getModuleDef(mdlAlias)
+		
+		if(!def || !def.className)
+			return error(`createModule: module alias '${mdlAlias}' not registered.`)
+
+		let mdl = new def.className(mdlId)
+
+		this.mdls.push(mdl)
+		
+		mdl.source = this
+		
+		mdl.id = mdlId++
+		
+		// initialize module with saved info, if any
+		mdl.init(stateinfo)
+		
+		return mdl
+	}
+	
+	removeFromModuleList(mdl) {
+		let a = []
+		for(let i = 0; i < this.mdls.length; i++)
+			if(this.mdls[i] !== mdl)
+				a.push(this.mdls[i])
+		
+		this.mdls = a
+	}
+	
+	getSaveData() {	
+		let pdata = []
+		
+		for(let i = 0; i < pages.length; i++)
+			pdata[i] = pages[i].getLayoutInfo()
+		
+		return pdata
+	}
+	
+	clear() {
+		this.pages = []
+		this.flexer = []
+		this.mdls = []
+		document.getElementById("mod-wrapper").innerHTML = ""
 	}
 	
 	registerChild() {
@@ -60,13 +105,64 @@ class Layout_Page extends Layout_Element {
 	
 	setDir(v) { this.flexer.setDir(v) }
 	
-	getDir(v) { return this.flexer.getDir() }
+	getDir() { return this.flexer.getDir() }
+	
+	getModuleOfBody(el) {
+		for(let i = 0; i < _modules.length; i++)
+			if(_modules[i].body === el)
+				return _modules[i]
+	}
+	
+	static fromData(data) {
+		let lyts = []
+		let fn = (data, par, lyt) => {
+			// whitelist modules for additional safety
+			// and take care of layout interpretation
+			switch(data.alias) {
+				case "page":
+					lyt = new Layout()
+					lyt.setDir(data.dir)
+					lyts.push(lyt)
+					
+					for(let i = 0; i < data.chldrn.length; i++)		
+						fn(data.chldrn[i], lyt, lyt)
+				break
+				case "flexer":
+					let flexer = new Flexer(data.dir)
+					
+					par.registerChild(flexer)
+					flexer.root.style.width = data.w
+					flexer.root.style.height = data.h
+					
+					for(let i = 0; i < data.chldrn.length; i++)
+						fn(data.chldrn[i], flexer, lyt)
+				break;
+				case "editor":
+				case "intro":
+				case "console":
+				case "navigator":
+				case "explorer":
+					let mod = lyt.createModule(data.alias, data.state)
+					if(!mod)
+						break
+											
+					par.registerChild(mod)
+					mod.root.style.width = data.w
+					mod.root.style.height = data.h
+				break
+			}
+		}
+		
+		for(let i = 0; i < data.length; i++)
+			fn(data[i])
+		log(lyts)
+		return lyts
+	}
 }
 
 class Layout_Flex extends Layout_Element {
 	
 	constructor() {
-		
 		super()
 		
 		this.children = []
@@ -74,10 +170,14 @@ class Layout_Flex extends Layout_Element {
 	}
 
     setDir(dir) {
-        if(dir === DIR_COL)
-            $(this.root).addClass("flex-col").removeClass("flex-row")
-        else
-            $(this.root).addClass("flex-row").removeClass("flex-col")
+        if(dir === DIR_COL) {
+			Elem.addClass(this.root, "flex-col")
+			Elem.removeClass(this.root, "flex-row")
+		}
+        else {
+			Elem.addClass(this.root, "flex-row")
+			Elem.removeClass(this.root, "flex-col")
+		}
 
         this._dir = dir
     }
@@ -87,7 +187,6 @@ class Layout_Flex extends Layout_Element {
     }
 
     registerChild(child, index) {
-
         if(!child)
             return error("No parameter given for registerChild")
         else if(!child.isLayout_Element)
@@ -126,23 +225,23 @@ class Layout_Flex extends Layout_Element {
 
         this.children = a
 		
-		$("#mod-buffer").append(mod.root)
+		// save in buffer object
+		document.getElementById("mod-buffer").appendChild(mod.root)
 		mod.parent = false
 		
         this.updateSplitters()
     }
 
     adjustAppearance() {
-
         if(!this.children.length) {
-            $(this.root).remove()
+			Elem.remove(this)
             this.parent.unregisterChild(this)
         }
 		else if(this.children.length === 1) {
 			let child = this.children[0]
 			let p = this.parent
 			
-			$("#mod-buffer").append(child.root)
+			document.getElementById("mod-buffer").appendChild(child.root)
 			
 			let root = this.root
 			
@@ -155,7 +254,7 @@ class Layout_Flex extends Layout_Element {
 				child.root.style.width = ""
 			}
 			
-			$(root).remove()
+			Elem.remove(root)
 			
 			let idx = p.getChildIndex(this)
 			p.unregisterChild(this)
@@ -164,7 +263,7 @@ class Layout_Flex extends Layout_Element {
     }
 
     getChildIndex(mod) {
-        for(var i = 0; i < this.children.length; i++)
+        for(let i = 0; i < this.children.length; i++)
             if(this.children[i] === mod)
                 return i
 
@@ -173,29 +272,32 @@ class Layout_Flex extends Layout_Element {
 
     updateSplitters() {
 
-        var prev, el = this.root.firstElementChild
-
-        if($(el).hasClass("flex-splitter")) {
-            $(el).remove()
-            el = el.nextElementSibling
-        }
-
-        while(el) {
-            if(!$(el).hasClass("flex-splitter")) {
-                if(prev && !$(prev).hasClass("flex-splitter"))
-                    $(prev).after("<div class='flex-splitter'></div>")
+        let prev, el = this.root.firstElementChild
+		
+		if(Elem.hasClass(el, "flex-splitter")) {
+			Elem.remove(el)
+			el = el.nextSibling
+		}
+		
+		while(el) {
+			// if element is not a splitter ...
+			if(!Elem.hasClass(el, "flex-splitter")) {
+				// ... and previous one hasn't been a splitter too
+				if(prev && !Elem.hasClass(prev, "flex-splitter"))
+					// insert one in between
+					prev.insertAdjacentHTML("afterend", `<div class='flex-splitter'></div>`)
 			}
-			else if($(prev).hasClass("flex-splitter")) {
-				$(el).remove()
+			else if(Elem.hasClass(prev, "flex-splitter")) {
+				Elem.remove(el)
 				el = prev
 			}
-
-            prev = el
-            el = el.nextElementSibling
-        }
-
-        if($(prev).hasClass("flex-splitter"))
-            $(prev).remove()
+			
+			prev = el
+			el = el.nextElementSibling
+		}
+		
+		if(prev && Elem.hasClass(prev, "flex-splitter"))
+			Elem.remove(prev)
     }
 	
 	getLayoutInfo() {
@@ -217,54 +319,58 @@ class Layout_Flex extends Layout_Element {
 class Layout_Module extends Layout_Element {
 	
 	/**
-		don't overload constructor if possible, use init() instead
+		don't overload constructor, use init()-callback instead
 	*/
     constructor() {
 		
 		super()
 
-        var $el = $(".mod-con.draft").clone()
-
-        this.root = $el[0]
-		this.body = $el.find(".mod-body")[0]
+		let el = document.querySelector(".mod-con.draft").cloneNode(true)
+		let $el = $(el)
+		
+        this.root = el
+		this.body = el.getElementsByClassName("mod-body")[0]
 
         log("module created - constructor name: " + this.constructor.def.alias)
-        $el.removeClass("draft")
+		Elem.removeClass(el, "draft")
 
-        for(var ali in _modDefs) {
-            let def = _modDefs[ali]
-
+        for(let item of mdlDefs) {
+            let def = item[1]
+			
+			// submodules are handled differently, the user is not allowed
+			// to switch to them manually
             if(def.isSub)
                 continue
 			
-            var $entry = $(`<div class='mod-sel-item
-                       ${(def.alias === this.constructor.def.alias?" visible":"")}
-                       '>${def.title}</div>`)
-
-            $el.find(".mod-sel-list").append($entry)
+            let entry = Elem.fromString(`<div class='mod-sel-item
+				   ${(def.alias === this.constructor.def.alias?" visible":"")}
+				   '>${def.title}</div>`)
 			
-            $entry.click(() => {
+			el.getElementsByClassName("mod-sel-list")[0].appendChild(entry)
+			
+            entry.addEventListener("click", (e) => {
+				// when the type of the current module has been selected, do nothing
 				if(this.constructor.def.alias === def.alias) {
-					$(":focus").blur()
+					document.activeElement.blur()
 					return
 				}
 				
-                $el.find(".mod-sel-list").find(".visible").removeClass("visible")
-                $(this).addClass("visible")
-
-                $(":focus").blur()
-
+				Elem.removeClass(el.querySelector(".mod-sel-list .visible"), "visible")
+				Elem.addClass(e.target, "visible")
+				// blur selection parent element
+                document.activeElement.blur()
                 this.redefine(def.alias)
             })
         }
 		
 		$el.find(".mod-move").click(_ => {
-			$("#content").addClass("move-mod")
+			Elem.addClass(document.getElementById("content"), "move-mod")
 
 			var _self = this
 			
 			var fn = function(e) {
-				
+				log(this)
+				log(e.target)
 				let p1 = _self.parent
 
 				let idx1 = p1.getChildIndex(_self),
@@ -312,7 +418,6 @@ class Layout_Module extends Layout_Element {
 		})
 		
 		// create context menu on settings button
-		// TODO: imeplement splitters: "<hr style='margin: 3px 5px; border-bottom-width: 0'>"
 		this.root.getElementsByClassName("mod-sett")[0].addEventListener("click", (e) => {
 			
 			let x = e.clientX - e.offsetX,
@@ -340,7 +445,7 @@ class Layout_Module extends Layout_Element {
         var p = this.parent,
 			w = this.root.style.width,
 			h = this.root.style.height,
-			mod = addModule(modAlias)
+			mod = this.source.createModule(modAlias)
 
 		p.registerChild(mod, p.getChildIndex(this))
 		
@@ -366,14 +471,13 @@ class Layout_Module extends Layout_Element {
 			return false
 		
 		let par = this.parent
-		$(this.root).remove()
+		Elem.remove(this.root)
 		this.parent.unregisterChild(this)
 		par.adjustAppearance()
 		
 		// detach any callbacks of hook-system with reference to this module
 		cleanUpHooksOfMdl(this.id)
-		// remove global reference
-		removeFromModuleList(this)
+		this.source.removeFromModuleList(this)
 		
 		this.onClose()
 		
@@ -399,25 +503,28 @@ class Layout_Module extends Layout_Element {
 		}
 		
         let p = this.parent
-
+		
+		// if the new module has to be positioned
+		// in the same way the flexer is laid out
         if(p.getDir() === dir) {
-            let mod = addModule("intro")
+            let mod = this.source.createModule("intro")
             p.registerChild(mod, p.getChildIndex(this) + 1)
-			let half = $(this.root)[property]()/2
+			let half = this.root.getBoundingClientRect()[property]/2
 			mod.root.style[property] = half + "px"
 			this.root.style[property] = half + "px"
         }
+		// otherwise move this module and the new one
+		// into the a new flexer laid out into the other direction
         else {
             let idx = p.getChildIndex(this)
-            let flexer = addFlexer(dir)
+            let flexer = new Flexer(dir)
 			
-			let half = $(this.root)[property]()/2
-			log(this.root.style[property])
-            p.registerChild(flexer, idx)
+			let half = this.root.getBoundingClientRect()[property]/2
+			p.registerChild(flexer, idx)
 			
 			p.unregisterChild(this)
 			
-			let mod = addModule("intro")
+			let mod = this.source.createModule("intro")
 			flexer.registerChild(this)
 			flexer.registerChild(mod)
 
@@ -529,9 +636,9 @@ class Layout_SubModule extends Layout_Element {
 		this.root = document.createElement("div")
 	}
 	
-	save() { }
+	save() {}
 	
-	onfocus() { }
+	onfocus() {}
 	
 	isSub() { return true }
 	
@@ -556,8 +663,7 @@ class Layout_SubModule extends Layout_Element {
 		
 		// detach any callbacks of hook-system with reference to this module
 		cleanUpHooksOfMdl(this.id)
-		// remove global reference
-		removeFromModuleList(this)
+		layout.removeFromModuleList(this)
 		
 		this.onClose()
 		
@@ -567,85 +673,43 @@ class Layout_SubModule extends Layout_Element {
 	/**
 		callback stub
 	*/
-	onClose() { }
+	onClose() {}
 	
 	getSaveData() {}
 }
-
-var _modules = []
-var _modDefs = {}
-
-function defineModule(def) {
-	
-	if(_modDefs[def.alias])
-		error(`mod alias already defined (${def.alias}); registration rejected`)
-	
-    _modDefs[def.alias] = def
-}
-
-var modId = 0
-function addModule(modAlias, stateinfo) {
-
-    var def = _modDefs[modAlias]
-	
-    if(!def || !def.className)
-        return error(`addModule: module alias '${modAlias}' not registered.`)
-
-    var mod = new def.className(modId)
-
-    _modules.push(mod)
-	
-	mod.id = modId++
-	
-	// initialize module with saved info, if any
-	mod.init(stateinfo)
-	
-    return mod
-}
-
-function removeFromModuleList(mod) {
-    var a = []
-
-    for(var i = 0; i < _modules.length; i++)
-        if(_modules[i] !== mod)
-            a.push(_modules[i])
-	
-    _modules = a
-}
-
-var _flexers = []
 
 class Flexer extends Layout_Flex {
 	constructor(dir) {
 		super()
 		
-		this.root = $("<div class='flexer'></div>")[0]
+		// construct root element
+		this.root = document.createElement("div")
+		this.root.className = "flexer"
 		
+		// set direction of the flex layout
 		this.setDir(dir)
 	}
 }
 
+let mdlDefs = new Map()
 
-function addFlexer(dir) {
-    var flexer = new Flexer(dir)
-
-    _flexers.push(flexer)
-
-    return flexer
+function setModuleDef(def) {
+	if(mdlDefs.has(def.alias))
+		warn(`mod alias already defined (${def.alias}); registration rejected`)
+	
+	mdlDefs.set(def.alias, def)
 }
 
-function getLayoutData() {
-	
-	let pages = []
-	
-	for(let i = 0; i < _pages.length; i++)
-		pages[i] = _pages[i].getLayoutInfo()
-	
-	return pages
+function getModuleDef(alias) {
+	return mdlDefs.get(alias)
 }
 
-function getModuleOfBody(el) {
-	for(let i = 0; i < _modules.length; i++)
-		if($(_modules[i].root).find(".mod-body")[0] === el)
-			return _modules[i]
-}	
+module.exports = {
+	Layout: Layout,
+	Module: Layout_Module,
+	SubModule: Layout_SubModule,
+	Deck: Layout_Deck,
+	setModuleDef,
+	DIR_COL,
+	DIR_ROW
+}

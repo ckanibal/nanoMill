@@ -1,7 +1,7 @@
 // provide every editor dom instace with a unique id by this index
 let nextTextEditorId = 0
 
-class TextEditor extends Layout_SubModule {
+class TextEditor extends layout.SubModule {
 	
 	init() {
 		this.root.innerHTML = `<div id='TE-${nextTextEditorId}' class='ace_qtmill'></div>`
@@ -125,4 +125,4 @@ TextEditor.def = {
 	isSub: true
 }
 
-defineModule(TextEditor.def)
+layout.setModuleDef(TextEditor.def)

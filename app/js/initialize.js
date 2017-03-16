@@ -4,41 +4,40 @@
  * This function restores the predefined layout, to allow users to get back
  * to viable layout if the customized one failed to any sort of bugs (e.g. failing to load old state or accidently rumping it up)
 */
-function restoreDefaultLayout(byUser) {
-	var page = addPage(),
-		subFlex = addFlexer(DIR_COL)
-
-	document.getElementById("mod-wrapper").appendChild(page.root)
-
-	subFlex.root.style.width = `${$("#mod-wrapper").width()/5*2 || 500}px`
+function resetLayout(byUser) {
 	
-	page.registerChild(subFlex)
+	lyt = layout.Layout.fromData([{
+		alias: "page", chldrn:
+			[{
+				dir: layout.DIR_COL, alias: "flexer","chldrn":[{
+					alias :"navigator", w: "", h: "282.813px"
+				},{
+					dir: layout.DIR_ROW, alias: "flexer","chldrn":[{
+						dir: layout.DIR_COL, alias:"flexer","chldrn":[{
+							alias:"intro","w":"265.297px","h":"129.797px"
+						},{
+							alias:"intro","w":"","h":"129.797px"
+						},{
+							alias:"intro","w":"","h":"259.594px"
+						}]
+					,"w":"","h":""}]
+				,"w":"","h":""}]
+			,"w":"530.594px","h":""},{
+				alias: "editor","w":"","h":""}]
+		,"w":"","h":""}
+	])[0]
 	
-	let mod = addModule("navigator")
-	subFlex.registerChild(mod)
-	mod.root.style.height = `${$("#mod-wrapper").height()/3 || 200}px`
-	subFlex.registerChild(addModule("explorer"))
-
-	mod = addModule("editor")	
-	page.registerChild(mod)
+	document.getElementById("mod-wrapper").appendChild(lyt.root)
 	
-	page.root.style.animation = "fade-in 0.3s"
 	warn("Default layout used (Forced by user: " + (byUser || "false") + ")")
-}
-
-function resetLayout() {
-	_pages = []
-	_modules = []
-	_flexers = []
-	document.getElementById("mod-wrapper").innerHTML = ""
-	
-	restoreDefaultLayout(...arguments)
 }
 
 var currentEditorMod, _focussedRes
 
 var mouseX = 0, mouseY = 0
 var mouseOffX, mouseOffY, dragSplitterTarget, origDim
+
+var lyt
 
 {
 	/**
@@ -213,8 +212,6 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 	
 	document.getElementById("version-input").value = getConfig("ocver")
 	
-	
-	
 	document.getElementById("ace-font-size").onchange = function(e) {
 		if(!this.value || !this.value.length)
 			this.value = getConfig("acefontsize") || "12"
@@ -236,62 +233,15 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		if(!config)
 			throw "No config given"
 		
-		let a = []
-		let r = config.resources
-			
-		config.resources = []
-		
 		let pages = getConfig("pages")
-		
-		if(pages && pages.length) {
-			let handleLayoutInput = function(data, par) {
-				// whitelist modules for additional safety
-				// and take care of layout interpretation
-				switch(data.alias) {
-					case "page":
-						let page = addPage(data.dir)
-						$("#mod-wrapper").append(page.root)
-						page.setDir(data.dir)
-						
-						for(let i = 0; i < data.chldrn.length; i++)		
-							handleLayoutInput(data.chldrn[i], page)
-					break;
-					case "flexer":
-						let flexer = addFlexer(data.dir)
-						
-						par.registerChild(flexer)
-						flexer.root.style.width = data.w
-						flexer.root.style.height = data.h
-						
-						for(let i = 0; i < data.chldrn.length; i++)
-							handleLayoutInput(data.chldrn[i], flexer)
-					break;
-					case "editor":
-					case "intro":
-					case "console":
-					case "navigator":
-					case "explorer":
-						let mod = addModule(data.alias, data.state)
-						if(!mod)
-							break;
-												
-						par.registerChild(mod)
-						mod.root.style.width = data.w
-						mod.root.style.height = data.h
-					break;
-				}
-			}
-			
-			for(let i = 0; i < config.pages.length; i++)	
-				handleLayoutInput(config.pages[i])
-		}
-		else
-			createDefaultLayout()
-			
+		lyt = layout.Layout.fromData(pages)[0]
+		document.getElementById("mod-wrapper").appendChild(lyt.root)
 	}
 	catch(e) {
-		error(`Failed to load config (${e})`)
+		error(`Failed to restore layout from config (${e})`)
 		resetLayout()
+		
+		// TODO: inform user
 	}
 	
 	window.addEventListener("beforeunload", _ => {
@@ -301,6 +251,10 @@ var mouseOffX, mouseOffY, dragSplitterTarget, origDim
 	require("./js/keybinding.js")
 	
     log("end of initialize")
+}
+
+function getLayoutData() {
+	return {"pages": lyt.getLayoutInfo()}
 }
 
 /**

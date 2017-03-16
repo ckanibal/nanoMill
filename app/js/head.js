@@ -7,6 +7,8 @@ const {remote} = require('electron')
 // get constants and functions from main process
 const {__appDir, config, printLog, inDevMode, setConfig, getConfig, wipeConfig, hideMenu, dialog, toggleDevMode } = remote.getGlobal("communicator")
 
+const layout = require(path.join(__rootdir, "js", "modules", "layout.js"))
+
 const MOUSE_LEFT = 1
 
 {
@@ -18,7 +20,6 @@ const MOUSE_LEFT = 1
 	if(inDevMode && false)
 		setTimeout(_ => reloadCss(), 1000)
 }
-
 
 var _hookList = {}
 

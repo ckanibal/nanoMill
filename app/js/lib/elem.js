@@ -45,4 +45,23 @@ class Elem {
 	static removeClass(el, cl) {
 		el.className = el.className.replace(new RegExp(`(?:^|\\s*)${cl}(?!\\S)(?:$|\\s*)`, "g"), " ").trim()
 	}
+	
+	static insertBefore(par, el, ref = null) {
+		par.insertBefore(el, ref)
+	}
+	
+	static insertAfter(par, el, ref = null) {
+		if(ref === null || ref === par.lastChild)
+			par.appendChild(el)
+		else
+			par.insertBefore(el, ref.nextElementSibling)
+	}
+	
+	static prepend(par, el) {
+		par.insertBefore(el, null)
+	}
+	
+	static append(par, el) {
+		par.appendChild(el)
+	}
 }

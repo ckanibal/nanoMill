@@ -1,4 +1,4 @@
-class ConsoleView extends Layout_Module{
+class ConsoleView extends layout.Module {
 
     init() {
 		
@@ -65,8 +65,4 @@ ConsoleView.def = {
 	title: "Console"
 }
 
-defineModule(ConsoleView.def)
-
-var _params = {}
-
-var PORT = 300
+layout.setModuleDef(ConsoleView.def)

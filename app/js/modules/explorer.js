@@ -1,5 +1,5 @@
 	
-class Explorer extends Layout_Module {
+class Explorer extends layout.Module {
 	init(state) {
 		this.body.style.overflowY = "auto"
 		// restore workspace from saved index of the previous session
@@ -30,7 +30,6 @@ class Explorer extends Layout_Module {
 			if(this.wspace === wspace)
 				this.showWorkspace(wspace)
 		}, this.modId)
-		
 		
 		// holds the selected items from the workspace representation
 		this.selected = []
@@ -324,4 +323,4 @@ Explorer.def = {
 	title: "Explorer",
 }
 
-defineModule(Explorer.def)
+layout.setModuleDef(Explorer.def)

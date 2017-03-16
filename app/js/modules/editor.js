@@ -1,6 +1,6 @@
 
 
-class EditorView extends Layout_Deck {
+class EditorView extends layout.Deck {
 
 	init(state) {
 		this.files = []
@@ -167,6 +167,6 @@ EditorView.def = {
 	title: "Editor"
 }
 
-defineModule(EditorView.def)
+layout.setModuleDef(EditorView.def)
 
-var _dumped_editors = []
+let _dumped_editors = []

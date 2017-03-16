@@ -1,7 +1,8 @@
-
-
-
-class Navigator extends Layout_Module {
+/**
+	the navigator view shows the opened files;
+	you can open and close files by clicking on them
+*/
+class Navigator extends layout.Module {
 
 	init(state) {
 		this.entries = []
@@ -99,4 +100,4 @@ Navigator.def = {
 	title: "Opened Documents",
 }
 
-defineModule(Navigator.def)
+layout.setModuleDef(Navigator.def)

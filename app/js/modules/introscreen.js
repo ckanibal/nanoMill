@@ -1,4 +1,4 @@
-class IntroScreen extends Layout_Module{
+class IntroScreen extends layout.Module {
 
 	init() {
 		this.body.innerHTML = 
@@ -17,4 +17,4 @@ IntroScreen.def = {
 	title: "Introduction"
 }
 
-defineModule(IntroScreen.def)
+layout.setModuleDef(IntroScreen.def)
