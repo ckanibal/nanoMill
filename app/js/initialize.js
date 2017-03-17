@@ -30,7 +30,9 @@ function resetLayout(byUser) {
 			}]
 		}]
 	}])[0]
-	document.getElementById("mod-wrapper").appendChild(lyt.root)
+	let mwrapper = document.getElementById("mod-wrapper")
+	mwrapper.innerHTML = ""
+	mwrapper.appendChild(lyt.root)
 	
 	warn("Default layout used (Forced by user: " + (byUser || "false") + ")")
 }
@@ -68,7 +70,7 @@ var lyt
             if(!dragSplitterTarget)
                 return
 
-            if($(dragSplitterTarget).parent().hasClass("flex-col"))
+            if(Elem.hasClass(dragSplitterTarget.parent, "flex-col"))
                 dragSplitterTarget.previousElementSibling.style.height =
                         origDim + mouseY - mouseOffY + "px"
             else
@@ -78,7 +80,7 @@ var lyt
             requestAnimationFrame(fn)
         }
 		
-		$(dragSplitterTarget).addClass("dragged")
+		Elem.addClass(dragSplitterTarget, "dragged")
 
         mouseOffX = mouseX
         mouseOffY = mouseY
@@ -248,16 +250,12 @@ var lyt
 	}
 	
 	window.addEventListener("beforeunload", _ => {
-		setConfig("pages", getLayoutData())
+		setConfig("pages", [lyt.getLayoutInfo()])
 	})
 	
 	require("./js/keybinding.js")
 	
     log("end of initialize")
-}
-
-function getLayoutData() {
-	return {"pages": lyt.getLayoutInfo()}
 }
 
 /**

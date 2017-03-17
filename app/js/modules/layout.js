@@ -16,7 +16,7 @@ class Layout_Element {
 	set isLayout_Element(v) {}
 	
 	getLayoutInfo() {
-		return { w: this.root.style.width, h: this.root.style.height }
+		return { size: this.parent.dir === DIR_ROW ? this.root.style.width : this.root.style.height }
 	}
 }
 
@@ -45,7 +45,6 @@ class Layout extends Layout_Element {
 		let mdl = new def.className(mdlId)
 
 		this.mdls.push(mdl)
-		
 		mdl.source = this
 		
 		mdl.id = mdlId++
@@ -324,10 +323,11 @@ class Layout_Flex extends Layout_Element {
 		let o = {
 			dir: this.dir,
 			alias: this.constructor.name.toLowerCase(),
-			children: [],
-			w: this.root.style.width,
-			h: this.root.style.height
+			children: []
 		}
+		
+		if(this.parent)
+			o.size = this.parent.dir === DIR_ROW ? this.root.style.width : this.root.style.height
 		
 		for(let i = 0; i < this.children.length; i++)
 			o.children.push(this.children[i].getLayoutInfo())
@@ -389,8 +389,6 @@ class Layout_Module extends Layout_Element {
 			var _self = this
 			
 			var fn = function(e) {
-				log(this)
-				log(e.target)
 				let p1 = _self.parent
 
 				let idx1 = p1.getChildIndex(_self),
@@ -598,7 +596,11 @@ class Layout_Module extends Layout_Element {
 	isSub() { return false }
 	
 	getLayoutInfo() {
-		return { alias: this.constructor.def.alias, w: this.root.style.width, h: this.root.style.height, state: this.getSaveData() }
+		return {
+			alias: this.constructor.def.alias,
+			size: this.parent.dir === DIR_ROW ? this.root.style.width : this.root.style.height,
+			state: this.getSaveData()
+		}
 	}
 	
 	getSaveData() {}

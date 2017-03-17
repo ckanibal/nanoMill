@@ -66,7 +66,7 @@ if(inDevMode) {
 	warn = console.warn.bind(console)
 	error = console.error.bind(console)
 }
-else 
+else
 	_delegateLog()
 
 var _prf = {
