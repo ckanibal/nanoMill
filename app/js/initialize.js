@@ -39,9 +39,6 @@ function resetLayout(byUser) {
 
 var currentEditorMod, _focussedRes
 
-var mouseX = 0, mouseY = 0
-var mouseOffX, mouseOffY, dragSplitterTarget, origDim
-
 var lyt
 
 {
@@ -58,66 +55,6 @@ var lyt
 	
 	hook("onCurrEditorSet", (mod, res) => {
 		currentEditorMod = mod
-	})
-	
-	/*
-		handling moduleframe resizing when dragging the splitters inbetween
-	*/
-    $(document).on('mousedown', '.flex-splitter', function(e) {
-        dragSplitterTarget = this
-
-        var fn = function() {
-            if(!dragSplitterTarget)
-                return
-
-            if(Elem.hasClass(dragSplitterTarget.parent, "flex-col"))
-                dragSplitterTarget.previousElementSibling.style.height =
-                        origDim + mouseY - mouseOffY + "px"
-            else
-                dragSplitterTarget.previousElementSibling.style.width =
-                        origDim + mouseX - mouseOffX + "px"
-
-            requestAnimationFrame(fn)
-        }
-		
-		Elem.addClass(dragSplitterTarget, "dragged")
-
-        mouseOffX = mouseX
-        mouseOffY = mouseY
-
-        var $prev = $(dragSplitterTarget.previousElementSibling)
-        if($(this).parent().hasClass("flex-row")) {
-            origDim = parseFloat($prev.width())
-            $prev.width(origDim + "px")
-        }
-        else {
-            origDim = parseFloat($prev.height())
-            $prev.height(origDim + "px")
-        }
-
-        $prev.removeClass("flex-fill")
-
-        requestAnimationFrame(fn)
-
-        e.preventDefault()
-        e.stopPropagation()
-    })
-
-	// track mouse position
-	document.addEventListener("mousemove", (e) => {
-		mouseX = e.clientX
-        mouseY = e.clientY
-	})
-
-	// stop dragging splitters
-	document.addEventListener("mouseup", (e) => {
-		if(dragSplitterTarget) {
-			$(dragSplitterTarget).removeClass("dragged")
-			
-			execHook("onLayoutChange")
-		}
-		
-        dragSplitterTarget = false
 	})
 	
 	document.getElementById("tb-file").addEventListener("click", function(e) {

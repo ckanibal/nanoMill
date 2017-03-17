@@ -732,6 +732,76 @@ function getModuleDef(alias) {
 	return mdlDefs.get(alias)
 }
 
+/*
+	handle moduleframe resizing when dragging splitters
+*/
+let mouseX = 0, mouseY = 0
+let mouseOffX, mouseOffY, dragSplitterTarget, origDim
+{
+    document.addEventListener('mousedown', function(e) {
+		if(!Elem.hasClass(e.target, "flex-splitter"))
+			return
+		
+		dragSplitterTarget = e.target
+		
+        let fn = function() {
+            if(!dragSplitterTarget)
+                return
+			
+            if(Elem.hasClass(dragSplitterTarget.parentNode, "flex-col"))
+                dragSplitterTarget.previousElementSibling.style.height =
+                        origDim + mouseY - mouseOffY + "px"
+            else
+                dragSplitterTarget.previousElementSibling.style.width =
+                        origDim + mouseX - mouseOffX + "px"
+
+            requestAnimationFrame(fn)
+        }
+		
+		Elem.addClass(dragSplitterTarget, "dragged")
+
+        mouseOffX = mouseX
+        mouseOffY = mouseY
+
+		let prev = dragSplitterTarget.previousSibling
+        
+		if(Elem.hasClass(dragSplitterTarget.parentNode, "flex-row")) {
+			let rect = prev.getBoundingClientRect()
+			origDim = rect.width
+            prev.style.width = origDim + "px"
+		}
+		else {
+			let rect = prev.getBoundingClientRect()
+			origDim = rect.height
+            prev.style.height = origDim + "px"
+		}
+		
+		Elem.removeClass(prev, "flex-fill")
+
+        requestAnimationFrame(fn)
+
+        e.preventDefault()
+        e.stopPropagation()
+    })
+
+	// track mouse position
+	document.addEventListener("mousemove", (e) => {
+		mouseX = e.clientX
+        mouseY = e.clientY
+	})
+
+	// stop dragging splitters
+	document.addEventListener("mouseup", (e) => {
+		if(dragSplitterTarget) {
+			$(dragSplitterTarget).removeClass("dragged")
+			
+			execHook("onLayoutChange")
+		}
+		
+        dragSplitterTarget = false
+	})
+}
+
 module.exports = {
 	Layout: Layout,
 	Module: Layout_Module,
