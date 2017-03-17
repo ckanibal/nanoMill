@@ -4,29 +4,32 @@
  * This function restores the predefined layout, to allow users to get back
  * to viable layout if the customized one failed to any sort of bugs (e.g. failing to load old state or accidently rumping it up)
 */
-function resetLayout(byUser) {
-	
+function resetLayout(byUser) {	
 	lyt = layout.Layout.fromData([{
-		alias: "page", chldrn:
-			[{
-				dir: layout.DIR_COL, alias: "flexer","chldrn":[{
-					alias :"navigator", w: "", h: "282.813px"
-				},{
-					dir: layout.DIR_ROW, alias: "flexer","chldrn":[{
-						dir: layout.DIR_COL, alias:"flexer","chldrn":[{
-							alias:"intro","w":"265.297px","h":"129.797px"
-						},{
-							alias:"intro","w":"","h":"129.797px"
-						},{
-							alias:"intro","w":"","h":"259.594px"
-						}]
-					,"w":"","h":""}]
-				,"w":"","h":""}]
-			,"w":"530.594px","h":""},{
-				alias: "editor","w":"","h":""}]
-		,"w":"","h":""}
-	])[0]
-	
+		alias: "page", children: [{
+			alias: "flexer",
+			dir: layout.DIR_COL,
+			size: window.innerWidth/3 + "px",
+			children: [{
+				alias: "navigator",
+				size: window.innerHeight/3 + "px"
+			}, {
+				alias: "explorer",
+				size: ""
+			}]
+		}, {
+			alias: "flexer",
+			dir: layout.DIR_COL,
+			size: "",
+			children: [{
+				alias: "editor",
+				size: window.innerHeight/3*2 + "px"
+			}, {
+				alias: "console",
+				size: ""
+			}]
+		}]
+	}])[0]
 	document.getElementById("mod-wrapper").appendChild(lyt.root)
 	
 	warn("Default layout used (Forced by user: " + (byUser || "false") + ")")

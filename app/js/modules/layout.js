@@ -29,11 +29,11 @@ class Layout extends Layout_Element {
 		this.children = []
 		
 		this.flexer = new Flexer(DIR_ROW)
-		log(this)
+		
 		Elem.addClass(this.flexer.root, "flex-fill")
 		
 		// override functon, to prevent flexer from removing itself, when empty
-		this.flexer.adjustAppearance = function() { }
+		this.flexer.adjustAppearance = function() {}
 	}
 	
 	createModule(mdlAlias, stateinfo) {
@@ -97,6 +97,14 @@ class Layout extends Layout_Element {
 		this.flexer.root = v
 	}
 	
+	get dir() {
+		return this.flexer.dir
+	}
+	
+	set dir(v) {
+		this.flexer.dir = v
+	}
+	
 	getLayoutInfo() {
 		let info = this.flexer.getLayoutInfo(...arguments)
 		info.alias = "page"
@@ -116,27 +124,28 @@ class Layout extends Layout_Element {
 	static fromData(data) {
 		let lyts = []
 		let fn = (data, par, lyt) => {
+			let propName
 			// whitelist modules for additional safety
 			// and take care of layout interpretation
 			switch(data.alias) {
 				case "page":
 					lyt = new Layout()
-					lyt.setDir(data.dir)
 					lyts.push(lyt)
 					
-					for(let i = 0; i < data.chldrn.length; i++)		
-						fn(data.chldrn[i], lyt, lyt)
+					for(let i = 0; i < data.children.length; i++)		
+						fn(data.children[i], lyt, lyt)
 				break
 				case "flexer":
+				
 					let flexer = new Flexer(data.dir)
-					
 					par.registerChild(flexer)
-					flexer.root.style.width = data.w
-					flexer.root.style.height = data.h
 					
-					for(let i = 0; i < data.chldrn.length; i++)
-						fn(data.chldrn[i], flexer, lyt)
-				break;
+					if(data.size && data.size.length !== 0)
+						flexer.root.style[par.dir === DIR_ROW ? "width" : "height"] = data.size
+					
+					for(let i = 0; i < data.children.length; i++)
+						fn(data.children[i], flexer, lyt)
+				break
 				case "editor":
 				case "intro":
 				case "console":
@@ -145,10 +154,11 @@ class Layout extends Layout_Element {
 					let mod = lyt.createModule(data.alias, data.state)
 					if(!mod)
 						break
-											
+					
 					par.registerChild(mod)
-					mod.root.style.width = data.w
-					mod.root.style.height = data.h
+					
+					if(data.size && data.size.length !== 0)
+						mod.root.style[par.dir === DIR_ROW ? "width" : "height"] = data.size
 				break
 			}
 		}
@@ -169,7 +179,7 @@ class Layout_Flex extends Layout_Element {
 		this.canContainChildren = true
 	}
 
-    setDir(dir) {
+    set dir(dir) {
         if(dir === DIR_COL) {
 			Elem.addClass(this.root, "flex-col")
 			Elem.removeClass(this.root, "flex-row")
@@ -182,7 +192,7 @@ class Layout_Flex extends Layout_Element {
         this._dir = dir
     }
 
-    getDir() {
+    get dir() {
         return this._dir
     }
 
@@ -312,15 +322,15 @@ class Layout_Flex extends Layout_Element {
 	
 	getLayoutInfo() {
 		let o = {
-			dir: this.getDir(),
+			dir: this.dir,
 			alias: this.constructor.name.toLowerCase(),
-			chldrn: [],
+			children: [],
 			w: this.root.style.width,
 			h: this.root.style.height
 		}
 		
 		for(let i = 0; i < this.children.length; i++)
-			o.chldrn.push(this.children[i].getLayoutInfo())
+			o.children.push(this.children[i].getLayoutInfo())
 		
 		return o
 	}
@@ -516,7 +526,7 @@ class Layout_Module extends Layout_Element {
 		// if the new module has to be positioned
 		// in the same direction the parent flexer is laid out
 		// just append a new flexer
-        if(p.getDir() === dir) {
+        if(p.dir === dir) {
             let mod = this.source.createModule("intro")
             p.registerChild(mod, p.getChildIndex(this) + 1)
 			let half = this.root.getBoundingClientRect()[mainDim]/2
@@ -541,9 +551,6 @@ class Layout_Module extends Layout_Element {
 			
 			// split up dimensions across the direction into half
 			this.root.style[mainDim] = half + "px"
-			
-			log(this.root.style.width)
-			log(this.root.style.height)
 			
 			// clear dimension on cross axis of module
 			// but apply it to the flexer
@@ -708,7 +715,7 @@ class Flexer extends Layout_Flex {
 		this.root.className = "flexer"
 		
 		// set direction of the flex layout
-		this.setDir(dir)
+		this.dir = dir
 	}
 }
 
