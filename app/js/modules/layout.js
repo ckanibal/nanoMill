@@ -497,7 +497,7 @@ class Layout_Module extends Layout_Element {
 		par.adjustAppearance()
 		
 		// detach any callbacks of hook-system with reference to this module
-		cleanUpHooksOfMdl(this.id)
+		hook.removeByModuleId(this.id)
 		this.source.removeFromModuleList(this)
 		
 		this.onClose()
@@ -704,7 +704,7 @@ class Layout_SubModule extends Layout_Element {
 		par.unregisterChild(this)
 		
 		// detach any callbacks of hook-system with reference to this module
-		cleanUpHooksOfMdl(this.id)
+		hook.removeByModuleId(this.id)
 		layout.removeFromModuleList(this)
 		
 		this.onClose()
