@@ -5,9 +5,7 @@ class ConsoleView extends layout.Module {
 		this.body.insertAdjacentHTML("beforeend", `<div class='abs-fill flex-col --RNINT-list'></div>`)
 		this.list = this.body.lastElementChild
 		
-		hook("onStdOut", (s) => {
-			this.print(s)
-		}, this.modId)
+		this.hookIn("onStdOut", s => this.print(s))
 	}
 	
 	print(s) {

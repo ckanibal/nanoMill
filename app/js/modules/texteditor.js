@@ -8,10 +8,10 @@ class TextEditor extends layout.SubModule {
 		
 		this.tid = nextTextEditorId++
 		
-		hook("onLayoutChange", () => {log(this)
+		this.hookIn("onLayoutChange", _ => {
 			if(this.editor)
 				this.editor.resize()
-		}, this.modId)
+		})
 	}
 
     setup(file, txt, mode) {
@@ -40,7 +40,7 @@ class TextEditor extends layout.SubModule {
 		editor.session.setValue(txt, -1)
 		
 		editor.on("focus", _ => {
-			execHook("onCurrEditorSet", this, this.file)
+			hook.exec("onCurrEditorSet", this, this.file)
 		})
 		
 		editor.on("change", _ => {
@@ -64,7 +64,7 @@ class TextEditor extends layout.SubModule {
 		
 		this.isUnchanged = !this.isUnchanged
 		
-		execHook("onFileChangeStateChange", this.file, this.isUnchanged)
+		hook.exec("onFileChangeStateChange", this.file, this.isUnchanged)
 	}
 	
 	save() {

@@ -5,7 +5,7 @@ class EditorView extends layout.Deck {
 	init(state) {
 		this.files = []
 		
-		hook("onFileOpen", (finfo) => {
+		this.hookIn("onFileOpen", (finfo) => {
 			
 			if(finfo.stat.isDirectory())
 				return
@@ -15,20 +15,20 @@ class EditorView extends layout.Deck {
 					throw `Failed to read file in EditorView (${err})`
 				
 				if(this.interpretFile(finfo, text)) {
-					execHook("onFileOpened", finfo)
-					execHook("onOpenedFileSelect", finfo)
+					hook.exec("onFileOpened", finfo)
+					hook.exec("onOpenedFileSelect", finfo)
 				}
 			})
 			
 			// prevent furthur event execution
 			return true
-		}, this.modId)
+		})
 
-		hook("onOpenedFileSelect", (file) => {
+		this.hookIn("onOpenedFileSelect", (file) => {
 			this.showFile(file)
-		}, this.modId)
+		})
 		
-		hook("closeOpenedFile", (file) => {
+		this.hookIn("closeOpenedFile", (file) => {
 			let idx = this.getFileIndex(file)
 
 			if(idx === -1)
@@ -39,19 +39,19 @@ class EditorView extends layout.Deck {
 			this.unregisterChild(child)
 			
 			return true
-		}, this.modId)
+		})
 		
 		for(let i = 0; i < _dumped_editors.length; i++) {
 			this.registerFile(_dumped_editors[i].file, _dumped_editors[i])
 			this.registerChild(_dumped_editors[i])
 		}
 		
-		execHook("onLayoutChange")
+		hook.exec("onLayoutChange")
 		_dumped_editors = []
 	}
 
     interpretFile(file, text) {
-        var mod, modIdx = -1
+        let mod, modIdx = -1
 
         switch(file.leaf){
             case ".c":
@@ -120,7 +120,7 @@ class EditorView extends layout.Deck {
 	}
 
     hasFile(file) {
-        for(var i = 0; i < this.files.length; i++)
+        for(let i = 0; i < this.files.length; i++)
             if(this.files[i] === file)
                 return true
 
@@ -128,7 +128,7 @@ class EditorView extends layout.Deck {
     }
 
     getFileIndex(file) {
-        for(var i = 0; i < this.files.length; i++)
+        for(let i = 0; i < this.files.length; i++)
             if(this.files[i] === file)
                 return i
 

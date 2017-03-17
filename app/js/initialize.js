@@ -37,9 +37,9 @@ function resetLayout(byUser) {
 	warn("Default layout used (Forced by user: " + (byUser || "false") + ")")
 }
 
-var currentEditorMod, _focussedRes
+let currentEditorMod, _focussedRes
 
-var lyt
+let lyt
 
 {
 	/**
@@ -53,7 +53,7 @@ var lyt
 	log("Electron version: " + process.versions.electron)
 	log("Arch: " + process.arch)
 	
-	hook("onCurrEditorSet", (mod, res) => {
+	hook.in("onCurrEditorSet", (mod, res) => {
 		currentEditorMod = mod
 	})
 	
@@ -236,7 +236,7 @@ function openFiles(paths) {
 	for(var i = 0; i < files.length; i++) {
 		let res = filemanager.addResource(paths)
 		if(res)
-			execHook("onFileOpen", res)
+			hook.exec("onFileOpen", res)
 	}
 	*/
 }
@@ -330,7 +330,7 @@ function runOCEditor(args) {
 			editor_proc = cprocess.spawn(getConfig("ocexe"), [`--editor`])
 		
 		editor_proc.stdout.on('data', function (data) {
-			execHook("onStdOut", ConsoleView.validateStdout(data.toString()))
+			hook.exec("onStdOut", ConsoleView.validateStdout(data.toString()))
 		})
 		
 		editor_proc.on('exit', function (code) {
@@ -367,7 +367,7 @@ function runC4Group(args, fListenStdOut, callback) {
 		
 	if(fListenStdOut) {
 		proc.stdout.on('data', function (data) {
-			execHook("onStdOut", Console.validateStdout(data.toString()))
+			hook.exec("onStdOut", Console.validateStdout(data.toString()))
 		})
 	}
 	

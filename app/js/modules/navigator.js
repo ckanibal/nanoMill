@@ -7,15 +7,15 @@ class Navigator extends layout.Module {
 	init(state) {
 		this.entries = []
 		
-		hook("onFileOpened", this.insertFileEntry.bind(this), this.modId)
+		this.hookIn("onFileOpened", this.insertFileEntry.bind(this))
 		
-		hook("onOpenedFileSelect", (file) => {
+		this.hookIn("onOpenedFileSelect", (file) => {
 			Elem.removeClass(this.root.getElementsByClassName("selected-file")[0])
 			
 			for(let i = 0; i < this.entries.length; i++)
 				if(this.entries[i].file === file)
 					Elem.addClass(this.entries[i].el, "selected-file")
-		}, this.modId)
+		})
 		
 		// TODO: get opened files
 		let rList = [] 
@@ -27,7 +27,7 @@ class Navigator extends layout.Module {
 		for(let i = 0; i < this.entries.length; i++)
 			this.entries[i].el.style.animation = `list-item-in 0.3s ease-out 0.${i}s 1 normal both`
 		
-		hook("onCurrEditorSet", (mod, res) => {
+		this.hookIn("onCurrEditorSet", (mod, res) => {
 			let curr = this.root.getElementsByClassName("current-file")
 			if(curr)
 				Elem.removeClass(curr, "current-file")
@@ -37,9 +37,9 @@ class Navigator extends layout.Module {
 					Elem.addClass(this.entries[i].el, "current-file")
 					break
 				}
-		}, this.modId)
+		})
 		
-		hook("onFileClosed", (res) => {
+		this.hookIn("onFileClosed", (res) => {
 			let a  = []
 			for(let i = 0; i < this.entries.length; i++)
 				if(this.entries[i].file === res)
@@ -48,9 +48,9 @@ class Navigator extends layout.Module {
 					a.push(this.entries[i])
 			
 			this.entries = a
-		}, this.modId)
+		})
 		
-		hook("onFileChangeStateChange", (res, clean) => {
+		this.hookIn("onFileChangeStateChange", (res, clean) => {
 			for(let i = 0; i < this.entries.length; i++)
 				if(this.entries[i].file === res) {
 					if(clean)
@@ -59,7 +59,7 @@ class Navigator extends layout.Module {
 						Elem.addClass(this.entries[i].el, "unsaved")
 					break
 				}
-		}, this.modId)
+		})
 	}
 	
 	insertFileEntry(file) {
@@ -76,17 +76,17 @@ class Navigator extends layout.Module {
 		
 		let el = this.body.lastChild
 		el.addEventListener("click", function(e) {
-			execHook("onOpenedFileSelect", file)
+			hook.exec("onOpenedFileSelect", file)
 			e.stopPropagation()
 		})
 		
 		el.lastElementChild.addEventListener("click", function(e) {
 			if(file.mod) {
 				if(file.mod.close())
-					execHook("onFileClosed", file)
+					hook.exec("onFileClosed", file)
 			}
 			else
-				execHook("onFileClosed", file)
+				hook.exec("onFileClosed", file)
 			
 			e.stopPropagation()
 			e.preventDefault()

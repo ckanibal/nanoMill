@@ -416,7 +416,7 @@ class Layout_Module extends Layout_Element {
 				mod2.root.style.width = w
 				mod2.root.style.height = h
 				
-				execHook("onLayoutChange")
+				hook.exec("onLayoutChange")
 				
 				e.stopPropagation()
 				
@@ -470,8 +470,15 @@ class Layout_Module extends Layout_Element {
 		mod.root.style.width = w
 		mod.root.style.height = h
 		
-		execHook("onLayoutChange")
+		hook.exec("onLayoutChange")
     }
+	
+	/**
+		use this inside module to track the module id always correctly
+	*/
+	hookIn(hookName, fn) {
+		hook.in(hookName, fn, this.id)
+	}
 	
 	/**
 		overrideable callback
@@ -554,7 +561,7 @@ class Layout_Module extends Layout_Element {
 			this.root.style[crossDim] = ""
         }
 		
-		execHook("onLayoutChange")
+		hook.exec("onLayoutChange")
     }
 	
 	getBasicMenuProps() {
@@ -664,6 +671,13 @@ class Layout_SubModule extends Layout_Element {
 		super()
 		
 		this.root = document.createElement("div")
+	}
+	
+	/**
+		use this inside module to track the module id always correctly
+	*/
+	hookIn(hookName, fn) {
+		hook.in(hookName, fn, this.id)
 	}
 	
 	save() {}
@@ -795,7 +809,7 @@ let mouseOffX, mouseOffY, dragSplitterTarget, origDim
 		if(dragSplitterTarget) {
 			Elem.removeClass(dragSplitterTarget, "dragged")
 			
-			execHook("onLayoutChange")
+			hook.exec("onLayoutChange")
 		}
 		
         dragSplitterTarget = false

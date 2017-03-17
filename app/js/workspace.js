@@ -81,7 +81,7 @@ class Workspace {
 			this.loaded = true
 			wmaster.saveInConfig()
 			this.tree = tree
-			execHook("onWorkspaceLoad", this)
+			hook.exec("onWorkspaceLoad", this)
 		})
 	}
 	
@@ -165,7 +165,7 @@ class Workspace {
 			this.finfo[idx] = undefined
 		})
 		
-		execHook("onWorkspaceChange", this)
+		hook.exec("onWorkspaceChange", this)
 	}
 	
 	/**
@@ -186,7 +186,7 @@ class Workspace {
 			// update file info
 			this.finfo[idx].updateSync()
 			// update workspace views
-			execHook("onWorkspaceChange", this)
+			hook.exec("onWorkspaceChange", this)
 		})
 	}
 	
@@ -203,11 +203,11 @@ class Workspace {
 			this.loadDirectory(unpack_dir, (tree) => {
 				branch.children = this.sortFileIndicesByExt(tree.children)
 				
-				// update stat
+				// update stat (sync, because we are already in an async thread)
 				this.finfo[idx].updateSync()
 				
 				// update workspace views
-				execHook("onWorkspaceChange", this)
+				hook.exec("onWorkspaceChange", this)
 			})
 		})
 	}
@@ -250,7 +250,7 @@ class Workspace {
 			return
 		
 		// execute listeners
-		execHook("onFileOpen", this.finfo[i])
+		hook.exec("onFileOpen", this.finfo[i])
 		
 		this.opened.add(i)
 	}
@@ -327,7 +327,7 @@ class Workspace {
 		return a
 	}
 	
-	// TODO: watcher, detecting removal or change of opened files and inform user (n++ style)
+	// TODO: watcher: detecting removal or change of opened files and inform user (n++ style)
 	// (and show newly added files, could be checked when window gets the focused)
 }
 
@@ -335,7 +335,7 @@ class Workspace {
 var wmaster = new WorkspaceMaster()
 
 /**
-	The file info represents single files in a workspace, containing
+	The file info class represents single files in a workspace, containing
 	the most basic information of their files.
 	The stat property, containg the result from from fs.stat* may not be up-to-date.
 	Therefor you can use update() and updateSync() to achieve that.

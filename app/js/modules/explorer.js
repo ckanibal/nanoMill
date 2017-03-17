@@ -21,15 +21,15 @@ class Explorer extends layout.Module {
 			}
 		}
 		
-		hook("onWorkspaceLoad", (wspace) => {
+		this.hookIn("onWorkspaceLoad", (wspace) => {
 			if(this.wspace === wspace)
 				this.showWorkspace(wspace)
-		}, this.modId)
+		})
 		
-		hook("onWorkspaceChange", (wspace) => {
+		this.hookIn("onWorkspaceChange", (wspace) => {
 			if(this.wspace === wspace)
 				this.showWorkspace(wspace)
-		}, this.modId)
+		})
 		
 		// holds the selected items from the workspace representation
 		this.selected = []
