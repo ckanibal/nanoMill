@@ -267,6 +267,8 @@ class Workspace {
 	*/
 	static isAcceptedFileType(ext) {
 		switch(ext) {
+			case ".ogg":
+			case ".wav":
 			case ".ocf":
 			case ".ocd":
 			case ".ocg":
