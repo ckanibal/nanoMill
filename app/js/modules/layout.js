@@ -9,11 +9,9 @@ class Layout_Element {
 	constructor () {
 	}
 	
-	get isLayout_Element() {
-		return true
-	}
+	get isLayoutElement() { return true }
 	
-	set isLayout_Element(v) {}
+	set isLayoutElement(v) {}
 	
 	getLayoutInfo() {
 		return { size: this.parent.dir === DIR_ROW ? this.root.style.width : this.root.style.height }
@@ -198,7 +196,7 @@ class Layout_Flex extends Layout_Element {
     registerChild(child, index) {
         if(!child)
             return error("No parameter given for registerChild")
-        else if(!child.isLayout_Element)
+        else if(!child.isLayoutElement)
             return error("Given child is not a Layout_Element")
 
 
@@ -618,7 +616,7 @@ class Layout_Deck extends Layout_Module {
 		
         if(!child)
             return error("No parameter given for registerChild")
-        else if(!child.isLayout_Element)
+        else if(!child.isLayoutElement)
             return log("Given child is not a layout element")
 		
 		this.body.appendChild(child.root)
