@@ -201,7 +201,7 @@ class Workspace {
 			
 			let unpack_dir = this.finfo[idx].path
 			this.loadDirectory(unpack_dir, (tree) => {
-				branch.children = this.fIndicesByExt(tree.children)
+				branch.children = this.sortFileIndicesByExt(tree.children)
 				
 				// update stat
 				this.finfo[idx].updateSync()
