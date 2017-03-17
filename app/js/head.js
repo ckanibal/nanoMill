@@ -71,7 +71,6 @@ else
 
 var _prf = {
 	keys: {},
-	
 	start: function(key) {
 		this.keys[key] = (new Date()).getTime()
 	},

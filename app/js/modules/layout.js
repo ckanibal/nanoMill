@@ -249,41 +249,22 @@ class Layout_Flex extends Layout_Element {
 		
 		// replace root elements in dom tree
 		this.root.replaceChild(newChild.root, oldChild.root)
+		
+		// assign parent to child element
+		newChild.parent = this
 	}
 
     adjustAppearance() {
 		// remove flexer without children
         if(!this.children.length) {
-			Elem.remove(this)
             this.parent.unregisterChild(this)
+			Elem.remove(this.root)
         }
 		// when having only a single child, remove the flexer too
 		// but apply important properties to the child
 		else if(this.children.length === 1) {
 			let child = this.children[0]
-			let p = this.parent
-			
-			/*
-			if(p.getDir() === DIR_ROW) {
-				child.root.style.width = root.style.width
-				child.root.style.height = ""
-			}
-			else {
-				child.root.style.height = root.style.height
-				child.root.style.width = ""
-			}
-			
-			// move child to buffer
-			// document.getElementById("mod-buffer").appendChild(child.root)
-			document.getElementById("mod-buffer").removeChild(child.root)
-			
-			Elem.remove(this.root)
-			
-			let idx = p.getChildIndex(this)
-			p.unregisterChild(this)
-			p.registerChild(child, idx)
-			*/
-			
+			let p = this.parent			
 			p.replaceChild(child, this)
 		}
     }
@@ -578,21 +559,25 @@ class Layout_Module extends Layout_Element {
 			{
 				label: "Close Frame",
 				icon: "icon-x-s",
-				onclick: () => {
+				onvalidate: _ => {
+					// do not close if this is the last module shown
+					return this.source.flexer.children.length !== 1
+				},
+				onclick: _ => {
 					this.close()
 				}
 			},
 			{
 				label: "Add Frame",
 				icon: "icon-add-flex-v",
-				onclick: () => {
+				onclick: _ => {
 					this.addSibling(true)
 				}
 			},
 			{
 				label: "Add Frame",
 				icon: "icon-add-flex-h",
-				onclick: () => {
+				onclick: _ => {
 					this.addSibling()
 				}
 			}
@@ -686,9 +671,7 @@ class Layout_SubModule extends Layout_Element {
 		callback stub
 		returning true, will prevent the module from getting closed
 	*/
-	onClosePrevent() {
-		return false
-	}
+	onClosePrevent() { return false }
 	
 	close() {
 		// call stub, which might abort closing this module
