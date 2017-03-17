@@ -184,18 +184,18 @@ class Explorer extends layout.Module {
 	}
 	
 	modalNewWorkspace() {
-		let $el = $(`<div><p class="desc">Select workspace directory</p>
+		let el = Elem.fromString(`<div><p class="desc">Select workspace directory</p>
 		<p class="desc">suggest directories...</p>
 		<div class="confirm-modal"><label>Confirm</label></div></div>`)
 		
 		let url = ui.urlPicker(undefined, (p) => {
-			$el.find(".confirm-modal")[0].dataset.valid = p
+			el.getElementsByClassName("confirm-modal")[0].dataset.valid = p
 		})
 		
-		$el.find(".desc").eq(0).after(url)
+		Elem.after(el.getElementsByClassName("desc")[0], url)
 		
 		let exp = this
-		$el.find(".confirm-modal").click(function() {
+		el.getElementsByClassName("confirm-modal")[0].addEventListener("click", function(e) {
 			if(!this.dataset.valid)
 				return
 			
@@ -207,7 +207,7 @@ class Explorer extends layout.Module {
 			hideModal()
 		})
 		
-		showModal("Select working space", $el[0])
+		showModal("Select working space", el)
 	}
 	
 	getTreeMenuProps(el) {

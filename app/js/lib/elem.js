@@ -57,6 +57,14 @@ class Elem {
 			par.insertBefore(el, ref.nextElementSibling)
 	}
 	
+	static before(el, prev) {
+		Elem.insertBefore(el.parentNode, prev, el)
+	}
+	
+	static after(el, next) {
+		Elem.insertAfter(el.parentNode, next, el)
+	}
+	
 	static prepend(par, el) {
 		par.insertBefore(el, null)
 	}

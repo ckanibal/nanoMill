@@ -14,7 +14,7 @@ class Navigator extends layout.Module {
 			
 			for(let i = 0; i < this.entries.length; i++)
 				if(this.entries[i].file === file)
-					this.entries[i].$el.addClass("selected-file")
+					Elem.addClass(this.entries[i].el, "selected-file")
 		}, this.modId)
 		
 		// TODO: get opened files
@@ -25,15 +25,17 @@ class Navigator extends layout.Module {
 				this.insertFileEntry(rList[i])
 		
 		for(let i = 0; i < this.entries.length; i++)
-			this.entries[i].$el[0].style.animation = `list-item-in 0.3s ease-out 0.${i}s 1 normal both`
+			this.entries[i].el.style.animation = `list-item-in 0.3s ease-out 0.${i}s 1 normal both`
 		
 		hook("onCurrEditorSet", (mod, res) => {
-			$(this.root).find(".current-file").removeClass("current-file")
+			let curr = this.root.getElementsByClassName("current-file")
+			if(curr)
+				Elem.removeClass(curr, "current-file")
 			
 			for(let i = 0; i < this.entries.length; i++)
 				if(this.entries[i].file === res) {
-					this.entries[i].$el.addClass("current-file")
-					break;
+					Elem.addClass(this.entries[i].el, "current-file")
+					break
 				}
 		}, this.modId)
 		
@@ -41,7 +43,7 @@ class Navigator extends layout.Module {
 			let a  = []
 			for(let i = 0; i < this.entries.length; i++)
 				if(this.entries[i].file === res)
-					this.entries[i].$el.remove()
+					Elem.remove(this.entries[i].el)
 				else
 					a.push(this.entries[i])
 			
@@ -52,10 +54,10 @@ class Navigator extends layout.Module {
 			for(let i = 0; i < this.entries.length; i++)
 				if(this.entries[i].file === res) {
 					if(clean)
-						this.entries[i].$el.removeClass('unsaved')
+						Elem.removeClass(this.entries[i].el, "unsaved")
 					else
-						this.entries[i].$el.addClass('unsaved')
-					break;
+						Elem.addClass(this.entries[i].el, "unsaved")
+					break
 				}
 		}, this.modId)
 	}
@@ -90,7 +92,7 @@ class Navigator extends layout.Module {
 			e.preventDefault()
 		})
 		
-		this.entries.push({ $el: $(el), file })
+		this.entries.push({ el, file })
 	}
 }
 

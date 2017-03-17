@@ -128,7 +128,7 @@ function regKb(keyString, fn) {
 		_bindings[code] = fn
 }
 
-$(window).keyup(function(e) {
+document.addEventListener("keyup", function(e) {
 	let mods = 0
 	if(e.altKey)
 		mods += _ALT

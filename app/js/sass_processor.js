@@ -1,4 +1,4 @@
-var sass_defs = [
+let sass_defs = [
     {
         src: "../sass/fonts.scss"
     },
@@ -80,7 +80,7 @@ module.exports.parseScss = function() {
 			if(document.getElementById("compiled_style"))
 				document.getElementById("compiled_style").innerHTML = result.text
 			else
-				$(document.head).append("<style id='compiled_style' type='text/css'>"+result.text+"</style>")
+				document.head.insertAdjacentHTML("beforeend", `<style id='compiled_style' type='text/css'>${result.text}</style>`)
 			
 			fs.writeFile(path.join(__rootdir, 'compiled.css'), result.text, 'utf8', (err) => {
 				if(err)

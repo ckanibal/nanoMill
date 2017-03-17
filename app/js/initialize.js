@@ -242,16 +242,15 @@ function openFiles(paths) {
 }
 
 function showModal(title, contentEl) {
-	$modal = $("#modal")
-	$modal.find(".modal-title").html(title)
-	$modal.find(".modal-content").append(contentEl)
-	$modal.show()
+	modal = document.getElementById("modal")
+	modal.getElementsByClassName("modal-title")[0].innerHTML = title
+	modal.getElementsByClassName("modal-content")[0].appendChild(contentEl)
+	modal.style.display = ""
 }
 
 function hideModal() {
-	$("#modal").hide() // to replace
-	
 	let modal = document.getElementById("modal")
+	modal.style.display = "none"
 	modal.getElementsByClassName("modal-content")[0].innerHTML = ""
 }
 
@@ -301,9 +300,9 @@ function hasC4group() {
 /** ui object containing small layout items to fill any page */
 var ui = {
 	urlPicker: function(txt = "...", callback) {
-		let $el = $(`<div class="flex-row"><p class="url flex-fill">${txt}</p><div class="url-browse">Browse</div></div>`)
+		let el = Elem.fromString(`<div class="flex-row"><p class="url flex-fill">${txt}</p><div class="url-browse">Browse</div></div>`)
 		
-		$el.find(".url-browse").click(_ => {
+		el.getElementsByClassName("url-browse")[0].addEventListener("click", _ => {
 			let p = remote.dialog.showOpenDialog({
 				properties: ['openDirectory']
 			})
@@ -311,13 +310,13 @@ var ui = {
 			if(!p)
 				return
 			
-			$el.find(".url").html(p[0])
+			el.getElementsByClassName("url-browse")[0].innerHTML = p[0]
 			
 			if(callback)
 				callback(p[0])
 		})
 		
-		return $el[0]
+		return el
 	}
 }
 

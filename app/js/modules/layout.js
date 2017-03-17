@@ -208,11 +208,11 @@ class Layout_Flex extends Layout_Element {
         else {
             if(this.children[index]) {
                 index = this.children.length - 1
-				$(this.children[index].root).before(child.root)
+				Elem.before(this.children[index].root, child.root)
 			}
 			else {
 				index = this.children.length
-				$(this.children[index - 1].root).after(child.root)
+				Elem.after(this.children[index].root, child.root)
 			}
 			
             this.children.splice(index, 0, child)
@@ -344,7 +344,7 @@ class Layout_Module extends Layout_Element {
 		super()
 
 		let el = document.querySelector(".mod-con.draft").cloneNode(true)
-		let $el = $(el)
+		
 		
         this.root = el
 		this.body = el.getElementsByClassName("mod-body")[0]
@@ -381,7 +381,7 @@ class Layout_Module extends Layout_Element {
             })
         }
 		
-		$el.find(".mod-move").click(_ => {
+		el.getElementsByClassName("mod-move")[0].addEventListener("click", _ => {
 			Elem.addClass(document.getElementById("content"), "move-mod")
 
 			var _self = this
@@ -793,7 +793,7 @@ let mouseOffX, mouseOffY, dragSplitterTarget, origDim
 	// stop dragging splitters
 	document.addEventListener("mouseup", (e) => {
 		if(dragSplitterTarget) {
-			$(dragSplitterTarget).removeClass("dragged")
+			Elem.removeClass(dragSplitterTarget, "dragged")
 			
 			execHook("onLayoutChange")
 		}

@@ -39,7 +39,7 @@ module.exports.create = function(template, pth, {
 	pth = path.join(pth, title + template.ext)
 	
 	if(template.single) {		
-		let txt = _fs.readFileSync(temppath, 'utf8')
+		let txt = fs.readFileSync(temppath, 'utf8')
 					
 		txt = txt.replace(/(?:^|<)<\$(\w+)>>(?!\w)/gm, (m, p1) => {
 			
@@ -55,12 +55,12 @@ module.exports.create = function(template, pth, {
 			return m
 		})
 		
-		_fs.writeFileSync(pth, txt, 'utf8')
+		fs.writeFileSync(pth, txt, 'utf8')
 		
 		return
 	}
 	
-	_fs.mkdirSync(pth)
+	fs.mkdirSync(pth)
 	
 	ncp(temppath, pth, 
 		{ filter: /.*/ },// /^(?!templateDef).*$/gi },
@@ -75,7 +75,7 @@ module.exports.create = function(template, pth, {
 				
 				for(let i = 0; i < list.length; i++) {
 					let targetpath = path.join(pth, list[i])
-					let txt = _fs.readFileSync(targetpath, 'utf8')
+					let txt = fs.readFileSync(targetpath, 'utf8')
 					
 					txt = txt.replace(/(?:^|<)<\$(\w+)>>(?!\w)/gm, (m, p1) => {
 						
@@ -91,7 +91,7 @@ module.exports.create = function(template, pth, {
 						return m
 					})
 					
-					_fs.writeFileSync(targetpath, txt, 'utf8')
+					fs.writeFileSync(targetpath, txt, 'utf8')
 				}
 			}
 		}
