@@ -201,7 +201,13 @@ class Workspace {
 			
 			let unpack_dir = this.finfo[idx].path
 			this.loadDirectory(unpack_dir, (tree) => {
-				branch.children = this.sortFileIndicesByExt(tree.children)
+				// if there are no valid files found in subdirectory,
+				// still assign an assign to branch, so it gets recoginized as
+				// a parent tree item
+				if(!branch.children)
+					branch.children = []
+				else
+					branch.children = this.sortFileIndicesByExt(tree.children)
 				
 				// update stat (sync, because we are already in an async thread)
 				this.finfo[idx].updateSync()
