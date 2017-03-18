@@ -246,7 +246,7 @@ class Explorer extends layout.Module {
 		
 		props.push({
 			label: "Rename",
-			icon: "icon-plus",
+			icon: "icon-pencil",
 			onclick: () => {
 				let win = new remote.BrowserWindow({parent: remote.getCurrentWindow(), modal: true})
 			}
