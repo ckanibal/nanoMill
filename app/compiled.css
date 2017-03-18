@@ -451,7 +451,6 @@ textarea::-webkit-input-placeholder {
   .modal-close:active {
     background-color: steelblue; }
   .modal-close::before {
-    content: "X";
     min-width: 48px;
     font-weight: 100;
     display: block;
@@ -617,7 +616,7 @@ textarea::-webkit-input-placeholder {
 .mod-button {
   text-shadow: 0 1px 0 #141414;
   cursor: pointer;
-  margin: 2px 3px; }
+  padding: 2px; }
   .mod-button:hover, .mod-button:active {
     background-color: #3c3c3c;
     text-shadow: none; }
@@ -661,12 +660,6 @@ textarea::-webkit-input-placeholder {
   white-space: nowrap; }
   .mod-sel-item.visible {
     display: initial; }
-
-.mod-head hr {
-  margin-top: 3px;
-  margin-bottom: 3px;
-  border-color: #1d1f22;
-  border-style: solid; }
 
 .mod-body {
   position: relative;

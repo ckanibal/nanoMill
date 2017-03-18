@@ -19,7 +19,7 @@
 .mod-button {
     text-shadow: 0 1px 0 rgb(20, 20, 20);
 	cursor: pointer;
-	margin: 2px 3px;
+	padding: 2px;
 	
 	&:hover,
 	&:active {
@@ -83,13 +83,6 @@
 	}
 	overflow: hidden;
 	white-space: nowrap;
-}
-
-.mod-head hr {
-	margin-top: 3px;
-	margin-bottom: 3px;
-	border-color: $lyt-split;
-	border-style: solid;
 }
 
 .mod-body {
