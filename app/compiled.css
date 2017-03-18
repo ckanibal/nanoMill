@@ -62,23 +62,23 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; }
 
-.icon-add-doc:before {
-  content: "\e900"; }
+.icon-pencil:before {
+  content: "\e905"; }
 
 .icon-add-flex-h:before {
-  content: "\e901"; }
+  content: "\e900"; }
 
 .icon-add-flex-v:before {
-  content: "\e902"; }
+  content: "\e901"; }
 
 .icon-add-workspace:before {
-  content: "\e903"; }
+  content: "\e902"; }
 
 .icon-checked:before {
-  content: "\e904"; }
+  content: "\e903"; }
 
 .icon-close:before {
-  content: "\e905"; }
+  content: "\e904"; }
 
 .icon-console:before {
   content: "\e906"; }
@@ -183,7 +183,7 @@ html, body {
   font-size: 16px;
   text-shadow: 0 1px 0 #141414;
   cursor: pointer;
-  padding: 2px 3px;
+  padding: 2px 5px;
   -webkit-app-region: no-drag;
   line-height: 20px; }
   .hb-btn:hover {
@@ -195,6 +195,9 @@ html, body {
   width: 16px;
   margin-left: 0;
   margin-right: 0; }
+
+.hb-label {
+  padding: 2px 8px; }
 
 .modal-style {
   background: #26282b; }
@@ -616,7 +619,7 @@ textarea::-webkit-input-placeholder {
   cursor: pointer;
   margin: 2px 3px; }
   .mod-button:hover, .mod-button:active {
-    background-color: #787878;
+    background-color: #3c3c3c;
     text-shadow: none; }
 
 .mod-sel {

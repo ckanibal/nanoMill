@@ -20,23 +20,23 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-add-doc:before {
-  content: "\e900";
+.icon-pencil:before {
+  content: "\e905";
 }
 .icon-add-flex-h:before {
-  content: "\e901";
+  content: "\e900";
 }
 .icon-add-flex-v:before {
-  content: "\e902";
+  content: "\e901";
 }
 .icon-add-workspace:before {
-  content: "\e903";
+  content: "\e902";
 }
 .icon-checked:before {
-  content: "\e904";
+  content: "\e903";
 }
 .icon-close:before {
-  content: "\e905";
+  content: "\e904";
 }
 .icon-console:before {
   content: "\e906";
@@ -89,4 +89,3 @@
 .icon-workspace:before {
   content: "\e916";
 }
-

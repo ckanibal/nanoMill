@@ -1,14 +1,4 @@
 -add option: scroll past end from ace editor renderer instance
 	look here: https://github.com/ajaxorg/ace/wiki/Configuring-Ace
 	
-prevent module being closed if only one is left
 option for sorting directories in a cr-editor typical manner or not
-	
-icons:
-
-console -> bigger
-hamburger -> return to old one
-settings -> less floral
-rename -> hinzufügen
-pack/unpack -> rework to be more obvious
-close -> get old one back
