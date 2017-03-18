@@ -173,6 +173,7 @@ class Explorer extends layout.Module {
 			
 			// attach contextmenu on right click
 			item.addEventListener("contextmenu", (e) =>  {
+				this.selectItem(par, false)
 				new Contextmenu(e.pageX, e.pageY, this.getTreeMenuProps(item))
 			})
 		}
