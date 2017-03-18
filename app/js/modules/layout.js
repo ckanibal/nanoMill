@@ -113,9 +113,9 @@ class Layout extends Layout_Element {
 	getDir() { return this.flexer.getDir() }
 	
 	getModuleOfBody(el) {
-		for(let i = 0; i < _modules.length; i++)
-			if(_modules[i].body === el)
-				return _modules[i]
+		for(let i = 0; i < this.mdls.length; i++)
+			if(this.mdls[i].body === el)
+				return this.mdls[i]
 	}
 	
 	static fromData(data) {
@@ -384,16 +384,16 @@ class Layout_Module extends Layout_Element {
 		el.getElementsByClassName("mod-move")[0].addEventListener("click", _ => {
 			Elem.addClass(document.getElementById("content"), "move-mod")
 
-			var _self = this
+			let _self = this
 			
-			var fn = function(e) {
+			let fn = function(e) {
 				let p1 = _self.parent
 
 				let idx1 = p1.getChildIndex(_self),
 					w = _self.root.style.width,
 					h = _self.root.style.height
 				
-				let mod2 = getModuleOfBody(this),
+				let mod2 = _self.source.getModuleOfBody(this),
 					p2 = mod2.parent,
 					idx2 = p2.getChildIndex(mod2)
 				
@@ -420,7 +420,7 @@ class Layout_Module extends Layout_Element {
 				
 				e.stopPropagation()
 				
-				Elem.removeClass(document.getElementById("content"))
+				Elem.removeClass(document.getElementById("content"), "move-mod")
 				
 				let bodies = document.getElementsByClassName("mod-body")
 				for(let i = 0; i < bodies.length; i++)
