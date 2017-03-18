@@ -1,0 +1,68 @@
+#overlay-content {
+	background: $bg-main;
+	
+	.btn {
+		padding: 10px 15px;
+		margin: 10px 0;
+		background-color: #1e2123;
+		color: #83b4c5;
+		text-align: center;
+		
+		&:hover {
+			background-color: #234861;
+			color: #7dc5de;
+		}
+	}
+
+	.desc {
+		margin: 5px 0;
+		font-size: 12px;
+		color: grey;
+	}
+
+	.url {
+		padding: 10px 15px;
+		margin: 10px 0;
+		background-color: #1e2123;
+		color: #83b4c5;
+		-webkit-user-select: text;
+		white-space: nowrap;                   
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.url-browse {
+		padding: 10px 15px;
+		margin: 10px 0;
+		background-color: #1e2123;
+		color: #83b4c5;
+		
+		&:hover {
+			background-color: #234861;
+			color: #7dc5de;
+		}
+	}
+
+	input[type=text] {
+		-webkit-appearance: none;
+		border: none;
+		background: none;
+		outline: none;
+		color: $font-clr;
+		text-shadow: 1px 0px 0px steelblue;
+		font-size: 1em;
+		padding: 0;
+		box-sizing: border-box;
+		margin-bottom: -1px;
+		margin-top: 0;
+		
+		&:focus,
+		&:hover {
+			border-bottom: 1px solid grey;
+		}
+		
+		&.small {
+			max-width: 100px;
+		}
+	}
+}

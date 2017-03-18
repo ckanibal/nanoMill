@@ -261,6 +261,28 @@ class Workspace {
 		this.opened.add(i)
 	}
 	
+	/*
+		renames the file of the given index
+	*/
+	renameFile(idx, fname) {
+		let finfo = this.finfo[idx]
+		
+		if(!finfo)
+			return
+		
+		let newPath = path.join(path.dirname(finfo.path), fname)
+		fs.rename(finfo.path, newPath, (err) => {
+			// todo: inform user
+			if(err)
+				return warn(err)
+			
+			finfo.setPath(newPath)
+			finfo.updateSync()
+			// update workspace views
+			hook.exec("onWorkspaceChange", this)
+		})
+	}
+	
 	/**
 		checks weather the given extension is editable and
 		can therefore be opened in the editor frame
@@ -354,6 +376,15 @@ class FileInfo {
 		this.stat = stat
 		this.name = name
 		this.ext = path.extname(name)
+	}
+	
+	/**
+		sets the path and updates some values
+	*/
+	setPath(p) {
+		this.path = p
+		this.name = path.basename(p)
+		this.ext = path.extname(this.ext)
 	}
 	
 	/**

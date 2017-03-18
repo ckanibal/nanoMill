@@ -248,7 +248,11 @@ class Explorer extends layout.Module {
 			label: "Rename",
 			icon: "icon-pencil",
 			onclick: () => {
-				let win = new remote.BrowserWindow({parent: remote.getCurrentWindow(), modal: true})
+				openDialog("rename.js", 400, 200, finfo.name, (result) => {
+					// check for valid file name
+					if(result && result !== finfo.name)
+						this.wspace.renameFile(findex, result)
+				})
 			}
 		})
 		

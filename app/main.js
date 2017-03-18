@@ -1,7 +1,7 @@
 const {app, BrowserWindow, dialog} = require('electron')
 const fs = require('fs')
 
-var output = fs.createWriteStream(`${app.getPath('userData')}/error.log`, {flags: "w", })
+let output = fs.createWriteStream(`${app.getPath('userData')}/error.log`, {flags: "w", })
 
 output.write(`Detected platform: ${process.platform}\n`)
 
@@ -10,7 +10,7 @@ process.on('uncaughtException', function (err) {
 	dialog.showErrorBox("Failed to launch app", `Error: ${err}`)
 })
 
-var defaultConfigVal = {
+let defaultConfigVal = {
 	author: "Twonky",
 	ocver: "7,0",
 	dftTempDir: "...",
@@ -20,11 +20,11 @@ var defaultConfigVal = {
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
-var config = {}
+let config = {}
 function createWindow () {
 	
 	communicator = {
-		__appDir: app.getPath('userData'),
+		__appdir: app.getPath('userData'),
 		printLog: (str) => {
 			output.write(`${str}\n`)
 		},
@@ -106,7 +106,7 @@ function createWindow () {
 	win.loadURL(`file://${__dirname}/index.html`)
 
 	// Open the DevTools.
-	if(config.inDevMode)
+	if(config.inDevMode && false)
 		win.webContents.openDevTools()
 
 	// Emitted when the window is closed.

@@ -5,22 +5,12 @@ const path = require('path')
 const {remote} = require('electron')
 
 // get constants and functions from main process
-const {__appDir, config, printLog, inDevMode, setConfig, getConfig, wipeConfig, hideMenu, dialog, toggleDevMode } = remote.getGlobal("communicator")
+const {__appdir, config, printLog, inDevMode, setConfig, getConfig, wipeConfig, hideMenu, dialog, toggleDevMode } = remote.getGlobal("communicator")
 
 const layout = require(path.join(__rootdir, "js", "modules", "layout.js"))
 const hook = require(path.join(__rootdir, "js", "hook.js"))
 
 const MOUSE_LEFT = 1
-
-{
-	setTimeout(_ => {
-		require('ncp')
-		require('./js/templates')
-	}, 6000)
-	
-	if(inDevMode && false)
-		setTimeout(_ => reloadCss(), 1000)
-}
 
 var log, warn, error
 
@@ -52,6 +42,18 @@ function copyArrayWIO(ary, val) {
 	return a
 }
 
-function openDialog(fileName, callback) {
+function openDialog(fileName, width, height, initData, callback) {
+	Elem.addClass(document.getElementById("win-overlay"), "shown")
+	let con = document.getElementById("overlay-content")
+	con.style.width = width + "px"
+	con.style.height = height + "px"
 	
+	let dlg = require(path.join(__rootdir, "dialogs", fileName))
+	dlg(initData, function() {
+		Elem.removeClass(document.getElementById("win-overlay"), "shown")
+		con.innerHTML = ""
+		
+		if(callback)
+			callback(...arguments)
+	})
 }

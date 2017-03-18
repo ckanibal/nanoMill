@@ -31,7 +31,7 @@
 .flex-splitter {
 	background-color: $lyt-split;
 	
-	@include noUserSelect()
+	@include noUserSelect();
 	
 	&:hover,
 	&.dragged {

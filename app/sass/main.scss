@@ -1,107 +1,23 @@
-/*
-
-reserved z-indices
-
-[0-6] Ace
-
-[20-30] Module Head
-
-[50] Settings overlay
-
-[200] Modal
-*/
-
 /* z-indices */
 $z-ctx-menu: 51;
 $z-overlay: 200;
 $z-mod: 10;
 
-$font-stack: $main-font, sans-serif;
-
-$bg-main: rgb(38, 40, 43);
-$lyt-split: rgb(29, 31, 34);
-
-$bg-ui-active: steelblue;
-
-$tb-bg: rgb(60, 60, 60);
-$tb-bg-hvr: rgb(120, 120, 120);
-$tb-brdr: 1px solid rgb(45, 45, 45);
-$tb-clr: rgb(128, 128, 128);
-
-$hvr: rgb(80, 80, 80);
-
-$font-clr: rgb(180, 180, 180);
-
-$red: rgb(215, 125, 50);
-$frame-action: steelblue;
-
-// sum of paddings and margin to the first character in .mod-head
-// ...depcrecated
-$mod-x-padding: 7px;
-
-@mixin flex-row() {
-	display: flex;
-	flex-direction: row;
-}
-
-@mixin flex-col() {
-	display: flex;
-	flex-direction: column;
-}
-
-@mixin dlgtFcs($clr) {
-	outline: none;
+#win-overlay {
+	@include abs-fill();
+	z-index: $z-overlay;
+	background-color: rgba(0, 0, 0, 0);
+	display: none;
+	transition: background-color .2s;
 	
-	&:focus > * {
-		outline: 1px solid $clr;
+	&.shown {
+		display: flex;
+		background-color: rgba(0, 0, 0, 0.5)
 	}
 }
 
-// rename to abs-fill
-@mixin absoluteFill() {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-}
-
-@mixin abs-fill() {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-}
-
-.abs-fill {
-	@include absoluteFill();
-}
-
-.draft {
-    display: none !important;
-}
-
-
-html, body {
-	@include abs-fill();
-	
-    margin: 0;
-    padding: 0;
-    background: $bg-main;
-    color: rgb(220, 220, 220);
-    font-family: $font-stack;
-	animation: fade-in 0.5s;
-	-webkit-user-select: none;
-	cursor: default;
-	
-	overflow: hidden;
-}
-
-#win-overlay {
-	z-index: $z-overlay;
-	background-color: black;
-	opacity: 0.5,
+#overlay-content {
+	align-self: center;
 }
 
 #content {
@@ -336,11 +252,6 @@ textarea::-webkit-input-placeholder {
 ::-webkit-scrollbar-corner,
 ::-webkit-resizer {
 	background-color: grey;
-}
-
-@mixin noUserSelect() {
-	-webkit-user-select: none;
-	user-select: none;
 }
 
 @mixin abstractList() {	

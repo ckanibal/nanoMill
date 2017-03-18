@@ -43,6 +43,32 @@
   font-weight: bold;
   font-style: italic; }
 
+.abs-fill {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0; }
+
+.draft {
+  display: none !important; }
+
+html, body {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  background: #26282b;
+  color: gainsboro;
+  font-family: "Roboto", sans-serif;
+  animation: fade-in 0.5s;
+  -webkit-user-select: none;
+  cursor: default;
+  overflow: hidden; }
+
 @font-face {
   font-family: 'icomoon';
   src: url("sass/icomoon.ttf?-icmbrc") format("truetype");
@@ -131,49 +157,23 @@
 .icon-workspace:before {
   content: "\e916"; }
 
-/*
-
-reserved z-indices
-
-[0-6] Ace
-
-[20-30] Module Head
-
-[50] Settings overlay
-
-[200] Modal
-*/
 /* z-indices */
-.abs-fill {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0; }
-
-.draft {
-  display: none !important; }
-
-html, body {
+#win-overlay {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  margin: 0;
-  padding: 0;
-  background: #26282b;
-  color: gainsboro;
-  font-family: "Roboto", sans-serif;
-  animation: fade-in 0.5s;
-  -webkit-user-select: none;
-  cursor: default;
-  overflow: hidden; }
-
-#win-overlay {
   z-index: 200;
-  background-color: black;
-  opacity: 0.5; }
+  background-color: transparent;
+  display: none;
+  transition: background-color .2s; }
+  #win-overlay.shown {
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.5); }
+
+#overlay-content {
+  align-self: center; }
 
 #content {
   position: relative;
@@ -571,6 +571,55 @@ textarea::-webkit-input-placeholder {
 .ctx-menu-indicator {
   margin: 5px;
   color: grey; }
+
+#overlay-content {
+  background: #26282b; }
+  #overlay-content .btn {
+    padding: 10px 15px;
+    margin: 10px 0;
+    background-color: #1e2123;
+    color: #83b4c5;
+    text-align: center; }
+    #overlay-content .btn:hover {
+      background-color: #234861;
+      color: #7dc5de; }
+  #overlay-content .desc {
+    margin: 5px 0;
+    font-size: 12px;
+    color: grey; }
+  #overlay-content .url {
+    padding: 10px 15px;
+    margin: 10px 0;
+    background-color: #1e2123;
+    color: #83b4c5;
+    -webkit-user-select: text;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }
+  #overlay-content .url-browse {
+    padding: 10px 15px;
+    margin: 10px 0;
+    background-color: #1e2123;
+    color: #83b4c5; }
+    #overlay-content .url-browse:hover {
+      background-color: #234861;
+      color: #7dc5de; }
+  #overlay-content input[type=text] {
+    -webkit-appearance: none;
+    border: none;
+    background: none;
+    outline: none;
+    color: #b4b4b4;
+    text-shadow: 1px 0px 0px steelblue;
+    font-size: 1em;
+    padding: 0;
+    box-sizing: border-box;
+    margin-bottom: -1px;
+    margin-top: 0; }
+    #overlay-content input[type=text]:focus, #overlay-content input[type=text]:hover {
+      border-bottom: 1px solid grey; }
+    #overlay-content input[type=text].small {
+      max-width: 100px; }
 
 .flex-fill {
   flex: 1; }
