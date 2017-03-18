@@ -3,6 +3,10 @@ let sass_defs = [
         src: "../sass/fonts.scss"
     },
 	{
+        src: "../sass/icomoon.css",
+        mod: "iconsToMixins"
+    },
+	{
         src: "../sass/main.scss"
     },
 	{
@@ -10,10 +14,6 @@ let sass_defs = [
     },
 	{
         src: "../sass/contextmenu.scss"
-    },
-    {
-        src: "../sass/icomoon.css",
-        mod: "iconsToMixins"
     },
     {
         src: "../sass/flex.scss"
@@ -95,13 +95,13 @@ module.exports.parseScss = function() {
 function modSassString(str, mod) {
     // specific icomoon-generated-content modifier
     if(mod === "iconsToMixins") {
-        var result = ""
+        let result = ""
         str.replace(/\.icon-(?:\s*\S+\s*{[^}]*})+/gim, function(m) {
             result += m.replace(/\.icon-/gi, "@mixin -").replace(/\:before/gi, "()") + "\n";
         })
 
         str += result
     }
-
+	
     return str
 }

@@ -4,9 +4,11 @@
 prevent module being closed if only one is left
 option for sorting directories in a cr-editor typical manner or not
 	
-icon:
-adjust size of icons of module header
-select workspace icon
-run icon
-window icons (including toggling the maximize icon)
-pack/unpack
+icons:
+
+console -> bigger
+hamburger -> return to old one
+settings -> less floral
+rename -> hinzufügen
+pack/unpack -> rework to be more obvious
+close -> get old one back

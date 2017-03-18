@@ -568,7 +568,7 @@ class Layout_Module extends Layout_Element {
 		return [
 			{
 				label: "Close Frame",
-				icon: "icon-x-s",
+				icon: "icon-close",
 				onvalidate: _ => {
 					// do not close if this is the last module shown
 					return this.source.flexer.children.length !== 1

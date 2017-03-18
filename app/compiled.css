@@ -43,6 +43,94 @@
   font-weight: bold;
   font-style: italic; }
 
+@font-face {
+  font-family: 'icomoon';
+  src: url("sass/icomoon.ttf?-icmbrc") format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+.icon-add-doc:before {
+  content: "\e900"; }
+
+.icon-add-flex-h:before {
+  content: "\e901"; }
+
+.icon-add-flex-v:before {
+  content: "\e902"; }
+
+.icon-add-workspace:before {
+  content: "\e903"; }
+
+.icon-checked:before {
+  content: "\e904"; }
+
+.icon-close:before {
+  content: "\e905"; }
+
+.icon-console:before {
+  content: "\e906"; }
+
+.icon-ctx-submenu-indicator:before {
+  content: "\e907"; }
+
+.icon-hamburger:before {
+  content: "\e908"; }
+
+.icon-maximize:before {
+  content: "\e909"; }
+
+.icon-minimize:before {
+  content: "\e90a"; }
+
+.icon-minus:before {
+  content: "\e90b"; }
+
+.icon-move-flexer:before {
+  content: "\e90c"; }
+
+.icon-pack:before {
+  content: "\e90d"; }
+
+.icon-play:before {
+  content: "\e90e"; }
+
+.icon-plus:before {
+  content: "\e90f"; }
+
+.icon-save:before {
+  content: "\e910"; }
+
+.icon-settings:before {
+  content: "\e911"; }
+
+.icon-the-mill:before {
+  content: "\e912"; }
+
+.icon-trashbin:before {
+  content: "\e913"; }
+
+.icon-unpack:before {
+  content: "\e914"; }
+
+.icon-windowed-mode:before {
+  content: "\e915"; }
+
+.icon-workspace:before {
+  content: "\e916"; }
+
 /*
 
 reserved z-indices
@@ -92,11 +180,12 @@ html, body {
 .hb-btn {
   color: gray;
   cursor: default;
-  font-size: 14px;
+  font-size: 16px;
   text-shadow: 0 1px 0 #141414;
   cursor: pointer;
   padding: 2px 3px;
-  -webkit-app-region: no-drag; }
+  -webkit-app-region: no-drag;
+  line-height: 20px; }
   .hb-btn:hover {
     background-color: #3c3c3c;
     text-shadow: none; }
@@ -380,8 +469,10 @@ textarea::-webkit-input-placeholder {
   25% {
     transform: scale(1); }
   50% {
-    opacity: 1;
-    transform: scale(0); }
+    transform: scale(0);
+    opacity: 1; }
+  50.01% {
+    opacity: 0; }
   100% {
     opacity: 0; } }
 
@@ -472,67 +563,6 @@ textarea::-webkit-input-placeholder {
 .ctx-menu-indicator {
   margin: 5px;
   color: grey; }
-
-@font-face {
-  font-family: 'icomoon';
-  src: url("sass/icomoon.ttf?-icmbrc") format("truetype");
-  font-weight: normal;
-  font-style: normal; }
-
-[class^="icon-"], [class*=" icon-"] {
-  /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'icomoon' !important;
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; }
-
-.icon-add-flex-h:before {
-  content: "\e900"; }
-
-.icon-add-flex-v:before {
-  content: "\e901"; }
-
-.icon-move-flexer:before {
-  content: "\e902"; }
-
-.icon-ctx-submenu-indicator:before {
-  content: "\e93b"; }
-
-.icon-hamburger-small:before {
-  content: "\e939"; }
-
-.icon-small-settings:before {
-  content: "\e93a"; }
-
-.icon-hamburger:before {
-  content: "\e936"; }
-
-.icon-x-s:before {
-  content: "\e937"; }
-
-.icon-minus:before {
-  content: "\e913"; }
-
-.icon-plus:before {
-  content: "\e916"; }
-
-.icon-save2:before {
-  content: "\e919"; }
-
-.icon-console:before {
-  content: "\e90c"; }
-
-.icon-the-mill:before {
-  content: "\e634"; }
-
-.icon-checked:before {
-  content: "\e608"; }
 
 .flex-fill {
   flex: 1; }

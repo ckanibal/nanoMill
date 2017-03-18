@@ -101,11 +101,12 @@ html, body {
 .hb-btn {
 	color: $tb-clr;
 	cursor: default;
-	font-size: 14px;
+	font-size: 16px;
 	text-shadow: 0 1px 0 rgb(20, 20, 20);
 	cursor: pointer;
 	padding: 2px 3px;
 	-webkit-app-region: no-drag;
+	line-height: 20px;
 	
 	&:hover {
 		background-color: $tb-bg;
@@ -507,7 +508,9 @@ $list-in-dur: 0.3s;
 @keyframes circle {
 	0% { transform: scale(0);}
 	25% { transform: scale(1); }
-	50% { transform: scale(0); }
+	50% { transform: scale(0); opacity: 1;}
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
 }
 
 @keyframes pop-up {

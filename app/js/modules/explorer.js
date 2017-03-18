@@ -222,7 +222,7 @@ class Explorer extends layout.Module {
 		if(finfo.ext === ".ocs")
 			props.push({
 				label: "Run",
-				icon: "icon-plus",
+				icon: "icon-play",
 				onclick: _ => runOCEditor([finfo.path]),
 				onvalidate: _ => hasExecutable()
 			})
@@ -231,13 +231,13 @@ class Explorer extends layout.Module {
 		if(Explorer.isOcPackable(finfo.ext)) {
 			props.push({
 				label: "Pack",
-				icon: "icon-plus",
+				icon: "icon-pack",
 				onclick: _ => { this.wspace.packFile(findex) },
 				onvalidate: _ => hasC4group() && finfo.stat.isDirectory()
 			})
 			props.push({
 				label: "Unpack",
-				icon: "icon-plus",
+				icon: "icon-unpack",
 				onclick: () => { this.wspace.unpackFile(findex) },
 				onvalidate: _ => hasC4group() && !finfo.stat.isDirectory()
 			})
@@ -248,13 +248,12 @@ class Explorer extends layout.Module {
 			icon: "icon-plus",
 			onclick: () => {
 				let win = new remote.BrowserWindow({parent: remote.getCurrentWindow(), modal: true})
-				log("asd")
 			}
 		})
 		
 		props.push({
 			label: "Delete",
-			icon: "icon-plus",
+			icon: "icon-trashbin",
 			onclick: _ => {this.wspace.unlinkFile(findex)}
 		})
 		
@@ -283,14 +282,14 @@ class Explorer extends layout.Module {
 			},
 			{
 				label: "New workspace",
-				icon: "icon-plus",
+				icon: "icon-add-workspace",
 				onclick: _ => {
 					this.modalNewWorkspace()
 				}
 			},
 			{
 				label: "Select workspace",
-				icon: "icon-plus",
+				icon: "icon-workspace",
 				submenu: sub_sel,
 				onvalidate: _ => {
 					// only allow access if there are any workspaces

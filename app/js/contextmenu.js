@@ -53,7 +53,7 @@ class Contextmenu {
 							</div>`
 			
 			if(prop.submenu)
-				item.insertAdjacentHTML("beforeend", `<div class="flex-col" style="justify-content: center"><div class="ctx-menu-indicator">></div></div>`)
+				item.insertAdjacentHTML("beforeend", `<div class="flex-col" style="justify-content: center"><div class="ctx-menu-indicator icon-ctx-submenu-indicator"></div></div>`)
 			
 			// when failing validation skip event binding and apply class
 			if(prop.onvalidate && !prop.onvalidate())
