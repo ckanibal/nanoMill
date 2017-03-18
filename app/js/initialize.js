@@ -192,6 +192,10 @@ let lyt
 	
 	require("./js/keybinding.js")
 	
+	requestAnimationFrame(_ => {
+		require(path.join(__rootdir, "js", "logo.js"))(document.getElementById("logo"), 20)
+	})
+	
     log("end of initialize")
 }
 

@@ -367,6 +367,43 @@ textarea::-webkit-input-placeholder {
     text-shadow: 0 1px 0 grey; }
 
 /* ui object stuff */
+/* logo animation */
+@keyframes windmill {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
+
+@keyframes circle {
+  0% {
+    transform: scale(0); }
+  25% {
+    transform: scale(1); }
+  50% {
+    opacity: 1;
+    transform: scale(0); }
+  100% {
+    opacity: 0; } }
+
+@keyframes pop-up {
+  0% {
+    opacity: 0; }
+  24.9% {
+    opacity: 0; }
+  25% {
+    opacity: 1; } }
+
+.the-mill {
+  animation: windmill 3s;
+  transform-origin: center; }
+  .the-mill path {
+    animation: pop-up 3s;
+    animation-fill-mode: forwards; }
+  .the-mill circle {
+    animation: circle 3s;
+    transform-origin: center;
+    animation-fill-mode: forwards; }
+
 .tree-item {
   padding: 0 15px;
   margin-left: 15px;

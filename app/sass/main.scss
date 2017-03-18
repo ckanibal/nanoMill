@@ -496,3 +496,39 @@ $list-in-dur: 0.3s;
 .url-browse {
 }
 
+
+/* logo animation */
+
+@keyframes windmill {
+	0%  { transform: rotate(0deg);}
+	100%  { transform: rotate(360deg);}
+}
+
+@keyframes circle {
+	0% { transform: scale(0);}
+	25% { transform: scale(1); }
+	50% { opacity: 1; transform: scale(0); }
+	100% { opacity: 0; }
+}
+
+@keyframes pop-up {
+	0% { opacity: 0; }
+	24.9% { opacity: 0; }
+	25% { opacity: 1; }
+}
+
+.the-mill {
+	animation: windmill 3s;
+	transform-origin: center;
+	
+	path {
+		animation: pop-up 3s;
+		animation-fill-mode: forwards;
+	}
+	
+	circle {
+		animation: circle 3s;
+		transform-origin: center;
+		animation-fill-mode: forwards;
+	}
+}
