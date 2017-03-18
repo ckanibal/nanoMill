@@ -13,7 +13,6 @@
 	color: $tb-clr;
 	height: 20px;
 	padding: 5px 3px;
-	-webkit-app-region: no-drag;
 }
 
 .mod-button {
@@ -62,7 +61,7 @@
 	top: 3px;
 	right: 0;
 	left: 0;
-	z-index: 10;
+	z-index: $z-mod;
 	padding: 0 2px;
 	
 	transition: height 0.3s;
@@ -111,18 +110,15 @@
 	max-width: 180px;
 	width: 180px;
 	background-color: $tb-bg;	
-	z-index: 11;
+	z-index: $z-mod + 1;
 	
 	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
 }
 
-.mod-fill-body {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-}
+/*
+	last module in a flexer should always fill out
+	the available space and ignore width/height
+*/
 
 .mod-con:last-child,
 .flexer:last-child {

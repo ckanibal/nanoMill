@@ -39,21 +39,6 @@ if(inDevMode) {
 else
 	writeConsoleOutputToFile()
 
-var _prf = {
-	keys: {},
-	start: function(key) {
-		this.keys[key] = (new Date()).getTime()
-	},
-	stop: function(key, fprint) {
-		var t = (new Date()).getTime() - this.keys[key]
-		
-		if(fprint)
-			log("Profiled [" + key + "] : " + t + "ms")
-		
-		return t
-	}
-}
-
 /**
 	copies an array without the specified value
 */
@@ -65,4 +50,8 @@ function copyArrayWIO(ary, val) {
 			a[i] = ary[i]
 	
 	return a
+}
+
+function openDialog(fileName, callback) {
+	
 }

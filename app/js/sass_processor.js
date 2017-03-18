@@ -63,12 +63,12 @@ module.exports.parseScss = function() {
 		}
 	}
 	
-	_prf.start("sass")
+	console.time("sass")
 	
 	let whole = ""
 	
 	for(let single of readFn(defs))
-		whole += single + "\n\n"
+		whole += single + "\n"
 	
 	Sass.compile(whole, (result) => {
 		if(result.message) {
@@ -82,11 +82,11 @@ module.exports.parseScss = function() {
 			else
 				document.head.insertAdjacentHTML("beforeend", `<style id='compiled_style' type='text/css'>${result.text}</style>`)
 			
-			fs.writeFile(path.join(__rootdir, 'compiled.css'), result.text, 'utf8', (err) => {
+			fs.writeFile(path.join(__rootdir, 'preprocessed.css'), result.text, 'utf8', (err) => {
 				if(err)
 					throw err
 				
-				log("Sass done (" + _prf.stop("sass") + "ms)")
+				console.timeEnd("sass")
 			})
 		}
 	})

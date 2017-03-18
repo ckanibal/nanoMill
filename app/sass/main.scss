@@ -11,9 +11,10 @@ reserved z-indices
 [200] Modal
 */
 
+/* z-indices */
 $z-ctx-menu: 51;
-
-
+$z-overlay: 200;
+$z-mod: 10;
 
 $font-stack: $main-font, sans-serif;
 
@@ -32,10 +33,10 @@ $hvr: rgb(80, 80, 80);
 $font-clr: rgb(180, 180, 180);
 
 $red: rgb(215, 125, 50);
-$orange: orange;
 $frame-action: steelblue;
 
 // sum of paddings and margin to the first character in .mod-head
+// ...depcrecated
 $mod-x-padding: 7px;
 
 @mixin flex-row() {
@@ -56,7 +57,16 @@ $mod-x-padding: 7px;
 	}
 }
 
+// rename to abs-fill
 @mixin absoluteFill() {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+@mixin abs-fill() {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -74,7 +84,7 @@ $mod-x-padding: 7px;
 
 
 html, body {
-	@include absoluteFill();
+	@include abs-fill();
 	
     margin: 0;
     padding: 0;
@@ -86,6 +96,12 @@ html, body {
 	cursor: default;
 	
 	overflow: hidden;
+}
+
+#win-overlay {
+	z-index: $z-overlay;
+	background-color: black;
+	opacity: 0.5,
 }
 
 #content {
