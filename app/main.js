@@ -106,7 +106,7 @@ function createWindow () {
 	win.loadURL(`file://${__dirname}/index.html`)
 
 	// Open the DevTools.
-	if(config.inDevMode && false)
+	if(config.inDevMode)
 		win.webContents.openDevTools()
 
 	// Emitted when the window is closed.

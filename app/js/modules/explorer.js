@@ -227,7 +227,37 @@ class Explorer extends layout.Module {
 				onclick: _ => runOCEditor([finfo.path]),
 				onvalidate: _ => hasExecutable()
 			})
-			
+		
+		props.push({
+			label: "New file",
+			icon: "icon-plus",
+			onclick: _ => {
+				// the path where to place the file
+				let tpath
+				
+				let findex = -1
+				// if the element itself is a directory, create new file in it
+				if(Elem.hasClass(el, "tree-parent")) {
+					findex =  parseInt(el.dataset.value)
+					tpath = this.wspace.finfo[findex].path
+				}
+				// otherwise locate the new file in the directory where this file is, respecting root element
+				else {
+					let par = el.parentNode.parentNode
+					if(Elem.hasClass(par, "tree-parent")) {
+						findex =  parseInt(el.dataset.value)
+						tpath = this.wspace.finfo[findex].path
+					}
+					else
+						tpath = this.wspace.path
+				}
+				
+				openDialog("newfile.js", 450, 300, tpath, (result) => {
+					// if(result === true) update wspace...
+				})
+			}
+		})
+		
 		// add unpack/pack commands
 		if(Explorer.isOcPackable(finfo.ext)) {
 			props.push({
@@ -281,24 +311,8 @@ class Explorer extends layout.Module {
 			{
 				label: "New file",
 				icon: "icon-plus",
-				onclick: _ => {
-					// the path where to place the file
-					let tpath
-					// the index the new file will be a child of
-					// -1: root level
-					let findex = -1
-					if(this.activeItem) {
-						if(Elem.hasClass(this.activeItem, "tree-parent")) {
-							findex =  parseInt(this.activeItem.dataset.value)
-							tpath = this.wspace.finfo[findex].path
-						}
-						else
-							tpath = this.wspace.path
-					}
-					else
-						tpath = this.wspace.path
-					
-					openDialog("newfile.js", 450, 300, tpath, (result) => {
+				onclick: _ => {					
+					openDialog("newfile.js", 450, 300, this.wspace.path, (result) => {
 						// if(result === true) update wspace...
 					})
 				}
