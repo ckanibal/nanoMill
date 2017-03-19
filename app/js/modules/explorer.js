@@ -250,7 +250,7 @@ class Explorer extends layout.Module {
 			onclick: () => {
 				openDialog("rename.js", 400, 200, finfo.name, (result) => {
 					// check for valid file name
-					if(result && result !== finfo.name)
+					if(result && typeof result === "string" && result !== finfo.name)
 						this.wspace.renameFile(findex, result)
 				})
 			}

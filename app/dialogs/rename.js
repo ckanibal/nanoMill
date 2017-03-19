@@ -11,8 +11,18 @@ module.exports = function(data, fnClose) {
 		</div>
 	</div>`
 	
-	document.getElementById("overlay-cancel").addEventListener("click", fnClose)
-	document.getElementById("overlay-confirm").addEventListener("click", _ => {
-		fnClose(document.getElementById("rename-field").value)
+	let input = document.getElementById("rename-field")
+	
+	let fnConfirm = _ => {
+		fnClose(input.value)
+	}
+	// preselect file name without extension
+	input.setSelectionRange(0, data.length - path.extname(data).length)
+	input.addEventListener("keydown", (e) => {
+		if(e.keyCode === 13)
+			fnConfirm()
 	})
+	
+	document.getElementById("overlay-cancel").addEventListener("click", fnClose)
+	document.getElementById("overlay-confirm").addEventListener("click", fnConfirm)
 }

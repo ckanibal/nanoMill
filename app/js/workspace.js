@@ -271,15 +271,17 @@ class Workspace {
 			return
 		
 		let newPath = path.join(path.dirname(finfo.path), fname)
-		fs.rename(finfo.path, newPath, (err) => {
-			// todo: inform user
-			if(err)
-				return warn(err)
-			
-			finfo.setPath(newPath)
-			finfo.updateSync()
-			// update workspace views
-			hook.exec("onWorkspaceChange", this)
+		// check if file already exists
+		fs.stat(newPath, (err) => {
+			if(err) {
+				fs.renameSync(finfo.path, newPath)
+				finfo.setPath(newPath)
+				finfo.updateSync()
+				// update workspace views
+				hook.exec("onWorkspaceChange", this)
+			}
+			else
+				alert("Such file already exists.\n${newPath}")
 		})
 	}
 	
