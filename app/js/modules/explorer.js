@@ -282,7 +282,25 @@ class Explorer extends layout.Module {
 				label: "New file",
 				icon: "icon-plus",
 				onclick: _ => {
-					require(path.join(__rootdir, "js/template_modal.js")).show()
+					// the path where to place the file
+					let tpath
+					// the index the new file will be a child of
+					// -1: root level
+					let findex = -1
+					if(this.activeItem) {
+						if(Elem.hasClass(this.activeItem, "tree-parent")) {
+							findex =  parseInt(this.activeItem.dataset.value)
+							tpath = this.wspace.finfo[findex].path
+						}
+						else
+							tpath = this.wspace.path
+					}
+					else
+						tpath = this.wspace.path
+					
+					openDialog("newfile.js", 450, 300, tpath, (result) => {
+						// if(result === true) update wspace...
+					})
 				}
 			},
 			{

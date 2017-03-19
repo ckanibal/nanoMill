@@ -543,6 +543,20 @@ textarea::-webkit-input-placeholder {
     background-color: rgba(50, 120, 210, 0.45);
     outline: 1px solid steelblue; }
 
+.sel-par {
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden; }
+
+.sel-item {
+  padding: 5px 10px;
+  color: #c8c8c8;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
+  .sel-item:hover {
+    background-color: #505050; }
+
 .ctx-menu {
   position: absolute;
   background-color: #1f2125;
@@ -620,6 +634,21 @@ textarea::-webkit-input-placeholder {
       border-bottom: 1px solid grey; }
     #overlay-content input[type=text].small {
       max-width: 100px; }
+  #overlay-content textarea {
+    -webkit-appearance: none;
+    border: none;
+    background: none;
+    color: #b4b4b4;
+    text-shadow: 1px 0px 0px steelblue;
+    font-size: 1em;
+    outline: 1px solid grey;
+    outline-offset: -1px;
+    resize: none;
+    padding: 3px;
+    margin: 10px 0;
+    font-family: "Roboto"; }
+    #overlay-content textarea:focus, #overlay-content textarea:hover {
+      outline: 1px solid steelblue; }
 
 .flex-fill {
   flex: 1; }

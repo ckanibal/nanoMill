@@ -1,0 +1,17 @@
+
+.sel-par {
+	@include flex-col();
+	overflow-y: hidden;
+}
+
+.sel-item {
+	&:hover {
+			background-color: $hvr;
+		}
+	
+	padding: 5px 10px;
+	color: rgb(200, 200, 200);
+	overflow-x: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}

@@ -18,6 +18,9 @@ let sass_defs = [{
 			src: "../sass/tree_list.scss"
 		},
 		{
+			src: "../sass/sel_list.scss"
+		},
+		{
 			src: "../sass/contextmenu.scss"
 		},
 		{
