@@ -166,11 +166,11 @@ html, body {
   left: 0;
   z-index: 200;
   background-color: transparent;
-  display: none;
-  transition: background-color .2s; }
+  visibility: hidden;
+  transition: background-color 0.2s; }
   #win-overlay.shown {
-    display: flex;
-    background-color: rgba(0, 0, 0, 0.5); }
+    background-color: rgba(0, 0, 0, 0.5);
+    visibility: visible; }
 
 #overlay-content {
   align-self: center; }
