@@ -314,7 +314,7 @@ var ui = {
 			if(!p)
 				return
 			
-			el.getElementsByClassName("url-browse")[0].innerHTML = p[0]
+			el.getElementsByClassName("url")[0].innerHTML = p[0]
 			
 			if(callback)
 				callback(p[0])

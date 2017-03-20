@@ -8,8 +8,8 @@ class Dialog_Rename extends Dialog {
 		
 		this.footer.innerHTML = 
 			`<div class="flex-row">
-				<div id="overlay-cancel" class="btn flex-fill">Cancel</div>
-				<div id="overlay-confirm" class="btn flex-fill">Rename</div>
+				<div id="dlg-cancel" class="btn flex-fill">Cancel</div>
+				<div id="dlg-confirm" class="btn flex-fill">Rename</div>
 			</div>`
 		
 		let input = document.getElementById("rename-field")
@@ -24,11 +24,11 @@ class Dialog_Rename extends Dialog {
 				fnConfirm()
 		})
 		
-		document.getElementById("overlay-cancel").addEventListener("click", _ => {
+		document.getElementById("dlg-cancel").addEventListener("click", _ => {
 			fnClose()
 			this.close()
 		})
-		document.getElementById("overlay-confirm").addEventListener("click", fnConfirm)
+		document.getElementById("dlg-confirm").addEventListener("click", fnConfirm)
 		
 		this.show()
 		setTimeout(_ => {

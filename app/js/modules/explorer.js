@@ -185,30 +185,17 @@ class Explorer extends layout.Module {
 	}
 	
 	modalNewWorkspace() {
-		let el = Elem.fromString(`<div><p class="desc">Select workspace directory</p>
-		<p class="desc">suggest directories...</p>
-		<div class="confirm-modal"><label>Confirm</label></div></div>`)
-		
-		let url = ui.urlPicker(undefined, (p) => {
-			el.getElementsByClassName("confirm-modal")[0].dataset.valid = p
-		})
-		
-		Elem.after(el.getElementsByClassName("desc")[0], url)
-		
-		let exp = this
-		el.getElementsByClassName("confirm-modal")[0].addEventListener("click", function(e) {
-			if(!this.dataset.valid)
+		let Dialog_SelectWorkspace = require(path.join(__rootdir, "js", "dialogs", "selworkspace.js"))
+		new Dialog_SelectWorkspace(600, "", (result) => {
+			if(result === false)
 				return
 			
-			let ws = wmaster.addWorkspace(this.dataset.valid)
-			exp.setWorkspace(ws)
+			let ws = wmaster.addWorkspace(result)
+			this.setWorkspace(ws)
 			
 			// display loading indicator
-			exp.body.innerHTML = `<div class="abs-fill flex-col" style="justify-content: center"><div style="align-self: center">...</dib></div>`
-			hideModal()
+			this.body.innerHTML = `<div class="abs-fill flex-col" style="justify-content: center"><div style="align-self: center">...</dib></div>`
 		})
-		
-		showModal("Select working space", el)
 	}
 	
 	getTreeMenuProps(el) {
