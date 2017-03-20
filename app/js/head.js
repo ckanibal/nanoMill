@@ -42,18 +42,59 @@ function copyArrayWIO(ary, val) {
 	return a
 }
 
-function openDialog(fileName, width, height, initData, callback) {
-	Elem.addClass(document.getElementById("win-overlay"), "shown")
-	let con = document.getElementById("overlay-content")
-	con.style.width = width + "px"
-	con.style.height = height + "px"
+/**
+	Checks if a file/or directory of the given path already
+	exists; if so it checks for alternative with a " - n" suffix.
+	Otherwise it returns the given path
+	@param p path of tile
+	@param callback after finding a valid name
+*/
+function validateFilename(p, callback, i) {
+	if(typeof i === "number")
+		p += " - " + i
 	
-	let dlg = require(path.join(__rootdir, "dialogs", fileName))
-	dlg(initData, function() {
-		Elem.removeClass(document.getElementById("win-overlay"), "shown")
-		con.innerHTML = ""
-		
-		if(callback)
-			callback(...arguments)
+	fs.stat(p, (err) => {
+		// an error means, that the file does not exists
+		if(err)
+			callback(p)
+		else {
+			if(!i)
+				validateFilename(p, callback, 1)
+			else
+				validateFilename(p, callback, i++)
+		}
 	})
+}
+
+/**
+	Checks if a file/or directory of the given path already
+	exists; if so it checks for alternative with a " - n" suffix.
+	Otherwise it returns the given path
+	@param p path of tile
+*/
+function validateFilenameSync(p) {
+	let stat
+	
+	try {
+		stat = fs.statSync(p)
+	}
+	catch(e) {
+		return p
+	}
+	
+	let altp
+	let i = 1
+	while(stat) {
+		altp = p + " - " + i
+		try {
+			stat = fs.statSync(altp)
+		}
+		catch(e) {
+			return altp
+		}
+		
+		i++
+	}
+	
+	return altp
 }

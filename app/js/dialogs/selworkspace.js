@@ -27,7 +27,6 @@ class Dialog_SelectWorkspace extends Dialog {
 		let input = document.getElementById("rename-field")
 		
 		document.getElementById("dlg-cancel").addEventListener("click", _ => {
-			fnClose(false)
 			this.close()
 		})
 		

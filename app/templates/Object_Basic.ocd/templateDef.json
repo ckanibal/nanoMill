@@ -1,5 +1,5 @@
 {
-	"name": "Scenario.ocs",
+	"name": "Object/C4D_Object",
 	"autofill": "title|author|version|desc",
-	"ext": "ocs"
+	"ext": "ocd"
 }

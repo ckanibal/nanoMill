@@ -17,7 +17,7 @@ class Explorer extends layout.Module {
 				// add desc/button to it
 				let p = this.body.lastChild
 				p.insertAdjacentHTML('beforeEnd', `<div style="align-self: center; text-align: center">No workspace targeted,<br>click to add one.</div>`)
-				p.lastChild.onclick = this.modalNewWorkspace.bind(this)
+				p.lastChild.onclick = this.newWorkspaceDialog.bind(this)
 			}
 		}
 		
@@ -184,7 +184,7 @@ class Explorer extends layout.Module {
 		this.setWorkspace(wspace)
 	}
 	
-	modalNewWorkspace() {
+	newWorkspaceDialog() {
 		let Dialog_SelectWorkspace = require(path.join(__rootdir, "js", "dialogs", "selworkspace.js"))
 		new Dialog_SelectWorkspace(600, "", (result) => {
 			if(result === false)
@@ -195,6 +195,16 @@ class Explorer extends layout.Module {
 			
 			// display loading indicator
 			this.body.innerHTML = `<div class="abs-fill flex-col" style="justify-content: center"><div style="align-self: center">...</dib></div>`
+		})
+	}
+	
+	newFileDialog(tpath) {
+		let Dialog_NewFile = require(path.join(__rootdir, "js", "dialogs", "newfile.js"))
+		new Dialog_NewFile(500, 300, tpath, (result) => {
+			if(result === false)
+				return
+			
+			log(result)
 		})
 	}
 	
@@ -239,9 +249,7 @@ class Explorer extends layout.Module {
 						tpath = this.wspace.path
 				}
 				
-				openDialog("newfile.js", 450, 300, tpath, (result) => {
-					// if(result === true) update wspace...
-				})
+				this.newFileDialog(tpath)
 			}
 		})
 		
@@ -300,16 +308,14 @@ class Explorer extends layout.Module {
 				label: "New file",
 				icon: "icon-plus",
 				onclick: _ => {					
-					openDialog("newfile.js", 450, 300, this.wspace.path, (result) => {
-						// if(result === true) update wspace...
-					})
+					this.newFileDialog(this.wspace.path)
 				}
 			},
 			{
 				label: "New workspace",
 				icon: "icon-add-workspace",
 				onclick: _ => {
-					this.modalNewWorkspace()
+					this.newWorkspaceDialog()
 				}
 			},
 			{

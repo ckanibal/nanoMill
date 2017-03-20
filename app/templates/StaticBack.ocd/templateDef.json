@@ -1,7 +1,0 @@
-{
-	"name": "Object/C4D_StaticBack",
-	"input": "title|author|version|desc",
-	"target": "DefCore.txt|Script.c|StringTblDE.txt|StringTblUS.txt|",
-	"required": "DefCore.txt|Graphics.png|Script.c",
-	"optional": "StringTblDE.txt|StringTblUS.txt"
-}

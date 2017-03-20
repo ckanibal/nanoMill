@@ -1,7 +1,5 @@
 {
 	"name": "Particle.ocd",
-	"input": "title",
-	"target": "Particle.txt",
-	"required": "Particles.txt",
-	"optional": "Graphics.png"
+	"autofill": "title",
+	"ext": "ocd"
 }
