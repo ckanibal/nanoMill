@@ -1,24 +1,7 @@
 /* z-indices */
 $z-ctx-menu: 51;
-$z-overlay: 200;
+$z-dialog: 200;
 $z-mod: 10;
-
-#win-overlay {
-	@include abs-fill();
-	z-index: $z-overlay;
-	background-color: rgba(0, 0, 0, 0);
-	visibility:hidden;
-	transition: background-color 0.2s;
-	
-	&.shown {
-		background-color: rgba(0, 0, 0, 0.5);
-		visibility: visible;
-	}
-}
-
-#overlay-content {
-	align-self: center;
-}
 
 #content {
     position: relative;
@@ -55,112 +38,6 @@ $z-mod: 10;
 
 .hb-label {
 	padding: 2px 8px;
-}
-
-.modal-style {
-	background: $bg-main;
-	
-	label {
-		color: steelblue;
-		cursor: pointer;
-		
-		&:hover {
-			color: deepskyblue;
-		}
-	}
-	
-	hr {
-		margin: 65px 250px;
-		border: none;
-		border-top: 1px solid #616161;	
-	}
-	
-	.desc {
-		margin: 5px 0;
-		font-size: 12px;
-		color: grey;
-	}
-
-	.url {
-		padding: 10px 15px;
-		margin: 10px 0;
-		background-color: #1e2123;
-		color: #83b4c5;
-		-webkit-user-select: text;
-		white-space: nowrap;                   
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-	
-	.url-browse {
-		padding: 10px 15px;
-		margin: 10px 0;
-		background-color: #1e2123;
-		color: #83b4c5;
-		
-		&:hover {
-			background-color: #234861;
-			color: #7dc5de;
-		}
-	}
-	
-	input[type=text] {
-		-webkit-appearance: none;
-		border: none;
-		background: none;
-		outline: none;
-		color: $font-clr;
-		text-shadow: 1px 0px 0px steelblue;
-		font-size: 1em;
-		padding: 0;
-		box-sizing: border-box;
-		margin-bottom: -1px;
-		margin-top: 0;
-		
-		&:focus,
-		&:hover {
-			border-bottom: 1px solid grey;
-		}
-		
-		&.small {
-			max-width: 100px;
-		}
-	}
-	
-	textarea {
-		-webkit-appearance: none;
-		border: none;
-		background: none;
-		color: $font-clr;
-		text-shadow: 1px 0px 0px steelblue;
-		font-size: 1em;
-		outline: 1px solid grey;
-		outline-offset: -1px;
-		resize: none;
-		padding: 3px;
-		margin: 10px 0;
-		font-family: $main-font;
-		
-		&:focus,
-		&:hover {
-			outline: 1px solid steelblue;
-		}
-	}
-}
-
-.confirm-modal {
-	align-self: flex-end;
-	margin-top: 15px;
-	text-align: right;
-
-	label {
-		padding: 10px 15px;
-		display: inline-block;
-		
-		&[data-valid="true"] {
-			background-color: #234861;
-		}
-	}
 }
 
 input,

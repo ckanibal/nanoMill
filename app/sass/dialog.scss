@@ -1,5 +1,16 @@
-#overlay-content {
-	background: $bg-main;
+.dlg-modal {
+	@include abs-fill();
+	z-index: $z-dialog;
+	background-color: rgba(0, 0, 0, 0);
+	visibility:hidden;
+	transition: background-color 0.2s;
+	display: flex;
+	justify-content: center;
+	
+	&.shown {
+		background-color: rgba(0, 0, 0, 0.5);
+		visibility: visible;
+	}
 	
 	.btn {
 		padding: 10px 15px;
@@ -85,4 +96,18 @@
 			outline: 1px solid steelblue;
 		}
 	}
+}
+
+.dlg-footer .btn {
+	margin-bottom: 0;
+}
+
+.dlg-container {
+	align-self: center;
+	background: $bg-main;
+}
+
+.dlg-body {
+	padding: 20px;
+	@include flex-col();
 }

@@ -30,7 +30,7 @@
 
 module.exports.create = function(template, pth, {
 	title, desc, author, version, ext
-}) {
+}, callback) {
 	let ncp = require("ncp")
 	let path = require("path")
 	
@@ -94,6 +94,9 @@ module.exports.create = function(template, pth, {
 					fs.writeFileSync(targetpath, txt, 'utf8')
 				}
 			}
+			
+			if(callback)
+				callback()
 		}
 	)
 }

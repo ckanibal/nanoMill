@@ -24,7 +24,7 @@ let sass_defs = [{
 			src: "../sass/contextmenu.scss"
 		},
 		{
-			src: "../sass/dialog-ui.scss"
+			src: "../sass/dialog.scss"
 		},
 		{
 			src: "../sass/flex.scss"

@@ -36,21 +36,18 @@ module.exports = function(data, fnClose) {
 			</div>
 		</div>`
 		
-		
 		document.getElementById("overlay-cancel").addEventListener("click", fnClose)
 		
 		let btnConfirm = document.getElementById("overlay-confirm")
 		
 		btnConfirm.addEventListener("click", (e) => {
 			let descEl = document.getElementById("newfile-desc")
-			templates.create(plate, path, {
+			templates.create(plate, data, {
 				title: document.getElementById("newfile-name").value || "",
 				author: getConfig("author"),
 				version: getConfig("ocver"),
 				desc: descEl?descEl.value:""
-			})
-			
-			fnClose(true)
+			}, _  => fnClose(true))
 		})
 	}
 	

@@ -278,7 +278,8 @@ class Explorer extends layout.Module {
 			label: "Rename",
 			icon: "icon-pencil",
 			onclick: () => {
-				openDialog("rename.js", 400, 200, finfo.name, (result) => {
+				let Dialog_Rename = require(path.join(__rootdir, "js", "dialogs", "rename.js"))
+				new Dialog_Rename(300, 150, finfo.name, (result) => {
 					// check for valid file name
 					if(result && typeof result === "string" && result !== finfo.name)
 						this.wspace.renameFile(findex, result)
