@@ -62,6 +62,9 @@ class Dialog_NewFile extends Dialog {
 			fn
 		))
 		
+		document.getElementById("sel-temp").style.flex = "1"
+		document.getElementById("sel-temp").style.overflowY = "auto"
+		
 		document.getElementById("overlay-cancel").addEventListener("click", _ => this.close())
 		
 		this.show()
