@@ -67,22 +67,15 @@ class TemplateLoader {
 			try {
 				let tpath = path.join(dirpath, files[i])
 				let json = fs.readFileSync(path.join(tpath, "templateDef.json"))
-				this.parseTempDef(JSON.parse(json), tpath)
+				
+				let template = Template.fromJson(json)
+				template.setPath(tpath)
+				this.templates.push(template)
 			}
 			catch(err) {
 				error(`Could not read template definition of directory ${files[i]} (${err})`)
 			}
 		}
-	}
-	
-	parseTempDef({name, autofill, single = false, ext}, p) {
-		this.templates.push(new Template({
-			name: name,
-			autofill: autofill?autofill.split("|"):["none"],
-			single,
-			ext,
-			p: p
-		}))
 	}
 	
 	/**
@@ -129,12 +122,37 @@ class TemplateLoader {
 }
 
 class Template {
-	constructor({name, autofill, single, ext, p}) {
+	constructor(name, ext) {
 		this.name = name
-		this.autofill = autofill
 		this.ext = ext
-		this.single = single
-		this.path = single?path.join(p, single):p
+	}
+	
+	setPath(p) {
+		this.path = p
+	}
+	
+	static fromJson(json) {
+		let data = JSON.parse(json)
+		
+		if(!data)
+			throw new Error("No json does not contain data to parse a template from")
+		
+		// require fields
+		if(!data.name || !data.ext)
+			throw new Error("Template json misses required properties.")
+		
+		let t = new Template(data.name, data.ext)
+		// ensure autofill to be an array of strings
+		if(data.autofill && data.autofill.length)
+			t.autofill = data.autofill.split("|")
+		else
+			t.autofill = ["none"]
+		
+		// set if the template consists only of a single file
+		if(data.single && data.single === "true")
+			t.single = true
+		
+		return t
 	}
 }
 

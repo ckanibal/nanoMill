@@ -1,9 +1,10 @@
 let Dialog = require(path.join(__rootdir, "js", "dialogs", "dialog.js"))
 
 class Dialog_NewFile extends Dialog {
-	init(dirParent, fnClose) {
+	init(dirParent, fnOnCreation) {
 		console.assert(typeof dirParent === "string", {"message":"created Dialog_NewFile without a path as argument"})
 		
+		// first page: selection of a template
 		this.body.innerHTML = 
 			`<p class="desc">Choose template</p>
 			<div id="sel-temp"></div>
@@ -17,6 +18,8 @@ class Dialog_NewFile extends Dialog {
 		let SelectionList = require(path.join(__rootdir, "js", "lib", "sellist.js"))
 		let sel = new SelectionList(tmps.length - 1)
 		
+		
+		// second page: fillout autofill form and submit dialog
 		let fn = (tempid) => {
 			let template = tmps[tempid]
 			
@@ -37,18 +40,21 @@ class Dialog_NewFile extends Dialog {
 			document.getElementById("overlay-cancel").addEventListener("click", _ => this.close())
 			
 			let btnConfirm = document.getElementById("overlay-confirm")
-			let title = document.getElementById("newfile-name").value
 			
 			btnConfirm.addEventListener("click", (e) => {
+				let title = document.getElementById("newfile-name").value
 				let descEl = document.getElementById("newfile-desc")
 				templateLoader.createFromTemplate(template, dirParent, {
 					title,
 					author: getConfig("author"),
 					version: getConfig("ocver"),
 					desc: descEl?descEl.value:""
-				}, _  => fnClose(true))
+				}, _  => fnOnCreation(true))
+				
+				this.close()
 			})
 		}
+		// second page end
 		
 		document.getElementById("sel-temp").appendChild(SelectionList.toHtml(
 			sel,
