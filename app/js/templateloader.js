@@ -36,7 +36,6 @@ class AutofillStream extends Transform {
 			
 			return m
 		})
-		
 		callback(null, data)
 	}
 }
@@ -91,20 +90,21 @@ class TemplateLoader {
 		
 		let ncp = require("ncp")
 		// prevent overriding existing data
-		let tpath = validateFilenameSync(path.join(parDir, fillIns.title + template.ext))
+		let tpath = validateFilenameSync(path.join(parDir, fillIns.title + "." + template.ext))
 		
 		if(template.single) {
-			let read = fs.createReadStream(template.path)
+			let read = fs.createReadStream(path.join(template.path, template.single))
 			let trans = new AutofillStream(null, fillIns)
 			let write = fs.createWriteStream(tpath)
 			
 			read.pipe(trans).pipe(write)
 		}
 		else {
+			fs.mkdirSync(tpath)
 			ncp(template.path, tpath,
 				{
-					filter: /templateDef.json/gi,
-					transform: function (read, write) {log(read)
+					filter: v => !/templateDef.json$/gi.test(v),
+					transform: function (read, write) {
 						read.pipe(new AutofillStream(null, fillIns)).pipe(write)
 					},
 				},
@@ -149,9 +149,10 @@ class Template {
 			t.autofill = ["none"]
 		
 		// set if the template consists only of a single file
-		if(data.single && data.single === "true")
-			t.single = true
-		
+		if(data.single && data.single.length)
+			t.single = data.single
+		else
+			t.single = false
 		return t
 	}
 }
