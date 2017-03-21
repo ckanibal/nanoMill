@@ -294,6 +294,10 @@ class Workspace {
 	*/
 	static isAcceptedFileType(ext) {
 		switch(ext) {
+			case ".png":
+			case ".jpg":
+			case ".jpeg":
+			case ".bmp":
 			case ".ogg":
 			case ".wav":
 			case ".ocf":
