@@ -29,19 +29,13 @@ if(inDevMode) {
 else
 	writeConsoleOutputToFile()
 
-/**
-	Copies an array without the specified value
-*/
-function copyArrayWIO(ary, val) {
-	let a = []
-	
-	for(let i = 0; i < ary.length; i++)
-		if(ary[i] !== val)
-			a.push(ary[i])
-	
-	return a
-}
 
+/**
+	Remove the first matched value found in the array.
+	Starts at the end of the array.
+	@param {ary} The Array to iterate over
+	@param {val} The value to delete
+*/
 function removeArrayItem(ary, val) {
 	for(let i = ary.length - 1; i >= 0; i--) {
 		if(ary[i] === val) {
@@ -51,6 +45,11 @@ function removeArrayItem(ary, val) {
 	}
 }
 
+/**
+	Removes all matched values found in the array.
+	@param {ary} The Array to iterate over
+	@param {val} The value to delete
+*/
 function removeArrayItems(ary, val) {
 	for(let i = ary.length - 1; i >= 0; i--) {
 		if(ary[i] === val) {
@@ -64,8 +63,9 @@ function removeArrayItems(ary, val) {
 	Checks if a file/or directory of the given path already
 	exists; if so it checks for alternative with a " - n" suffix.
 	Otherwise it returns the given path
-	@param p path of tile
-	@param callback after finding a valid name
+	@param {p} path of tile
+	@param {callback} Callback executing when finding a valid name.
+			Has the resulting path as argument
 */
 function validateFilename(p, callback, i) {
 	if(typeof i === "number")
@@ -88,7 +88,7 @@ function validateFilename(p, callback, i) {
 	Checks if a file/or directory of the given path already
 	exists; if so it checks for alternative with a " - n" suffix.
 	Otherwise it returns the given path
-	@param p path of tile
+	@param {p} path of tile
 */
 function validateFilenameSync(p) {
 	let stat

@@ -1,4 +1,12 @@
 -add option: scroll past end from ace editor renderer instance
 	look here: https://github.com/ajaxorg/ace/wiki/Configuring-Ace
 	
-option for sorting directories in a cr-editor typical manner or not
+Load newly created files and directories into the workspaces
+use validateFilename() in renameFile of the Workspace-class
+Close workspace option
+Workspace name
+removing files recursively
+
+things that one could do:
+replacing c4group usage by nodejs gzip stream preceding a custom transform-stream (to make things valid for gzip) and vice versa
+openclonk doc xml-interface

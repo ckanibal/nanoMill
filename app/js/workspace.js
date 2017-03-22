@@ -1,5 +1,6 @@
 /**
-	The WorkspaceMaster manages and stores the single Workspace instances.
+	The WorkspaceMaster manages and stores the single Workspace instances
+	and handles opening single files.
 */
 class WorkspaceMaster {
 	constructor() {
@@ -21,7 +22,7 @@ class WorkspaceMaster {
 	
 	/**
 		Opens a file in editor
-		@param {finfo} FileInfo Object to open
+		@param {FileInfo} finfo - FileInfo Object to open
 		@return {boolean} returns weather the file is already opened
 	*/
 	openFile(finfo) {
@@ -47,7 +48,7 @@ class WorkspaceMaster {
 	/**
 		Checks if a file of the given path
 		is already opened
-		@param {p} path to check
+		@param {string} p - path to check
 	*/
 	fileOpened(p) {
 		for(let i = 0; i < this.opened.length; i++)
@@ -64,6 +65,11 @@ class WorkspaceMaster {
 		return this.opened
 	}
 	
+	/**
+		Opens a file by its path.
+		If the file is already opened, an event is emitted to it instead.
+		@param {string} p - The path of the file to open
+	*/
 	openFileByPath(p) {
 		// check if file of this path is already opened
 		let finfo = this.fileOpened(p)
@@ -85,14 +91,16 @@ class WorkspaceMaster {
 	}
 	
 	/**
-	 * returns a copy of the internal workspace holder
+		Returns a copy of the internal workspace holder
+		@return {array} - Array of Workspace instances
 	*/
 	getWorkspaces() {
 		return this.wspaces.slice()
 	}
 	
 	/**
-	* creates a workspaces directing at the given path
+		Creates a workspace directing to the given path
+		@param {string} p - The path to create a workspace from
 	*/
 	addWorkspace(p) {
 		let ws = new Workspace(p)
@@ -102,7 +110,7 @@ class WorkspaceMaster {
 	}
 	
 	/**
-		stores paths of workspaces in an array into our json config file
+		Stores paths of workspaces into thhe json config file
 	*/
 	saveInConfig() {
 		let a = []
@@ -115,6 +123,7 @@ class WorkspaceMaster {
 	
 	/**
 		Returns the index of the given workspace
+		@param {Workspace} workspace - Workspace instead to look for
 	*/
 	getIndexOf(workspace) {
 		for(let i = 0; i < this.wspaces.length; i++)
@@ -126,15 +135,16 @@ class WorkspaceMaster {
 	
 	/**
 		Returns a workspace identified by its index
+		@param {number} idx- Index of the workspace
 	*/
-	getWorkspace(index) {
-		return this.wspaces[index]
+	getWorkspace(idx) {
+		return this.wspaces[idx]
 	}
 	
 	/**
 		Checks if the given extension is one, that we want
 		to open in an EditoView
-		@param {ext} extension to check. Must have preceding "."
+		@param {string} ext - Extension to check. Must have preceding "."
 	*/
 	static isEditableExt(ext) {
 		if( ext === ".c" ||
@@ -149,8 +159,8 @@ class WorkspaceMaster {
 }
 
 /**
-* a workspace holds information about a specific folder on the user's drive
-* and collects data about editable components in the folder
+	A Workspace instance holds information about a specific folder on the user's drive
+	and collects data about editable components in that folder.
 */
 
 class Workspace {
@@ -174,8 +184,12 @@ class Workspace {
 	}
 	
 	/**
-		loads data of a directory into internal file info holder
+		Loads data of a directory into internal file info holder
 		and invokes a callback with a linked tree as paramter, which reperesents the file hiearchy
+		@param {string} dir_path Path of the directory
+		@param {function} callback - Callback that gets called when loading has finished.
+				Takes a LinkedTree as argument holding the hierarchy of the files
+				represented by the indices of their FileInfo objects.
 	*/
 	loadDirectory(dir_path, callback) {		
 		// collect directory information
@@ -234,12 +248,9 @@ class Workspace {
 		})
 	}
 	
-	addDirectoryEntry() {
-		
-	}
-	
 	/**
-		deletes a file or folder with all its descendants
+		Deletes a file or folder with all its descendants
+		@param {number} idx - Index of the FileInfo instance, which is to delete
 	*/
 	unlinkFile(idx) {
 		// sanity check
@@ -261,8 +272,8 @@ class Workspace {
 	}
 	
 	/**
-		executes the c4group executable to unpack the file, given by the index
-		of the local file info holder
+		Executes the c4group application to unpack a file
+		@param {number} idx - FileInfo index
 	*/
 	packFile(idx) {
 		// command the c4group(.exe) to unpack our targeted file
@@ -283,8 +294,9 @@ class Workspace {
 	}
 	
 	/**
-		executes the c4group executable to unpack the file, given by the index
+		Executes the c4group executable to unpack the file, given by the index
 		of the local file info holder
+		@param {number} idx - FileInfo index
 	*/
 	unpackFile(idx) {
 		runC4Group([this.finfo[idx].path, "-u"], false, () => {
@@ -314,7 +326,8 @@ class Workspace {
 	}
 	
 	/**
-		getter of name property, if no name set returns the basename of the specified path instead
+		Returns the name of the workspace.
+		@return {string} Name of the workspace, otherwise the basename of its path
 	*/
 	getName() {
 		if(!this.name)
@@ -324,8 +337,9 @@ class Workspace {
 	}
 	
 	/**
-		pushes a FileInfo instance to the internal array and returns
+		Pushes a FileInfo instance to the internal array and returns
 		its index in the array
+		@param {FileInfo} finfo - FileInfo instance to add
 	*/
 	addFileInfo(finfo) {
 		let i = this.finfo.length
@@ -335,8 +349,10 @@ class Workspace {
 		return i
 	}
 	
-	/*
-		renames the file of the given index
+	/**
+		Renames the file of the given index
+		@param {number} idx - FileInfo index of the file
+		@param {string} fname - New name of the file
 	*/
 	renameFile(idx, fname) {
 		let finfo = this.finfo[idx]
@@ -360,8 +376,9 @@ class Workspace {
 	}
 	
 	/**
-		checks weather the given extension is editable and
+		Checks weather the given extension is editable and
 		can therefore be opened in the editor frame
+		@param {string} ext - Extension to check. Requires preceding "."
 	*/
 	static isAcceptedFileType(ext) {
 		switch(ext) {
@@ -385,8 +402,11 @@ class Workspace {
 	}
 	
 	/**
-		the higher the value for the specific file extension is,
-		the higher it gets placed in the directory view
+		Returns a score for file extensions, indicating where to place
+		them in file hierarchy. The highigher a score is, the higher its meant
+		to be placed in difference to others.
+		@param {string} ext - Extension to get the score of. Requires preceding "."
+		@return {number} The score of the extension
 	*/
 	static getExtSortValue(ext) {
 		switch(ext) {
@@ -403,8 +423,10 @@ class Workspace {
 	}
 	
 	/**
-		sorts an array of LinkedTrees with file indices as their values
+		Sorts an array of LinkedTrees with file indices as their values
 		by their corresponding extension (cr editor sorting)
+		@param {array} fa - Array of LinkedTree to sort
+		@return {array} Sorted array of LinkedTrees
 	*/
 	sortFileIndicesByExt(fa) {
 		if(!fa)
@@ -451,6 +473,11 @@ var wmaster = new WorkspaceMaster()
 	Therefor you can use update() and updateSync() to achieve that.
 */
 class FileInfo {
+	/**
+		@param {string} p - The path of the file
+		@param {Stat} stat - The stat object returned by fs.stat*()
+		@param {string} name - Name of the file. Can be omitted.
+	*/
 	constructor(p, stat, name) {
 		this.path = p
 		this.stat = stat
@@ -459,7 +486,9 @@ class FileInfo {
 	}
 	
 	/**
-		sets the path and updates some values
+		Sets the and updates name and ext property based
+		on that path
+		@param {string} p - Path to the file
 	*/
 	setPath(p) {
 		this.path = p
@@ -468,16 +497,16 @@ class FileInfo {
 	}
 	
 	/**
-		updates the stat property given by fs.stat() synchronously
+		Updates the stat property by calling fs.statSync()
 	*/
 	updateSync() {
 		this.stat = fs.statSync(this.path)
 	}
 	
 	/**
-		updates the stat property given by fs.stat() asynchronously
-		and invokes the given callback afterwards with the FileInfo instance
-		as parameter
+		Updates the stat property given by fs.stat() asynchronously
+		and invokes the given callback afterwards with the
+		FileInfo instance as argument
 	*/
 	update(callback) {
 		fs.statSync(this.path, (stat) => {
@@ -488,5 +517,3 @@ class FileInfo {
 		})
 	}
 }
-
-// coding space
