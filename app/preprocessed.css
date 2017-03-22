@@ -612,8 +612,7 @@ textarea::-webkit-input-placeholder {
   background-color: #1d1f22;
   -webkit-user-select: none;
   user-select: none; }
-  .flex-splitter:hover, .flex-splitter.dragged,
-  .flex-splitter:hover,
+  .flex-splitter.dragged,
   .flex-splitter.dragged {
     background-color: steelblue; }
 

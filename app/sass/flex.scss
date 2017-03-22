@@ -33,7 +33,6 @@
 	
 	@include noUserSelect();
 	
-	&:hover,
 	&.dragged {
 		background-color: $frame-action;
 	}
