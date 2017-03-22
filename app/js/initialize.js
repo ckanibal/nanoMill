@@ -233,19 +233,6 @@ function openFiles(paths) {
 	*/
 }
 
-function showModal(title, contentEl) {
-	modal = document.getElementById("modal")
-	modal.getElementsByClassName("modal-title")[0].innerHTML = title
-	modal.getElementsByClassName("modal-content")[0].appendChild(contentEl)
-	modal.style.display = ""
-}
-
-function hideModal() {
-	let modal = document.getElementById("modal")
-	modal.style.display = "none"
-	modal.getElementsByClassName("modal-content")[0].innerHTML = ""
-}
-
 function insertTemplateSpecials(s) {
 	let author = getConfig("author")
 	
