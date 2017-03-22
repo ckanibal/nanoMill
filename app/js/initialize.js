@@ -210,20 +210,19 @@ function pickFile(callback) {
 }
 
 function receiveLocalResource(p) {
-	warn("using deprecated function")
 	let name = path.basename(p),
-		leaf = path.extname(p)
+		ext = path.extname(p)
 	
 	if(name.match(/^c4group/gi))
 		return setConfig("c4group", p)
 	else if(name.match(/^openclonk/gi))
 		return setConfig("ocexe", p)
-
-	// open globally
-	// ...
+	
+	wmaster.openFileByPath(p)
 }
 
 function openFiles(paths) {
+	warn("Used unimplented or deprecated function")
 	/*
 	for(var i = 0; i < files.length; i++) {
 		let res = filemanager.addResource(paths)
@@ -256,11 +255,10 @@ function save() {
 }
 
 function openFilePicker() {
-	pickFile(function(e) {
-		let files = this.files
-		
-		for(let i = 0; i < files.length; i++)
-			receiveLocalResource(files[i].path)
+	dialog.showOpenDialog((fileNames) => {
+        if(fileNames !== undefined)
+			for(let i = 0; i < fileNames.length; i++)
+				receiveLocalResource(fileNames[i])
 	})
 }
 

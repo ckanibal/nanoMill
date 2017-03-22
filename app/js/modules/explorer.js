@@ -170,10 +170,9 @@ class Explorer extends layout.Module {
 				if(Elem.hasClass(item.parentNode, "tree-parent"))
 					return
 				
+				// open file
 				if(WorkspaceMaster.isEditableExt(finfo.ext))
-					// openFile -> true: the file is already opened
-					if(wmaster.openFile(finfo))
-						hook.exec("onOpenedFileSelect", finfo)
+					wmaster.openFile(finfo)
 			})
 			
 			// attach contextmenu on right click

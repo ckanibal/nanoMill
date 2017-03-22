@@ -33,8 +33,10 @@ class WorkspaceMaster {
 		if(!WorkspaceMaster.isEditableExt(finfo.ext))
 			return false
 		
-		if(this.fileOpened(finfo.path))
+		if(this.fileOpened(finfo.path)) {
+			hook.exec("onOpenedFileSelect", finfo)
 			return true
+		}
 		
 		this.opened.push(finfo)
 		hook.exec("onFileOpen", finfo)
@@ -50,7 +52,7 @@ class WorkspaceMaster {
 	fileOpened(p) {
 		for(let i = 0; i < this.opened.length; i++)
 			if(this.opened[i].path === p)
-				return true
+				return this.opened[i]
 		
 		return false
 	}
@@ -60,6 +62,26 @@ class WorkspaceMaster {
 	*/
 	getOpenedFiles() {
 		return this.opened
+	}
+	
+	openFileByPath(p) {
+		// check if file of this path is already opened
+		let finfo = this.fileOpened(p)
+		
+		if(finfo) {
+			hook.exec("onOpenedFileSelect", finfo)
+			return
+		}
+		
+		// otherwise create FileInfo and open the file
+		fs.stat(p, (err, stat) => {
+			if(err)
+				throw err
+			
+			finfo = new FileInfo(p, stat)
+			this.opened.push(finfo)
+			hook.exec("onFileOpen", finfo)
+		})
 	}
 	
 	/**
@@ -313,27 +335,6 @@ class Workspace {
 		return i
 	}
 	
-	/**
-		checks if the file of the given index is marked
-		as opened or not
-	*/
-	fileOpened(i) {
-		return this.opened.has(i)
-	}
-	
-	/**
-		opens the file of the given index
-	*/
-	openFile(i) {
-		if(this.fileOpened(i))
-			return
-		
-		// execute listeners
-		hook.exec("onFileOpen", this.finfo[i])
-		
-		this.opened.add(i)
-	}
-	
 	/*
 		renames the file of the given index
 	*/
@@ -384,8 +385,8 @@ class Workspace {
 	}
 	
 	/**
-		the higher the value for the specific file extension is, the higher
-		it getes placed in the directory view
+		the higher the value for the specific file extension is,
+		the higher it gets placed in the directory view
 	*/
 	static getExtSortValue(ext) {
 		switch(ext) {
@@ -453,8 +454,8 @@ class FileInfo {
 	constructor(p, stat, name) {
 		this.path = p
 		this.stat = stat
-		this.name = name
-		this.ext = path.extname(name)
+		this.name = name || path.basename(p)
+		this.ext = path.extname(this.name)
 	}
 	
 	/**
