@@ -73,7 +73,7 @@ class Navigator extends layout.Module {
 					<div class='--NAV-fdir'>${dirname}/</div>
 					${file.name}<span class='unsaved-mark'>*</span>
 				</div>
-				<div class='--NAV-entry-close flex-col'><div class='icon-x-s'></div></div>
+				<div class='--NAV-entry-close flex-col'><div class='icon-close'></div></div>
 			</div>`)
 		
 		let el = this.body.lastChild
