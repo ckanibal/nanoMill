@@ -42,6 +42,24 @@ function copyArrayWIO(ary, val) {
 	return a
 }
 
+function removeArrayItem(ary, val) {
+	for(let i = ary.length - 1; i >= 0; i--) {
+		if(ary[i] === val) {
+			ary.splice(i, 1)
+			return
+		}
+	}
+}
+
+function removeArrayItems(ary, val) {
+	for(let i = ary.length - 1; i >= 0; i--) {
+		if(ary[i] === val) {
+			ary.splice(i, 1)
+			break
+		}
+	}
+}
+
 /**
 	Checks if a file/or directory of the given path already
 	exists; if so it checks for alternative with a " - n" suffix.
