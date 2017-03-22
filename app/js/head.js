@@ -30,14 +30,14 @@ else
 	writeConsoleOutputToFile()
 
 /**
-	copies an array without the specified value
+	Copies an array without the specified value
 */
 function copyArrayWIO(ary, val) {
 	let a = []
-	let i = ary.length
-	while(--i)
+	
+	for(let i = 0; i < ary.length; i++)
 		if(ary[i] !== val)
-			a[i] = ary[i]
+			a.push(ary[i])
 	
 	return a
 }

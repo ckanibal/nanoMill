@@ -76,14 +76,18 @@ class Navigator extends layout.Module {
 				<div class='--NAV-entry-close flex-col'><div class='icon-close'></div></div>
 			</div>`)
 		
+		// show file
 		let el = this.body.lastChild
 		el.addEventListener("click", function(e) {
 			hook.exec("onOpenedFileSelect", file)
 			e.stopPropagation()
 		})
 		
+		// close file
 		el.lastElementChild.addEventListener("click", function(e) {
 			if(file.mod) {
+				// only close call hook.exec when the file actually has been closed
+				// and not prevented by mod.close()
 				if(file.mod.close())
 					hook.exec("onFileClosed", file)
 			}

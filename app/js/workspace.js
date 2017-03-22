@@ -12,6 +12,11 @@ class WorkspaceMaster {
 			a.forEach(this.addWorkspace.bind(this))
 		
 		this.opened = []
+		
+		// remove finfo from file opened list
+		hook.in("onFileClosed", (finfo) => {
+			this.opened = copyArrayWIO(this.opened, finfo)
+		})
 	}
 	
 	/**
