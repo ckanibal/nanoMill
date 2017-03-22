@@ -705,7 +705,7 @@ class Layout_SubModule extends Layout_Element {
 		
 		// detach any callbacks of hook-system with reference to this module
 		hook.removeByModuleId(this.id)
-		layout.removeFromModuleList(this)
+		this.source.removeFromModuleList(this)
 		
 		this.onClose()
 		
