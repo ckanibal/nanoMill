@@ -10,7 +10,9 @@ class Navigator extends layout.Module {
 		this.hookIn("onFileOpened", this.insertFileEntry.bind(this))
 		
 		this.hookIn("onOpenedFileSelect", (file) => {
-			Elem.removeClass(this.root.getElementsByClassName("selected-file")[0])
+			let old = this.root.getElementsByClassName("selected-file")[0]
+			if(old)
+				Elem.removeClass(old)
 			
 			for(let i = 0; i < this.entries.length; i++)
 				if(this.entries[i].file === file)
@@ -18,17 +20,17 @@ class Navigator extends layout.Module {
 		})
 		
 		// TODO: get opened files
-		let rList = [] 
+		let finfos = wmaster.getOpenedFiles()
 
-		for(let i = 0; i < rList.length; i++)
-			if(rList[i].editor)
-				this.insertFileEntry(rList[i])
+		for(let i = 0; i < finfos.length; i++)
+			if(finfos[i].editor)
+				this.insertFileEntry(finfos[i])
 		
 		for(let i = 0; i < this.entries.length; i++)
 			this.entries[i].el.style.animation = `list-item-in 0.3s ease-out 0.${i}s 1 normal both`
 		
 		this.hookIn("onCurrEditorSet", (mod, res) => {
-			let curr = this.root.getElementsByClassName("current-file")
+			let curr = this.root.getElementsByClassName("current-file")[0]
 			if(curr)
 				Elem.removeClass(curr, "current-file")
 			
@@ -39,10 +41,10 @@ class Navigator extends layout.Module {
 				}
 		})
 		
-		this.hookIn("onFileClosed", (res) => {
+		this.hookIn("onFileClosed", (finfo) => {
 			let a  = []
 			for(let i = 0; i < this.entries.length; i++)
-				if(this.entries[i].file === res)
+				if(this.entries[i].file === finfo)
 					Elem.remove(this.entries[i].el)
 				else
 					a.push(this.entries[i])
@@ -65,8 +67,8 @@ class Navigator extends layout.Module {
 	insertFileEntry(file) {
 		let dirname = path.basename(path.dirname(file.path))
 		
-		this.body.insertAdjacentHTML("beforeend", `
-			<div class='--NAV-entry'>
+		this.body.insertAdjacentHTML("beforeend", 
+			`<div class='--NAV-entry'>
 				<div class='ALE-label'>
 					<div class='--NAV-fdir'>${dirname}/</div>
 					${file.name}<span class='unsaved-mark'>*</span>

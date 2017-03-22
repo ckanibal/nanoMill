@@ -97,6 +97,9 @@ class Explorer extends layout.Module {
 		this.wspace = wspace
 	}
 	
+	/**
+		creates an html-view of the given workspace, with typical explorer controls
+	*/
 	showWorkspace(wspace) {
 		let expanded = []
 		let selectedOld = []
@@ -167,8 +170,10 @@ class Explorer extends layout.Module {
 				if(Elem.hasClass(item.parentNode, "tree-parent"))
 					return
 				
-				if(extIsEditable(finfo.ext))
-					this.wspace.openFile(index)
+				if(WorkspaceMaster.isEditableExt(finfo.ext))
+					// openFile -> true: the file is already opened
+					if(wmaster.openFile(finfo))
+						hook.exec("onOpenedFileSelect", finfo)
 			})
 			
 			// attach contextmenu on right click
@@ -184,6 +189,9 @@ class Explorer extends layout.Module {
 		this.setWorkspace(wspace)
 	}
 	
+	/**
+		Opens a dialog, where a new workspace can be chosen
+	*/
 	newWorkspaceDialog() {
 		let Dialog_SelectWorkspace = require(path.join(__rootdir, "js", "dialogs", "selworkspace.js"))
 		new Dialog_SelectWorkspace(600, "", (result) => {
@@ -198,13 +206,19 @@ class Explorer extends layout.Module {
 		})
 	}
 	
-	newFileDialog(tpath) {
+	/**
+		Opens a dialog to create a new file from template
+		@param {tpath} path of the directory where the new file will be created
+		@param {parentfIndex} file index of the directory in which the file
+			shall be placed (-1 for root)
+	*/
+	newFileDialog(tpath, parentfIndex) {
 		let Dialog_NewFile = require(path.join(__rootdir, "js", "dialogs", "newfile.js"))
 		new Dialog_NewFile(500, 300, tpath, (result) => {
-			if(result === false)
+			if(!result)
 				return
-			
 			log(result)
+			this.wspace.addDirectoryEntry(parentfIndex, result)
 		})
 	}
 	
@@ -249,7 +263,7 @@ class Explorer extends layout.Module {
 						tpath = this.wspace.path
 				}
 				
-				this.newFileDialog(tpath)
+				this.newFileDialog(tpath, findex)
 			}
 		})
 		
@@ -308,7 +322,7 @@ class Explorer extends layout.Module {
 				label: "New file",
 				icon: "icon-plus",
 				onclick: _ => {					
-					this.newFileDialog(this.wspace.path)
+					this.newFileDialog(this.wspace.path, -1)
 				}
 			},
 			{
@@ -335,6 +349,8 @@ class Explorer extends layout.Module {
 	}
 	
 	/**
+		Checks if the given file extension is allowed to be
+		packed by the c4group
 	*/
 	static isOcPackable(ext) {
 		if( ext === ".ocs" || 

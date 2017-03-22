@@ -4,7 +4,7 @@ let nextTextEditorId = 0
 class TextEditor extends layout.SubModule {
 	
 	init() {
-		this.root.innerHTML = `<div id='TE-${nextTextEditorId}' class='ace_qtmill'></div>`
+		this.root.innerHTML = `<div id='TE-${nextTextEditorId}' class='ace_mill'></div>`
 		
 		this.tid = nextTextEditorId++
 		
@@ -47,14 +47,14 @@ class TextEditor extends layout.SubModule {
 			setTimeout(this.checkFileState.bind(this), 1)
 		})
 		
-		// get rid of the locale lang tool, since it will suggest any word in the document
+		// get rid of the local lang tool, since it will suggest any word in the document
 		let langtools = ace.require("ace/ext/language_tools")
 		langtools.setCompleters([langtools.snippetCompleter, langtools.keyWordCompleter])
     }
 	
 	setFontSize(size) {
 		this.editor.setOptions({
-		  fontSize: size + "px"
+			fontSize: size + "px"
 		})
 	}
 	

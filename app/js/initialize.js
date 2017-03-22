@@ -223,18 +223,6 @@ function receiveLocalResource(p) {
 	// ...
 }
 
-function extIsEditable(ext) {
-	if( ext === ".c" ||
-		ext === ".txt" ||
-		ext === ".ocm" ||
-		ext === ".glsl" ||
-		ext === ".material")
-		return true
-	
-	return false
-}
-
-
 function openFiles(paths) {
 	/*
 	for(var i = 0; i < files.length; i++) {

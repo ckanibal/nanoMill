@@ -7,14 +7,11 @@ class EditorView extends layout.Deck {
 		
 		this.hookIn("onFileOpen", (finfo) => {
 			
-			if(finfo.stat.isDirectory())
-				return
-			
 			fs.readFile(finfo.path, 'utf8', (err, text) => {
 				if(err)
 					throw `Failed to read file in EditorView (${err})`
 				
-				if(this.interpretFile(finfo, text)) {
+				if(this.openFileInModule(finfo, text)) {
 					hook.exec("onFileOpened", finfo)
 					hook.exec("onOpenedFileSelect", finfo)
 				}
@@ -50,64 +47,57 @@ class EditorView extends layout.Deck {
 		_dumped_editors = []
 	}
 
-    interpretFile(file, text) {
+    openFileInModule(finfo, text) {
         let mod, modIdx = -1
-
-        switch(file.leaf){
+		let mode, mdlType
+        switch(finfo.ext){
             case ".c":
-                mod = addModule("texteditor")
-                this.registerChild(mod)
-                mod.setup(file, text, "ocscript")
-                this.showChild(this.getChildIndex(mod))
+				mdlType = "texteditor"
+				mode = "ocscript"
             break
             case ".txt":
-				let mode = "text"
+				mode = "text"
 				
-				if(
-					file.name === "DefCore.txt" ||
-					file.name === "Scenario.txt" ||
-					file.name === "ParameterDefs.txt" ||
-					file.name === "Teams.txt" ||
-					file.name === "Particle.txt" ||
-					file.name === "Objects.txt" ||
-					file.name === "PlayerControls.txt"
+				if( finfo.name === "DefCore.txt" ||
+					finfo.name === "Scenario.txt" ||
+					finfo.name === "ParameterDefs.txt" ||
+					finfo.name === "Teams.txt" ||
+					finfo.name === "Particle.txt" ||
+					finfo.name === "Objects.txt" ||
+					finfo.name === "PlayerControls.txt"
 				)
 					mode = "ini"
 				
-                mod = addModule("texteditor")
-                this.registerChild(mod)
-                mod.setup(file, text, mode)
-                this.showChild(this.getChildIndex(mod))
+                mdlType = "texteditor"
             break
 			case ".glsl":
-                mod = addModule("texteditor")
-                this.registerChild(mod)
-                mod.setup(file, text, "glsl")
-                this.showChild(this.getChildIndex(mod))
+				mode = "glsl"
+                mdlType = "texteditor"
             break
 			case ".material":
-                mod = addModule("texteditor")
-                this.registerChild(mod)
-                mod.setup(file, text, "text")
-                this.showChild(this.getChildIndex(mod))
+                mode = "txt"
+                mdlType = "texteditor"
             break
 			case ".ocm":
-                mod = addModule("texteditor")
-                this.registerChild(mod)
-                mod.setup(file, text, "ini")
-                this.showChild(this.getChildIndex(mod))
+                mode = "ini"
+                mdlType = "texteditor"
             break
 			
 			default:
-			return
+				return
         }
 		
-		hook("onFileClosed", (file) => {
-			file.editor = null
-			file.mod = null
+		mod = this.source.createModule(mdlType)
+		this.registerChild(mod)
+		mod.setup(finfo, text, mode)
+		this.showChild(this.getChildIndex(mod))
+		
+		this.hookIn("onFileClosed", (finfo) => {
+			finfo.editor = null
+			finfo.mod = null
 		})
 		
-		this.registerFile(file, mod)
+		this.registerFile(finfo, mod)
 
         return true
     }

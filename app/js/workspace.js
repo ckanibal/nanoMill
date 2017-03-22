@@ -10,6 +10,51 @@ class WorkspaceMaster {
 		
 		if(a)
 			a.forEach(this.addWorkspace.bind(this))
+		
+		this.opened = []
+	}
+	
+	/**
+		Opens a file in editor
+		@param {finfo} FileInfo Object to open
+		@return {boolean} returns weather the file is already opened
+	*/
+	openFile(finfo) {
+		// don't try to open directories
+		if(finfo.stat.isDirectory())
+			return false
+		
+		// check if this file allowed to be opened in our app
+		if(!WorkspaceMaster.isEditableExt(finfo.ext))
+			return false
+		
+		if(this.fileOpened(finfo.path))
+			return true
+		
+		this.opened.push(finfo)
+		hook.exec("onFileOpen", finfo)
+		
+		return false
+	}
+	
+	/**
+		Checks if a file of the given path
+		is already opened
+		@param {p} path to check
+	*/
+	fileOpened(p) {
+		for(let i = 0; i < this.opened.length; i++)
+			if(this.opened[i].path === p)
+				return true
+		
+		return false
+	}
+	
+	/**
+		Returns the opened files
+	*/
+	getOpenedFiles() {
+		return this.opened
 	}
 	
 	/**
@@ -42,7 +87,7 @@ class WorkspaceMaster {
 	}
 	
 	/**
-		returns the index of the given workspace
+		Returns the index of the given workspace
 	*/
 	getIndexOf(workspace) {
 		for(let i = 0; i < this.wspaces.length; i++)
@@ -53,10 +98,26 @@ class WorkspaceMaster {
 	}
 	
 	/**
-		returns a workspace identified by its index
+		Returns a workspace identified by its index
 	*/
 	getWorkspace(index) {
 		return this.wspaces[index]
+	}
+	
+	/**
+		Checks if the given extension is one, that we want
+		to open in an EditoView
+		@param {ext} extension to check. Must have preceding "."
+	*/
+	static isEditableExt(ext) {
+		if( ext === ".c" ||
+			ext === ".txt" ||
+			ext === ".ocm" ||
+			ext === ".glsl" ||
+			ext === ".material")
+			return true
+		
+		return false
 	}
 }
 
@@ -144,6 +205,10 @@ class Workspace {
 			if(callback)
 				callback(tree)
 		})
+	}
+	
+	addDirectoryEntry() {
+		
 	}
 	
 	/**
