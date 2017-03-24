@@ -4,7 +4,7 @@ $z-dialog: 200;
 $z-mod: 10;
 
 #content {
-    position: relative;
+  position: relative;
 	overflow: hidden;
 }
 
@@ -22,7 +22,7 @@ $z-mod: 10;
 	padding: 2px 5px;
 	-webkit-app-region: no-drag;
 	line-height: 20px;
-	
+
 	&:hover {
 		background-color: $tb-bg;
 		text-shadow: none;
@@ -65,12 +65,12 @@ textarea::-webkit-input-placeholder {
 	@include absoluteFill();
 	max-height: 100%;
 	padding: 20px 50px;
-	
+
 	backface-visibility: hidden;
 	z-index: 50;
 	display: none;
 	animation: roll-out-top 0.3s linear 0s 1 alternate both;
-	
+
 	&.visible {
 		display: flex;
 		animation: roll-in-right 0.3s;
@@ -131,13 +131,13 @@ textarea::-webkit-input-placeholder {
 	background-color: grey;
 }
 
-@mixin abstractList() {	
+@mixin abstractList() {
 	color: $font-clr;
 	cursor: default;
-	
+
 	@include noUserSelect();
 	@include flex-col();
-	
+
 	.ALE-label {
 		flex: 1;
 		font-size: 14px;
@@ -145,7 +145,7 @@ textarea::-webkit-input-placeholder {
 		&:hover {
 			background-color: $hvr;
 		}
-		
+
 		font-family: $font-stack;
 	}
 }
@@ -153,7 +153,7 @@ textarea::-webkit-input-placeholder {
 @mixin abstractListEntry() {
 	color: $font-clr;
 	cursor: default;
-	
+
 	@include noUserSelect();
 	@include flex-row();
 }
@@ -167,16 +167,16 @@ textarea::-webkit-input-placeholder {
 	font-size: 14px;
 	padding: 2px 5px;
 	@include flex-row();
-	
+
 	&:hover {
 		background-color: $hvr;
 	}
-	
+
 	&:active {
 		background-color: $bg-ui-active;
 		color: whitesmoke;
 	}
-	
+
 	font-family: $font-stack;
 	overflow: hidden;
 }
@@ -280,15 +280,15 @@ $list-in-dur: 0.3s;
 	line-height: 48px;
 	font-size: 48px;
 	align-self: flex-end;
-	
+
 	&:hover {
 		background-color: rgb(80, 80, 80);
 	}
-	
+
 	&:active {
 		background-color: $bg-ui-active;
 	}
-	
+
 	&::before {
 		min-width: 48px;
 		font-weight: 100;
@@ -329,12 +329,12 @@ $list-in-dur: 0.3s;
 .the-mill {
 	animation: windmill 3s;
 	transform-origin: center;
-	
+
 	path {
 		animation: pop-up 3s;
 		animation-fill-mode: forwards;
 	}
-	
+
 	circle {
 		animation: circle 3s;
 		transform-origin: center;

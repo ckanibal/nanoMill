@@ -1,6 +1,31 @@
 {
-	"name"    : "nanoMill",
-	"productName"    : "nanoMill",
-	"version" : "0.9.0",
-	"main"    : "main.js"
+  "name": "nanoMill",
+  "productName": "nanoMill",
+  "version": "0.9.0",
+  "main": "main.js",
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-loader": "^6.4.1",
+    "babel-preset-react": "^6.23.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "css-loader": "^0.27.3",
+    "devtron": "^1.4.0",
+    "electron-rebuild": "^1.5.7",
+    "less": "^2.7.2",
+    "less-loader": "^4.0.2",
+    "style-loader": "^0.16.0",
+    "webpack": "^2.3.1",
+    "webpack-dev-server": "^2.4.2"
+  },
+  "dependencies": {
+    "electron": "^1.6.2",
+    "electron-debug": "^1.1.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  },
+  "scripts": {
+    "start": "electron .",
+    "watch": "./node_modules/.bin/webpack-dev-server",
+    "electron-rebuild": "./node_modules/.bin/electron-rebuild"
+  }
 }
