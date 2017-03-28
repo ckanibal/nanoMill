@@ -7,7 +7,6 @@ import "./FileTreeView.less";
 export default class FileTreeView extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {secondsElapsed: 0};
   }
 
@@ -27,7 +26,9 @@ export default class FileTreeView extends React.Component {
 
   render() {
     return (
-      <div>Seconds Elapsed: {this.state.secondsElapsed}</div>
+      <div className="FileTreeView">
+        Seconds Elapsed: {this.state.secondsElapsed}
+      </div>
     );
   }
 }

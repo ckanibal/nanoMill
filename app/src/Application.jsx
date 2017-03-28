@@ -14,7 +14,10 @@ class Application extends React.Component {
 
     render() {
         return (
-          <FileTreeView root={__dirname} />
+          <div className="Application">
+            <FileTreeView root={__dirname} />
+            <div className="center">Content</div>
+          </div>
         );
     }
 }
