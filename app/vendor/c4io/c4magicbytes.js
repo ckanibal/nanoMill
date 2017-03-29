@@ -1,6 +1,6 @@
 const Transform = require('stream').Transform;
 
-module.exports = class C4MagicBytesReadTransform extends Transform {
+class C4MagicBytesReadTransform extends Transform {
   constructor(options) {
     super(options);
 
@@ -16,3 +16,5 @@ module.exports = class C4MagicBytesReadTransform extends Transform {
     callback(null, chunk);
   }
 };
+
+module.exports = C4MagicBytesReadTransform;
